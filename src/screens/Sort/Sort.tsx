@@ -12,13 +12,10 @@ import { RoundBeat } from './RoundBeat';
 import { SortBin } from './SortBin';
 import { SortCard } from './SortCard';
 
-// Phase 1 sort: one item at a time into two neutral bins, via swipe-drag or tapping a bin. The
-// conveyor + arm come in Phase 2. The store + scoring already exist — this screen only
-// orchestrates: derive the current item, dispatch decisions, mark round transitions, and hand
-// off to the build beat when every item is sorted.
-
-const SWIPE_HINT = 40; // px of drag before the nearer bin lights up
-const SWIPE_COMMIT = 120; // px of drag that counts as a choice
+// Phase 1 sort: one item at a time into two neutral bins. The card drags freely anywhere on the
+// canvas and is dropped onto a bin (or a bin is tapped). The conveyor + arm come in Phase 2. The
+// store + scoring already exist — this screen only orchestrates: derive the current item, dispatch
+// decisions, mark round transitions, and hand off to the build beat when every item is sorted.
 
 export function Sort() {
   const navigate = useNavigate();
@@ -38,6 +35,28 @@ export function Sort() {
   const [beatCopy, setBeatCopy] = useState<string | null>(null);
 
   const advanced = useRef(false);
+  const binRefs = {
+    keep: useRef<HTMLButtonElement>(null),
+    pass: useRef<HTMLButtonElement>(null),
+  };
+
+  // Which bin (if any) sits under a screen point — drives both the drag-over highlight and the
+  // drop resolution. Viewport coords (matches getBoundingClientRect).
+  function resolveDrop(clientX: number, clientY: number): Decision | null {
+    for (const decision of ['keep', 'pass'] as const) {
+      const rect = binRefs[decision].current?.getBoundingClientRect();
+      if (
+        rect &&
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+      ) {
+        return decision;
+      }
+    }
+    return null;
+  }
 
   // The round beat is non-blocking and auto-dismisses.
   useEffect(() => {
@@ -71,16 +90,6 @@ export function Sort() {
     }
   }
 
-  function handleDragMove(offsetX: number) {
-    setActiveBin(offsetX > SWIPE_HINT ? 'keep' : offsetX < -SWIPE_HINT ? 'pass' : null);
-  }
-
-  function handleDragRelease(offsetX: number) {
-    if (offsetX > SWIPE_COMMIT) choose('keep');
-    else if (offsetX < -SWIPE_COMMIT) choose('pass');
-    else setActiveBin(null);
-  }
-
   return (
     <main className="mx-auto flex min-h-full max-w-md flex-col gap-space-5 p-space-5">
       <header className="flex flex-col gap-space-3">
@@ -91,6 +100,7 @@ export function Sort() {
       <div className="relative flex flex-1 flex-col items-center justify-center gap-space-5">
         <div className="flex items-center justify-center gap-space-5">
           <SortBin
+            ref={binRefs.pass}
             decision="pass"
             label="Not my thing"
             active={activeBin === 'pass'}
@@ -104,14 +114,16 @@ export function Sort() {
                   key={currentItem.id}
                   item={currentItem}
                   reduce={reduce}
-                  onDragMove={handleDragMove}
-                  onDragRelease={handleDragRelease}
+                  resolveDrop={resolveDrop}
+                  onHover={setActiveBin}
+                  onCommit={choose}
                 />
               )}
             </AnimatePresence>
           </div>
 
           <SortBin
+            ref={binRefs.keep}
             decision="keep"
             label="That's me"
             active={activeBin === 'keep'}
@@ -119,7 +131,7 @@ export function Sort() {
           />
         </div>
 
-        <p className="text-small text-text-faint">Drag the card into a bin — or tap a bin.</p>
+        <p className="text-small text-text-faint">Drag the card onto a bin — or tap one.</p>
 
         <AnimatePresence>
           {beatCopy && <RoundBeat copy={beatCopy} reduce={reduce} />}
