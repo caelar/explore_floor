@@ -56,7 +56,7 @@ Work proceeds phase by phase, not on a fixed schedule — each phase ships when 
 - Create `/src/data/robotParts.ts` with placeholder part entries matching the "Robot intent" column in `DATA_MODEL.md` section 3. SVG components are stubs that render a labeled rectangle.
 - Create `/src/data/colorSchemes.ts` mapping each archetype to its accent token.
 - Create `/src/data/index.ts` barrel.
-- **Verify the sanity totals** from `DATA_MODEL.md` section 15: Builder=22, Innovator=24, Architect=25.
+- **Verify the sanity totals** from `DATA_MODEL.md` section 15: Builder=22, Innovator=27, Architect=25.
 
 #### 1.5 Pure-function logic
 
