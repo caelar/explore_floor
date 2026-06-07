@@ -13,6 +13,10 @@ export const flows: Record<FlowId, Flow> = {
   classic: classicFlow,
 };
 
+// Concrete exports so consumers can use narrowed types without re-narrowing
+// (the classic question set especially — useQuestionSet's defensive fallback).
+export { classicFlow, examFlow, narrativeFlow };
+
 /** Classic stays the default: opening the app unchanged behaves exactly like
  *  Phase 1; the researcher switches conditions on Landing per participant. */
 export const defaultFlowId: FlowId = 'classic';

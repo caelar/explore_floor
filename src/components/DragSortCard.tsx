@@ -12,8 +12,19 @@ interface DragSortCardProps<T extends string> {
   onHover: (target: T | null) => void;
   /** Fired when the card is dropped onto a zone. */
   onCommit: (target: T) => void;
+  /** Tap-to-pick fallback (scene steps offer several cards, so tapping a ZONE can't
+   *  identify the pick). Motion suppresses the tap when a real drag happened; also
+   *  makes the card keyboard-operable (Enter/Space). Omit where zones are tappable. */
+  onTap?: () => void;
+  /** Card scale: classic sort + statements use the full card; scene grids go compact. */
+  size?: 'default' | 'compact';
   testId?: string;
 }
+
+const SIZE_CLASSES = {
+  default: 'w-80 p-space-6 text-h4',
+  compact: 'w-64 p-space-4 text-h5',
+} as const;
 
 // The draggable sort card, generic over its drop-target ids: the classic sort uses
 // Decision ('keep' | 'pass'), the exam statement sort uses BucketId, the narrative
@@ -32,7 +43,16 @@ const pointerXY = (
 };
 
 function DragSortCardInner<T extends string>(
-  { label, reduce, resolveDrop, onHover, onCommit, testId = 'sort-card' }: DragSortCardProps<T>,
+  {
+    label,
+    reduce,
+    resolveDrop,
+    onHover,
+    onCommit,
+    onTap,
+    size = 'default',
+    testId = 'sort-card',
+  }: DragSortCardProps<T>,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const controls = useAnimationControls();
@@ -72,9 +92,22 @@ function DragSortCardInner<T extends string>(
       whileDrag={{ scale: 0.9, zIndex: 10 }}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
-      className="flex w-80 shrink-0 cursor-grab touch-none select-none flex-col items-center justify-center rounded-md border border-border-default bg-bg p-space-6 text-center shadow-card active:cursor-grabbing"
+      onTap={onTap}
+      role={onTap ? 'button' : undefined}
+      tabIndex={onTap ? 0 : undefined}
+      onKeyDown={
+        onTap
+          ? (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onTap();
+              }
+            }
+          : undefined
+      }
+      className={`flex shrink-0 cursor-grab touch-none select-none flex-col items-center justify-center rounded-md border border-border-default bg-bg text-center shadow-card active:cursor-grabbing ${SIZE_CLASSES[size]}`}
     >
-      <span className="font-heading text-h4 text-text-strong">{label}</span>
+      <span className="font-heading text-text-strong">{label}</span>
     </motion.div>
   );
 }

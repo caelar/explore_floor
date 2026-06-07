@@ -5,14 +5,16 @@ import { durations, easings } from '@/lib';
 interface ProgressBarProps {
   /** How many items are decided so far. */
   value: number;
-  /** Total items in the sort (24). */
+  /** Total items in the sort (24 classic, 30 statements). */
   total: number;
+  /** Counter testid — classic keeps 'sort-progress'; the flow runner uses its own. */
+  testId?: string;
 }
 
 // A filling brand-yellow bar + "n of total sorted" counter. Yellow is the global brand
 // signature (not an archetype), so it's the right accent for neutral progress chrome.
 // Fill grows via scaleX (GPU-friendly) — Motion-owned, reduced-motion aware (motion-quality).
-export function ProgressBar({ value, total }: ProgressBarProps) {
+export function ProgressBar({ value, total, testId = 'sort-progress' }: ProgressBarProps) {
   const reduce = useReducedMotion();
   const fraction = total === 0 ? 0 : Math.min(value / total, 1);
 
@@ -36,7 +38,7 @@ export function ProgressBar({ value, total }: ProgressBarProps) {
           }
         />
       </div>
-      <p className="text-small text-text-muted" data-testid="sort-progress">
+      <p className="text-small text-text-muted" data-testid={testId}>
         {value} of {total} sorted
       </p>
     </div>

@@ -106,7 +106,9 @@ export interface ResultsCopy {
   fit: Record<FitBand, string>;
 }
 
-export type QuestionSetId = 'a' | 'b';
+/** Only 'a' remains — the planned set B (formal/playful A/B) was superseded by the
+ *  question-structure study flows (§17) before its content was authored. */
+export type QuestionSetId = 'a';
 
 /** A complete, standalone content variant for the A/B language user test (DATA_MODEL §16).
  *  A set owns its 24 interest items (own ids, labels, weights, robot mappings) and the copy
@@ -332,13 +334,18 @@ export interface TrainingProgram {
 export type Decision = 'keep' | 'pass';
 
 export interface SessionState {
-  currentScreen: 'landing' | 'sort' | 'build' | 'results';
+  currentScreen: 'landing' | 'sort' | 'build' | 'results' | 'flow';
   currentRound: 0 | 1 | 2 | 3 | 4; // 0 = not started, 4 = sorting done
   decisions: Record<string, Decision>; // keyed by InterestItem.id
   scoreResult: ScoreResult | null;
   robot: RobotState | null;
   currentlyTryingOn: RoleId | null; // results screen state
   soundEnabled: boolean;
+  // ---- Category-flow runtime (DATA_MODEL §17) — untouched by the classic flow ----
+  stepIndex: number; // cursor into the active CategoryFlow's steps
+  answers: Record<string, string>; // stepId → chosen MCChoice/SceneChoice id
+  statementBuckets: Record<string, BucketId>; // SortStatement.id → bucket
+  categoryResult: CategoryResult | null;
 }
 
 export interface RobotState {

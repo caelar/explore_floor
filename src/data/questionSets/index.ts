@@ -1,14 +1,12 @@
 import type { QuestionSet, QuestionSetId } from '../types';
 import { setA } from './setA';
-import { setB } from './setB';
 
-// The question-set registry (DATA_MODEL §16). The store resolves the active set's items
-// through this map; the landing switcher and the per-set data-integrity tests iterate the
-// ordered list. Adding a set = author the file, register it here, done.
+// The question-set registry (DATA_MODEL §16). Only set A remains: the formal/playful
+// A/B language test was superseded by the question-structure study (flows/, DATA_MODEL
+// §17, D-017) before set B's content was ever authored. The classic flow wraps set A;
+// the per-set data-integrity tests still iterate the list.
 
-export const questionSets: Record<QuestionSetId, QuestionSet> = { a: setA, b: setB };
+export const questionSets: Record<QuestionSetId, QuestionSet> = { a: setA };
 
-export const defaultSetId: QuestionSetId = 'a';
-
-/** Ordered list — drives the landing switcher segments and `describe.each` in tests. */
-export const questionSetList: QuestionSet[] = [setA, setB];
+/** Ordered list — drives `describe.each` in the per-set data-integrity tests. */
+export const questionSetList: QuestionSet[] = [setA];

@@ -3,23 +3,25 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button, SegmentedControl } from '@/components';
-import { questionSetList } from '@/data';
+import { flowList } from '@/data';
 import { durations, easings } from '@/lib';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { LandingSceneHint } from '@/scene/LandingSceneHint';
-import { useQuestionSet, useSessionStore } from '@/state';
+import { useFlow, useSessionStore } from '@/state';
 
 // Landing: the frame + CTA, with a soft hint of the assembly-line scene below it. Motion owns the
 // content entrance (and the CTA); GSAP owns the scene's DrawSVG line-draw reveal — different
 // nodes, so the two engines never touch the same property (scene-motion ownership rule).
-// The question-set switcher is a researcher control for the A/B language test (DATA_MODEL §16):
-// flipped here before the laptop is handed over; the choice survives "Start over".
+// The flow switcher is a researcher control for the question-structure study (DATA_MODEL §17):
+// flipped here before the laptop is handed over; the choice survives "Start over". The CTA
+// routes by flow kind — classic walks the Phase 1 sort, the study flows enter the step runner.
 export function Landing() {
   const navigate = useNavigate();
   const startSession = useSessionStore((s) => s.startSession);
-  const questionSetId = useSessionStore((s) => s.questionSetId);
-  const selectQuestionSet = useSessionStore((s) => s.selectQuestionSet);
-  const { landingCopy } = useQuestionSet();
+  const flowId = useSessionStore((s) => s.flowId);
+  const selectFlow = useSessionStore((s) => s.selectFlow);
+  const flow = useFlow();
+  const { landingCopy } = flow;
   const reduce = !!useReducedMotion();
   const sceneRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +43,7 @@ export function Landing() {
 
   const begin = () => {
     startSession();
-    navigate('/sort');
+    navigate(flow.kind === 'classic' ? '/sort' : '/flow');
   };
 
   return (
@@ -60,11 +62,11 @@ export function Landing() {
         </Button>
 
         <SegmentedControl
-          label="Question set"
-          options={questionSetList.map((set) => ({ id: set.id, label: set.name }))}
-          value={questionSetId}
-          onChange={selectQuestionSet}
-          data-testid="qset"
+          label="Quiz flow"
+          options={flowList.map((f) => ({ id: f.id, label: f.name }))}
+          value={flowId}
+          onChange={selectFlow}
+          data-testid="flow"
         />
       </motion.div>
 

@@ -1,9 +1,9 @@
 export { colorSchemes, defaultColorScheme } from './colorSchemes';
 export { competencies } from './competencies';
-export { defaultFlowId, flowList, flows } from './flows';
+export { classicFlow, defaultFlowId, examFlow, flowList, flows, narrativeFlow } from './flows';
 export { items } from './items';
 export { programs } from './programs';
-export { defaultSetId, questionSetList, questionSets } from './questionSets';
+export { questionSetList, questionSets } from './questionSets';
 export { resultsCopy } from './resultsCopy';
 export { robotParts } from './robotParts';
 export { roleDetails } from './roleDetails';
