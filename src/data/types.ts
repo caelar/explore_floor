@@ -127,6 +127,148 @@ export interface QuestionSet {
   expectedSums: ArchetypeWeights;
 }
 
+// ---------- Categories (study flows — DATA_MODEL §17) ----------
+
+/** The four RC.org career-pathway categories the study flows score. Parallel to —
+ *  not an extension of — the archetype model: the classic flow never reads these.
+ *  Operate maps to the Operator role, which exists only in this category world. */
+export type CategoryId = 'operate' | 'repair' | 'program' | 'plan';
+
+/** Order matters: it encodes the deterministic tiebreak (and the fixed axis order
+ *  for the node map and fit radar): operate > repair > program > plan. */
+export const CATEGORIES: readonly CategoryId[] = ['operate', 'repair', 'program', 'plan'];
+
+export type CategoryWeights = Record<CategoryId, number>;
+
+/** Layer-2 role-sheet content (from the RC.org role cards on the team's board).
+ *  Keyed by category so roles.ts and the three-role taxonomy stay untouched. */
+export interface RoleDetail {
+  categoryId: CategoryId;
+  roleName: string; // "Operator"
+  description: string;
+  jobActivities: string[];
+  education: string;
+  commonJobTitles: string[];
+  salary: string;
+}
+
+// ---------- Flows (study instrument — DATA_MODEL §17) ----------
+
+export type FlowId = 'narrative' | 'exam' | 'classic';
+
+/** Statement-sort buckets. 'maybe' exists because the prior user study asked for it;
+ *  its scoring weight is MAYBE_WEIGHT in lib/categoryScoring.ts (0 for now). */
+export type BucketId = 'thats-me' | 'maybe' | 'not-me';
+
+export interface BucketDef {
+  id: BucketId;
+  label: string;
+}
+
+export interface MCChoice {
+  id: string;
+  label: string;
+  /** Empty = unscored background question (the team intends these to map to
+   *  something later — see DECISIONS D-017 open item). One or more = scored;
+   *  a choice can feed two categories (e.g. hands-on → operate + repair). */
+  categories: CategoryId[];
+  /** Step id to jump to after this choice (Q1 "No" skips Q2). Omitted = next step. */
+  branchTo?: string;
+}
+
+export interface MCStep {
+  type: 'mc';
+  id: string;
+  /** Optional lead-in line shown above the question ("Let's start with some basic questions..."). */
+  prompt?: string;
+  question: string;
+  choices: MCChoice[];
+}
+
+export interface SceneChoice {
+  id: string;
+  label: string;
+  category: CategoryId; // exactly one; the four choices in a scene cover all four
+}
+
+/** A day-in-the-life story beat. Interaction: drag your pick into the drop zone. */
+export interface SceneStep {
+  type: 'scene';
+  id: string;
+  prompt: string; // the narrative setup ("Your alarm goes off in the morning...")
+  question: string; // the ask ("How do you start the day?")
+  choices: SceneChoice[];
+}
+
+export interface SortStatement {
+  id: string;
+  label: string;
+  category: CategoryId; // hidden from the user; tallied on "that's me"
+}
+
+/** The exam flow's 30-statement sort. Presentation order is fixed here in data
+ *  (interleaved across categories), one statement at a time into three buckets. */
+export interface StatementSortStep {
+  type: 'statementSort';
+  id: string;
+  statements: SortStatement[];
+  buckets: BucketDef[];
+}
+
+export type FlowStep = MCStep | SceneStep | StatementSortStep;
+
+/** Copy the category results screen reads (node map + role sheet chrome). */
+export interface FlowResultsCopy {
+  heading: string;
+  mapHint: string; // how to read/use the map
+  centerLabel: string; // "Recommended titles"
+  retake: string;
+  sheet: {
+    activities: string;
+    education: string;
+    titles: string;
+    salary: string;
+    fit: string; // "How you fit"
+    addToProfile: string; // stub link label
+  };
+}
+
+interface FlowBase {
+  id: FlowId;
+  /** Researcher-facing label on the landing switcher. */
+  name: string;
+  landingCopy: LandingCopy;
+}
+
+/** The original Phase 1 experience, wrapped by reference — its pipeline
+ *  (interest sort, robot build, archetype results) is untouched. */
+export interface ClassicFlow extends FlowBase {
+  kind: 'classic';
+  questionSet: QuestionSet;
+}
+
+/** A step-driven study flow scored across the four categories. No robot:
+ *  the build beat is intentionally skipped this iteration (D-017). */
+export interface CategoryFlow extends FlowBase {
+  kind: 'narrative' | 'exam';
+  steps: FlowStep[];
+  /** Declared full-path max per category — data-integrity asserts declared == computed. */
+  expectedCategoryMax: CategoryWeights;
+  resultsCopy: FlowResultsCopy;
+}
+
+export type Flow = ClassicFlow | CategoryFlow;
+
+export interface CategoryResult {
+  raw: CategoryWeights;
+  /** 0-100 per category, normalized against that category's own achievable max
+   *  on the path the user actually took (branch-aware). */
+  matchPercentages: CategoryWeights;
+  /** Best → worst; drives ring placement (innermost = first). */
+  ranking: CategoryId[];
+  primaryCategory: CategoryId;
+}
+
 // ---------- Robot ----------
 
 /** A robot has a fixed set of slots. Each kept interest contributes to one
