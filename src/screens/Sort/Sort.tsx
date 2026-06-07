@@ -2,14 +2,12 @@ import { AnimatePresence, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ProgressBar, RoundIndicator } from '@/components';
+import { DragSortCard, DropZone, ProgressBar, RoundIndicator } from '@/components';
 import type { Decision } from '@/data/types';
 import { durationsMs } from '@/lib';
 import { useQuestionSet, useSessionStore } from '@/state';
 
 import { RoundBeat } from './RoundBeat';
-import { SortBin } from './SortBin';
-import { SortCard } from './SortCard';
 
 // Phase 1 sort: one item at a time into two neutral bins. The card drags freely anywhere on the
 // canvas and is dropped onto a bin (or a bin is tapped). The conveyor + arm come in Phase 2. The
@@ -100,9 +98,10 @@ export function Sort() {
 
       <div className="relative flex flex-1 flex-col items-center justify-center gap-space-5">
         <div className="flex items-center justify-center gap-space-5">
-          <SortBin
+          <DropZone<Decision>
             ref={binRefs.pass}
-            decision="pass"
+            id="pass"
+            testId="sort-pass"
             label={sortCopy.passLabel}
             active={activeBin === 'pass'}
             onChoose={choose}
@@ -111,9 +110,9 @@ export function Sort() {
           <div className="relative flex h-52 w-80 shrink-0 items-center justify-center">
             <AnimatePresence mode="popLayout">
               {currentItem && (
-                <SortCard
+                <DragSortCard<Decision>
                   key={currentItem.id}
-                  item={currentItem}
+                  label={currentItem.label}
                   reduce={reduce}
                   resolveDrop={resolveDrop}
                   onHover={setActiveBin}
@@ -123,9 +122,10 @@ export function Sort() {
             </AnimatePresence>
           </div>
 
-          <SortBin
+          <DropZone<Decision>
             ref={binRefs.keep}
-            decision="keep"
+            id="keep"
+            testId="sort-keep"
             label={sortCopy.keepLabel}
             active={activeBin === 'keep'}
             onChoose={choose}
