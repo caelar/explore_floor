@@ -53,8 +53,9 @@ export function computeCategoryMax(steps: FlowStep[]): CategoryWeights {
 
 /** Yield the steps on the path the recorded answers actually took. MC choices may
  *  branch forward by step id; everything else falls through sequentially. Backward
- *  or unknown branch targets are ignored (data-integrity rejects them at author time). */
-function* walkPath(
+ *  or unknown branch targets are ignored (data-integrity rejects them at author time).
+ *  Exported so the results breakdown walks the exact same path as the score. */
+export function* walkPath(
   steps: FlowStep[],
   answers: Record<string, string>,
 ): Generator<FlowStep> {

@@ -7,9 +7,10 @@ import { FitRadar } from './FitRadar';
 
 interface RoleDetailSheetProps {
   detail: RoleDetail;
-  /** The job-title node the user clicked — the sheet's headline; the body explains
-   *  the category that title belongs to (per the team's wireframe 2). */
-  jobTitle: string;
+  /** The job-title node the user clicked — the sheet's headline, with the role name as
+   *  the overline (node map). Omitted when opened from a role itself (exam "your roles"):
+   *  the role name becomes the headline and the overline is dropped. */
+  jobTitle?: string;
   matchPercentages: CategoryWeights;
   copy: FlowResultsCopy['sheet'];
   reduce: boolean;
@@ -43,7 +44,7 @@ export function RoleDetailSheet({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={jobTitle}
+        aria-label={jobTitle ?? detail.roleName}
         data-testid="role-sheet"
         className="relative max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-md bg-bg p-space-6 shadow-elev-2"
         initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
@@ -63,8 +64,8 @@ export function RoleDetailSheet({
 
         <div className="flex flex-col gap-space-4">
           <div className="flex flex-col gap-space-1 text-center">
-            <p className="text-overline uppercase text-text-faint">{detail.roleName}</p>
-            <h2 className="font-heading text-h3 text-text-strong">{jobTitle}</h2>
+            {jobTitle && <p className="text-overline uppercase text-text-faint">{detail.roleName}</p>}
+            <h2 className="font-heading text-h3 text-text-strong">{jobTitle ?? detail.roleName}</h2>
           </div>
 
           <p className="text-body text-text-default">{detail.description}</p>

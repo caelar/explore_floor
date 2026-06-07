@@ -2,21 +2,26 @@ import { ACCENT_CLASSES } from '@/components/accent';
 import type { ArchetypeId } from '@/data/types';
 
 interface RobotPlaceholderProps {
-  archetype: ArchetypeId;
+  /** Classic results tint by archetype. Omit when passing colorClass directly. */
+  archetype?: ArchetypeId;
+  /** A `text-*` class to tint the figure (category flows pass a category accent). */
+  colorClass?: string;
   size?: number;
 }
 
-// Phase 1 placeholder robot — a simple line robot tinted with the active archetype accent
-// (via currentColor). The real modular SVG robot is authored in Phase 2; here the point is the
-// compare *interaction*, so the figure just needs to read as "your robot" and change with the
-// active path. No hardcoded hex: stroke uses currentColor set by the accent text class.
-export function RobotPlaceholder({ archetype, size = 116 }: RobotPlaceholderProps) {
+// Phase 1 placeholder robot — a simple line robot tinted with the active accent (via
+// currentColor). The real modular SVG robot is authored in Phase 2; here the point is the
+// compare *interaction* (classic) or a results anchor (study flows), so the figure just needs
+// to read as "your robot". No hardcoded hex: stroke uses currentColor set by the tint class —
+// either the archetype accent (classic) or a passed-in colorClass (category flows).
+export function RobotPlaceholder({ archetype, colorClass, size = 116 }: RobotPlaceholderProps) {
+  const tint = colorClass ?? (archetype ? ACCENT_CLASSES[archetype].text : 'text-text-muted');
   return (
     <svg
       width={size}
       height={(size / 116) * 136}
       viewBox="0 0 116 136"
-      className={ACCENT_CLASSES[archetype].text}
+      className={tint}
       role="img"
       aria-label="Your robot"
     >

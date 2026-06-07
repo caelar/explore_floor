@@ -65,16 +65,25 @@ test('exam: questions + 30-statement sort across three buckets, results match th
     }
   }
 
-  // Category results: displayed percentages equal the engine's read of the same inputs,
-  // and all four category nodes render on the map.
+  // Exam results = the dashboard (bars + breakdown + your roles), NOT the node map.
+  // Displayed bar percentages equal the engine's read of the same inputs.
   await expect(page).toHaveURL(/\/results$/, { timeout: 7000 });
   const expected = calculateCategoryScores(examFlow, answers, statementBuckets);
   for (const category of ['operate', 'repair', 'program', 'plan'] as const) {
-    await expect(page.getByTestId(`category-node-${category}`)).toBeVisible();
+    await expect(page.getByTestId(`category-bar-${category}`)).toBeVisible();
     await expect(page.getByTestId(`category-pct-${category}`)).toHaveText(
       `${expected.matchPercentages[category]}%`,
     );
   }
+  await expect(page.getByTestId('score-breakdown')).toBeVisible();
+
+  // "Your roles" → tap the top role card → the shared role detail sheet opens with the radar.
+  const topRole = expected.ranking[0];
+  await page.getByTestId(`role-card-${topRole}`).click();
+  await expect(page.getByTestId('role-sheet')).toBeVisible();
+  await expect(page.getByTestId('fit-radar')).toBeVisible();
+  await page.getByTestId('sheet-close').click();
+  await expect(page.getByTestId('role-sheet')).not.toBeVisible();
 
   // "Start over" returns to Landing with the condition still selected (reset-survival).
   await page.getByTestId('retake').click();

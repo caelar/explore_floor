@@ -1,4 +1,6 @@
 export * from './audio';
+export type { CategoryContribution, CategoryContributions } from './categoryBreakdown';
+export { categoryContributions } from './categoryBreakdown';
 export { calculateCategoryScores, computeCategoryMax, MAYBE_WEIGHT } from './categoryScoring';
 export { getFitBand, isLowSignal, LOW_SIGNAL_MAX, SOLID_FIT, STRONG_FIT } from './fit';
 export * from './motion';
