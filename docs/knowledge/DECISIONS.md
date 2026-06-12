@@ -6,6 +6,14 @@ This is the highest-value handoff artifact: when ARM's dev team (or future-you) 
 
 ---
 
+## 2026-06-11
+
+### D-021 — Classic leaves the landing switcher; the role-select comparator takes its slot; narrative becomes the default
+- **Decision:** The landing condition switcher reads **Narrative / Exam / Role select**. The "Role select" tab navigates straight to `/select` (the "skip the quiz" comparator for the industry-professional arm) — it's a route, not a flow: tapping it doesn't arm a condition for the CTA. **Classic is dormant:** all code, data, and registration stay (in `flows/index.ts`, `flowList`, the §17 integrity tests, and the `/sort`/`/build` routes), but it has no UI entry. `defaultFlowId` → `narrative` so a fresh load can't silently start classic. The classic E2E specs reach it via a dev-only `globalThis.__sessionStore` handle in `sessionStore.ts` (stripped from production builds).
+- **Why:** The study conditions are now narrative vs exam vs straight role-pick; classic isn't a condition in this round but the team wants it kept "just in case." Keeping it registered keeps its data validated; removing only the UI entry is the smallest cut.
+- **Alternatives:** Keep classic as a fourth tab (rejected — not a study condition, clutters the researcher control); delete classic (rejected — explicit keep); persist a select "condition" in the store so the CTA starts it (rejected — needs FlowId widening or a parallel field for no protocol benefit).
+- **Affected:** `Landing.tsx`, `flows/index.ts` (`defaultFlowId` only), `sessionStore.ts` (dev handle), classic E2E specs + `tests/e2e/helpers.ts`, `role-select.spec.ts`.
+
 ## 2026-06-08
 
 ### D-020 — Screeners drive an always-on education/pay fit line on results

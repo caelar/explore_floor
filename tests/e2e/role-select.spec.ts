@@ -15,7 +15,8 @@ test('role select: land, open a detail, select, confirm, return to Landing', asy
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  await page.getByTestId('role-select-link').click();
+  // The comparator rides the condition switcher (third tab, where Classic used to be — D-021).
+  await page.getByTestId('flow-select').click();
   await expect(page).toHaveURL(/\/select$/);
 
   // All four cards, in ladder order (Operate → Repair → Program → Plan), named from roleDetails.

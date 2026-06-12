@@ -17,9 +17,10 @@ export const flows: Record<FlowId, Flow> = {
 // (the classic question set especially — useQuestionSet's defensive fallback).
 export { classicFlow, examFlow, narrativeFlow };
 
-/** Classic stays the default: opening the app unchanged behaves exactly like
- *  Phase 1; the researcher switches conditions on Landing per participant. */
-export const defaultFlowId: FlowId = 'classic';
+/** Narrative (the first switcher tab) is the default. Classic is dormant — kept
+ *  registered here so its data stays validated, but it has no UI entry: the landing
+ *  switcher dropped it for the role-select comparator (D-021). */
+export const defaultFlowId: FlowId = 'narrative';
 
 /** Ordered list — drives the landing switcher segments and `describe.each` in tests. */
 export const flowList: Flow[] = [narrativeFlow, examFlow, classicFlow];

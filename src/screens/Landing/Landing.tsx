@@ -1,9 +1,10 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, SegmentedControl } from '@/components';
 import { flowList } from '@/data';
+import type { FlowId } from '@/data/types';
 import { durations, easings } from '@/lib';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { LandingSceneHint } from '@/scene/LandingSceneHint';
@@ -61,23 +62,19 @@ export function Landing() {
           {landingCopy.cta}
         </Button>
 
-        <SegmentedControl
+        {/* The study-condition switcher. Classic is dormant (kept in code, no UI entry — D-021);
+            its slot now holds the role-select comparator, which is a route, not a flow: tapping
+            it goes straight to /select rather than arming a condition for the CTA. */}
+        <SegmentedControl<FlowId | 'select'>
           label="Quiz flow"
-          options={flowList.map((f) => ({ id: f.id, label: f.name }))}
+          options={[
+            ...flowList.filter((f) => f.kind !== 'classic').map((f) => ({ id: f.id, label: f.name })),
+            { id: 'select', label: 'Role select' },
+          ]}
           value={flowId}
-          onChange={selectFlow}
+          onChange={(id) => (id === 'select' ? navigate('/select') : selectFlow(id))}
           data-testid="flow"
         />
-
-        {/* Researcher control like the switcher above: the "skip the quiz" comparator
-            for the industry-professional study arm. A plain route, not a flow. */}
-        <Link
-          to="/select"
-          data-testid="role-select-link"
-          className="text-small text-text-faint underline transition-colors hover:text-text-default"
-        >
-          Role select (no quiz)
-        </Link>
       </motion.div>
 
       <div ref={sceneRef} className="w-full max-w-md" aria-hidden="true">

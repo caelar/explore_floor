@@ -169,3 +169,10 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     reset: () => set({ state: createInitialState() }),
   };
 });
+
+// Dev-only handle. Classic is dormant — kept in code but dropped from the landing
+// switcher (D-021) — so the classic E2E specs select it through this hook instead
+// of the UI. Vite strips this from production builds.
+if (import.meta.env.DEV) {
+  (globalThis as Record<string, unknown>).__sessionStore = useSessionStore;
+}

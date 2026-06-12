@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import { selectClassicFlow } from './helpers';
+
 // The Phase 1 happy path: land → sort all 24 one at a time → build beat → results with three
-// role cards and the robot, and no console errors anywhere along the way.
+// role cards and the robot, and no console errors anywhere along the way. Classic is dormant
+// (no switcher tab — D-021), so the spec selects it through the dev store handle.
 test('landing → sort all 24 one at a time → build → results shows three role cards', async ({
   page,
 }) => {
@@ -12,6 +15,7 @@ test('landing → sort all 24 one at a time → build → results shows three ro
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
+  await selectClassicFlow(page);
   await expect(page.getByRole('heading', { name: 'Explore the Floor' })).toBeVisible();
 
   await page.getByTestId('start-cta').click();

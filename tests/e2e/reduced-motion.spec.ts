@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { selectClassicFlow } from './helpers';
+
 // Guards the prefers-reduced-motion path (motion-quality rubric, p1): with reduced motion the
 // whole flow must still work end to end — Sort crossfades instead of dragging, the Build beat is
 // instant, Results' layout reflow is duration 0, and Landing skips the DrawSVG draw. We assert it
@@ -14,6 +16,7 @@ test('full flow works under prefers-reduced-motion', async ({ page }) => {
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
+  await selectClassicFlow(page);
   await page.getByTestId('start-cta').click();
   await expect(page).toHaveURL(/\/sort$/);
 

@@ -8,7 +8,7 @@ A "skip the quiz" comparator for the industry-professional study arm running 202
 - **Selecting → a deliberately thin confirmation:** "You're set as [Role]" + a Continue button back to Landing. The thinness is the protocol's point — don't enrich it.
 - **`RoleDetailSheet` reuse:** `matchPercentages` is now optional on `RoleDetailSheetProps`; the fit-radar section renders only when it's provided. Both existing call sites (CategoryResults, ExamResults) still pass it, so nothing else changed. The "Add this Role to your profile" stub stays as is.
 - **Copy is data:** `src/data/roleSelect.ts` exports `roleSelectCopy` (screen) + `roleSelectSheetCopy` (a minimal `FlowResultsCopy['sheet']` for the sheet chrome).
-- **Landing entry point:** a small faint underlined link "Role select (no quiz)" directly under the flow switcher — same researcher-facing register, subordinate to the CTA.
+- **Landing entry point:** first shipped as a link under the switcher, then (same day, committed separately) promoted into the switcher itself per Caelan — the third tab, **replacing Classic** (D-021). The tab navigates straight to `/select`; it arms no condition. Classic went dormant: code, data, registration, and §17 tests all stay, `defaultFlowId` moved to `narrative`, and the classic E2E specs select it via a dev-only `globalThis.__sessionStore` handle (`tests/e2e/helpers.ts`).
 - **E2E `tests/e2e/role-select.spec.ts`:** land → entry link → four cards in order → open Technician sheet (content yes, `fit-radar` count 0) → close → select Specialist → thin confirmation → Continue → Landing. Zero console errors asserted.
 
 ## State at end of session

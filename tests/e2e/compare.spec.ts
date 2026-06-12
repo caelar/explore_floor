@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test';
 
+import { selectClassicFlow } from './helpers';
+
 // Phase 1 Results coverage: the displayed match percentages match the scoring engine for a known
 // sort, and the compare interaction swaps the active role. The sort pattern keeps round 1 (items
 // 1-6) and passes the rest, which the engine scores Innovator 30 / Architect 24 / Builder 23
@@ -7,6 +9,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 async function sortRoundOneOnly(page: Page) {
   await page.goto('/');
+  await selectClassicFlow(page);
   await page.getByTestId('start-cta').click();
   await expect(page).toHaveURL(/\/sort$/);
 
