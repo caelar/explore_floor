@@ -104,7 +104,7 @@ The accent shows up in the match indicator, the category bars (exam dashboard), 
 
 ### 3.4 Playful layer palette additions — documented cut
 
-> The `scene/*` tokens served the never-built assembly-line scene. They still sit in `globals.css` but are dead; their removal is bundled with the classic-conveyor archival (`DECISIONS.md` D-024 deferred it there). No live surface reads them. Parked.
+> The `scene/*` tokens served the never-built assembly-line scene. The only live surface that still reads them is `LandingSceneHint` (the Landing hero, a conveyor-sketch placeholder). They become removable when the Landing hero is redesigned (step 8); until then they stay. The broader playful-scene palette is parked. _(D-024 had deferred their removal to the classic-conveyor archival, but the Landing hero keeps them alive past it.)_
 
 For the assembly-line scene specifically, we add a few muted, warm fills that work with the Goose-game aesthetic. These are scene-specific and live under a `scene/` token namespace so they don't bleed into the foundation surfaces.
 

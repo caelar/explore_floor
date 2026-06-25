@@ -15,7 +15,10 @@ Ran the reversible half of the realignment sweep (`REALIGNMENT.md` §9) on branc
 
 ## Next — Phase 4 (DESTRUCTIVE, needs user go-ahead)
 The full plan + the load-bearing corrections are in the **2026-06-25 foundation handoff** (`sessions/2026-06-25-realignment-foundation-slice.md`, the "Phase 4" section). Headlines, do not lose:
-- **`gsap.ts` is LIVE, not classic** (Landing reveal + plugin registration). Do NOT delete it (Appendix A is wrong on this).
-- **The live Landing renders the conveyor placeholder** (`LandingSceneHint`). Deleting it removes the hero visual — surface a product decision, don't silently delete.
+- **`gsap.ts` is LIVE, not classic** (imported by `main.tsx` for plugin registration + `Landing.tsx` for the reveal). Do NOT delete it (Appendix A is wrong on this).
+- **`/src/scene` survives — both placeholders are live-referenced (correction to the handoff's "delete both" line).** Verified by grep this session:
+  - `LandingSceneHint` → the live **Landing hero** (`Landing.tsx:86`). Deleting it removes the hero visual; redesigning it is a step-8 product decision, not a Phase-4 blocker. Keeping it also keeps the `scene/*` tokens (it's their only live reader).
+  - `RobotPlaceholder` → the live **exam dashboard anchor** (`ExamResults.tsx:63`, tinted by the top category). **Keep it.** It's *also* imported by the classic `ClassicResults.tsx` + `Build.tsx` (those go), but the exam use is live.
+  - So Phase 4 **keeps `/src/scene` and does NOT remove `/src/scene` from `CLAUDE.md`'s repo-structure** (that handoff step is superseded). Scene-token removal waits for the step-8 Landing redesign.
 - **3 of 7 E2E specs are classic** (`happy-path`, `compare`, `reduced-motion`) and will break; the gate re-baselines 7 → ~3. **Rehome `reduced-motion`** coverage onto a live flow rather than lose it.
-- Tag `archive/classic-conveyor` BEFORE deleting; work in dependency order, gates green between steps. Then drop the three-role hard rule + `/src/scene` from CLAUDE.md and split `types.ts`.
+- Tag `archive/classic-conveyor` BEFORE deleting; work in dependency order, gates green between steps. Delete the classic **screens** (`Sort`, `Build`, `Results/ClassicResults` + `Pedestal`/`RoleCard`/`ProgramList`/`FourPartRead`), **lib** (`scoring`, `robotAssembly`, `fit`, `audio`, `programSelection` if unused), **data** (`items`, `roles`, `robotParts`, `colorSchemes`?, `rounds`, `resultsCopy`, `questionSets/`), and **tests**; edit `data-integrity.test.ts` to drop the classic §15/§16 blocks (keep §17). Then drop the three-role hard rule + D-017 carve-out from `CLAUDE.md`, prune the classic types from `types.ts`, and reconcile the docs' "documented cut" sections (the deletion makes the code match what the specs now say).

@@ -77,9 +77,9 @@ sections:
     order: 6
     title: Surface discipline
     criteria:
-      - id: no-dead-scene-tokens
+      - id: no-new-scene-tokens
         severity: p3
-        check: No live surface reads the documented-cut scene/* tokens (they are dead, pending removal)
+        check: No NEW surface introduces scene/* token usage (only the legacy LandingSceneHint hero reads them, grandfathered until the step-8 redesign)
       - id: no-glassmorphism
         severity: p2
         check: No glassmorphism / frosted-glass effects are used
@@ -137,7 +137,7 @@ Use the `space-0..7` scale (4 → 64px) and container tokens (`container-lg` 124
 Only `rounded-sm` (4), `rounded-md` (8), `rounded-full`. Two shadow styles (`shadow-card`, `shadow-elev-2`), used sparingly — the playful layer leans on warm fills and soft outlines, not shadow stacks.
 
 ## 6. Surface discipline
-Surfaces use the kit conventions (white cards on light surface, kit radii, the two soft shadow tiers, used sparingly). The two-layer (foundation vs playful-scene) model is the documented cut: the scene was never built, so the `scene/*` tokens are dead and no live surface should read them. No glassmorphism.
+Surfaces use the kit conventions (white cards on light surface, kit radii, the two soft shadow tiers, used sparingly). The two-layer (foundation vs playful-scene) model is the documented cut: the scene was never built, so no *new* surface should introduce `scene/*` tokens (only the legacy `LandingSceneHint` hero still reads them, grandfathered until the step-8 redesign). No glassmorphism.
 
 ## 7. Motion (folded from the retired motion-quality rubric)
 Durations (`instant`/`snap`/`glide`/`pour`/`reveal`) and easings (`ease-soft`/`ease-snap`/`ease-physical`) live in `/src/lib/motion.ts` and are read by both engines. The hard rule survives: **a given element + property is owned by exactly one library at a time.** Motion owns React-state/gesture/lifecycle motion (flow-step transitions, the bucket-sort drag, the node-map compare swap); GSAP owns the single Landing `DrawSVG` reveal, inside `useGSAP` with a scope ref (auto-reverts on unmount). `prefers-reduced-motion` is respected globally (a p1). **Fail:** a hard-coded `duration: 0.35`, a bare `gsap.to(selector)` in a component, both engines writing `transform` on one node, or a physical sequence that ignores reduced-motion.
