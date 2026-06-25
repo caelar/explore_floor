@@ -10,7 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 // Tokens only — no literals. Phase 0 styling is intentionally plain; the real button
 // variants come from the Figma foundation set in Phase 1+.
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-arm-yellow text-near-black hover:bg-arm-yellow-soft',
+  primary: 'bg-arm-gold text-near-black hover:bg-arm-gold-soft',
   neutral: 'border border-border-default bg-bg text-text-default hover:bg-bg-section',
   ghost: 'bg-transparent text-text-muted hover:text-text-default',
 };

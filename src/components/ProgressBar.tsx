@@ -28,7 +28,7 @@ export function ProgressBar({ value, total, testId = 'sort-progress' }: Progress
         aria-valuemax={total}
       >
         <motion.div
-          className="h-full w-full origin-left rounded-full bg-arm-yellow"
+          className="h-full w-full origin-left rounded-full bg-arm-gold"
           initial={false}
           animate={{ scaleX: fraction }}
           transition={

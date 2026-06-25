@@ -35,7 +35,7 @@ function DropZoneInner<T extends string>(
         SIZE_CLASSES[size],
         'flex shrink-0 flex-col items-center justify-center rounded-md border-2 p-space-3 text-center transition-colors',
         active
-          ? 'border-arm-yellow bg-arm-yellow/10 text-text-strong'
+          ? 'border-arm-gold bg-arm-gold/10 text-text-strong'
           : 'border-border-default bg-bg text-text-muted hover:bg-bg-section',
       ].join(' ')}
     >

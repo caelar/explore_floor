@@ -52,17 +52,17 @@ Variable names align by the mapping above so Figma Variables and Tailwind tokens
 
 ## 3. Color
 
-### 3.1 Brand (locked, exact)
+### 3.1 Brand (kit-aligned)
 
-These are non-negotiable. Any future ARM-related work must use these values verbatim.
+Snapped to the RC UI Kit, matching `career_dashboard` (D-024 here; its D-026). Values are canonical against the kit; the old archetype→accent assignments are retired (see §3.3).
 
 | Token | Hex | Role |
 |---|---|---|
-| `arm-yellow` | `#FFB81C` | Primary brand color. The "ARM gold." Used for primary CTAs and brand signature. |
-| `arm-yellow-soft` | `#FDC547` | Hover/secondary use of yellow. |
-| `arm-orange` | `#F56A00` | Accent. **Used for the Builder archetype.** |
-| `arm-blue` | `#38A5EE` | Accent. **Used for the Innovator archetype.** |
-| `arm-teal` | `#117289` | Accent. **Used for the Architect archetype.** |
+| `arm-gold` | `#FFB81C` | Primary brand color, the "ARM gold." Primary CTA fill + brand signature (a fill, not a text color on white). Renamed from `arm-yellow`. |
+| `arm-gold-soft` | `#FDC547` | CTA hover tint. |
+| `arm-teal` | `#117289` | Secondary Teal — the single interactive voice: links, CTAs, the match indicator. |
+| `arm-orange` | `#BF5309` | Secondary Orange — rare attention, AA-safe as text at 4.71:1 (was `#F56A00`, which failed AA at 3.02:1). |
+| `arm-blue` | `#38A5EE` | **TEMP.** The program category accent + legacy link voice; fails AA as text (2.7:1). Retired/retoned in the step-8 results-accent redesign. |
 
 ### 3.2 Semantic (light mode foundation)
 
@@ -74,16 +74,18 @@ Inherited verbatim from RC-CC. The product is light-mode by default.
 | `bg` | `#FFFFFF` |
 | `bg-soft` | `#FAFAFA` |
 | `bg-section` | `#F5F5F5` |
-| `text-default` | `#2D3A4A` |
+| `text-default` | `#262626` (charcoal; kit Neutral Dark — was navy-slate `#2D3A4A`) |
 | `text-strong` | `#000000DE` (87% black) |
 | `text-muted` | `#00000099` (60% black) |
 | `text-subtle` | `#595959` |
 | `text-faint` | `#757575` |
-| `border-default` | `#0000001F` (12% black) |
+| `border-default` | `#E0E0E0` (kit Neutral Border; opaque — was 12% black, visually ~same on white) |
 | `overlay` | `#262626F2` |
 | `near-black` | `#262626` |
 
 ### 3.3 Archetype accents
+
+> **Retired (kit-alignment, D-024).** The three-archetype→accent model below describes the abandoned classic experience. The live flows score four RC.org categories, and their accents (`categoryAccent.ts`) are being reconciled with the kit's restrained teal-led palette in the step-8 results redesign. Kept for the classic record until the Phase-2 spec sweep; see `docs/knowledge/REALIGNMENT.md`.
 
 The three role archetypes are tied to brand colors. **Never invent a new color for an archetype.** This is what keeps the playful layer feeling like RC.org and not like a different product.
 

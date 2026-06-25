@@ -13,7 +13,7 @@ interface SegmentedControlProps<T extends string> {
 }
 
 // Tokens only — no literals. The active segment is deliberately QUIET (section fill + strong
-// text, not brand-yellow): arm-yellow is reserved for the primary action, and this control must
+// text, not brand-yellow): arm-gold is reserved for the primary action, and this control must
 // stay subordinate to the CTA it sits near (design-review 2026-06-04). Built for the
 // researcher-facing question-set switcher on Landing, but generic.
 export function SegmentedControl<T extends string>({

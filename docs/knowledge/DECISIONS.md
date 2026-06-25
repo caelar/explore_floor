@@ -6,6 +6,16 @@ This is the highest-value handoff artifact: when ARM's dev team (or future-you) 
 
 ---
 
+## 2026-06-25
+
+### D-024 — Kit-align explore_floor's design tokens to the RC UI Kit (foundation pass)
+- **Decision:** Snap `src/styles/globals.css` to the dashboard's kit palette. Rename `arm-yellow`→`arm-gold` (value `#ffb81c` kept), propagated to all 7 consumers; revalue `arm-orange` `#f56a00`→`#bf5309` (AA-safe); keep `arm-teal #117289`; keep `arm-blue #38a5ee` as a **TEMP** holdout. Swap `text-default` navy-slate `#2d3a4a`→charcoal `#262626`, `border-default` `#0000001f`→opaque `#e0e0e0`, the Material triple-shadows→the kit's two soft tiers, `radius-sm` 4→6. Token **names kept** (only `arm-yellow` renamed) so live consumers don't churn; the live UI stays green.
+- **Why:** The realignment unifies the prototypes on one kit-aligned design system (`REALIGNMENT.md` Rec B); the quiz was the lone holdout on the pre-kit archetype palette. Aligning now (vs. waiting for the shared `rc-design-system` package) puts the upcoming high-fidelity results screen on-kit from its first commit with no rework — subscribe-vs-hand-edit is the same alignment.
+- **Verified:** Adversarial design-review (7 live screens, regression-free — the rename orphaned no fill) + WCAG/integrity check: zero dangling token refs; the orange revalue **fixed a pre-existing AA failure** (repair accent + FitNote heads-up: 3.02:1→4.71:1); charcoal ink raised body contrast (→15.1:1). `arm-blue` text stays AA-failing (2.7:1) — pre-existing, deferred.
+- **Deferred:** the four category accents (`categoryAccent.ts`) reconciled with the kit's restrained teal-led voice + the `arm-blue` retone (step 8, the results redesign); the `scene-*` playful tokens removed with the classic-conveyor archival; the comprehensive `DESIGN_SYSTEM`/`PRD`/etc. palette rewrite via `/revise-doc` (Phase 2). The shared `rc-design-system` package is deferred (user call — kit-align in-repo now).
+- **Alternatives:** Stand up the shared package now (deferred — cross-repo, larger); delete `arm-blue` per `REALIGNMENT.md` Appendix A (rejected — the live `program` accent + links need it until step 8).
+- **Affected:** `src/styles/globals.css`; the 7 consumers (`Button`/`ProgressBar`/`DropZone`/`SegmentedControl`/`categoryAccent`/`Results/exam/CategoryBars`/`colorSchemes`); `DESIGN_SYSTEM.md` §3.1–§3.3. **Gates green: lint, typecheck, 99 unit.**
+
 ## 2026-06-22
 
 ### D-023 — Narrative intro questions (education + salary) nudge the category match

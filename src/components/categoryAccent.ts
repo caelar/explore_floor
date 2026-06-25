@@ -7,7 +7,7 @@ import type { CategoryId } from '@/data/types';
 // accent.ts (which is archetype-keyed); used only by the category results screens.
 
 export const CATEGORY_ACCENT_TEXT: Record<CategoryId, string> = {
-  operate: 'text-arm-yellow',
+  operate: 'text-arm-gold',
   repair: 'text-arm-orange',
   program: 'text-arm-blue',
   plan: 'text-arm-teal',

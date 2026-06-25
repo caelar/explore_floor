@@ -9,30 +9,36 @@
  * (Figma can't model them); easing curves are mirrored here as utilities.
  */
 @theme {
-  /* ---- Brand (locked, exact — DESIGN_SYSTEM §3.1) ---- */
-  --color-arm-yellow: #ffb81c;
-  --color-arm-yellow-soft: #fdc547;
-  --color-arm-orange: #f56a00; /* Builder archetype */
-  --color-arm-blue: #38a5ee; /* Innovator archetype */
-  --color-arm-teal: #117289; /* Architect archetype */
+  /* ---- Brand (kit-aligned — DESIGN_SYSTEM §3.1) ----
+     Values snapped to the RC UI Kit (matches career_dashboard D-026). The old
+     archetype→color mapping is retired; accents are used by function now. The four
+     category accents (categoryAccent.ts) and the legacy blue link voice still ride
+     arm-blue — reconciled with the kit's restrained teal-led palette in the
+     results-screen redesign (step 8). */
+  --color-arm-gold: #ffb81c; /* kit: ARM Gold — primary brand + CTA fill */
+  --color-arm-gold-soft: #fdc547; /* CTA hover tint */
+  --color-arm-teal: #117289; /* kit: Secondary Teal — the interactive voice: links, CTAs, match */
+  --color-arm-orange: #bf5309; /* kit: Secondary Orange — rare attention, AA-safe (was #f56a00) */
+  --color-arm-blue: #38a5ee; /* TEMP (step 8): program category accent + legacy link voice; retire/retone with the restrained accent system */
 
   /* ---- Semantic (light-mode foundation — §3.2) ---- */
   --color-page-bg: #f4f4f4;
   --color-bg: #ffffff;
   --color-bg-soft: #fafafa;
   --color-bg-section: #f5f5f5;
-  --color-text-default: #2d3a4a;
+  --color-text-default: #262626; /* kit: Neutral Dark (charcoal) — was navy-slate #2d3a4a */
   --color-text-strong: #000000de; /* 87% black */
   --color-text-muted: #00000099; /* 60% black */
   --color-text-subtle: #595959;
   --color-text-faint: #757575;
-  --color-border-default: #0000001f; /* 12% black */
+  --color-border-default: #e0e0e0; /* kit: Neutral Border — opaque (was 12% black, visually ~same on white) */
   --color-overlay: #262626f2;
   --color-near-black: #262626;
   --color-black: #000000; /* overrides Tailwind default; verify vs Figma color/neutral/black */
   --color-white: #ffffff;
 
-  /* ---- Playful scene layer (§3.4 — starter values, refine in Phase 2) ---- */
+  /* ---- Playful scene layer — only LandingSceneHint.tsx (the conveyor placeholder) consumes these.
+     Slated for removal with the classic-conveyor archival; left as-is for now. ---- */
   --color-scene-paper: #f5efe3;
   --color-scene-paper-warm: #efe4ce;
   --color-scene-line: #2d3a4a;
@@ -59,15 +65,13 @@
   --container-xl: 1500px;
 
   /* ---- Radius (§6 — overrides defaults) ---- */
-  --radius-sm: 4px;
+  --radius-sm: 6px; /* kit Refined (was 4px) */
   --radius-md: 8px;
   --radius-full: 9999px;
 
-  /* ---- Shadow / elevation (§7 — Material triple-shadow stacks) ---- */
-  --shadow-card:
-    0 2px 1px -1px rgb(0 0 0 / 0.2), 0 1px 1px 0 rgb(0 0 0 / 0.14), 0 1px 3px 0 rgb(0 0 0 / 0.12);
-  --shadow-elev-2:
-    0 3px 1px -2px rgb(0 0 0 / 0.2), 0 2px 2px 0 rgb(0 0 0 / 0.14), 0 1px 5px 0 rgb(0 0 0 / 0.12);
+  /* ---- Shadow / elevation — kit soft tiers (DEF-013 R1; replaces the Material triple-stacks) ---- */
+  --shadow-card: 0 1px 2px rgb(38 38 38 / 0.06); /* light diffuse resting */
+  --shadow-elev-2: 0 1px 2px rgb(38 38 38 / 0.05), 0 4px 14px rgb(38 38 38 / 0.07); /* clear hover lift */
 
   /* ---- Typography (§4 — locked pairing + scale) ---- */
   --font-heading: 'Montserrat', system-ui, sans-serif;

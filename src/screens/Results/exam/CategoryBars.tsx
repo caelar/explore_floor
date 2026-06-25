@@ -35,7 +35,7 @@ export function CategoryBars({ matchPercentages }: CategoryBarsProps) {
               data-testid={`category-bar-${category}`}
             >
               <motion.div
-                className="h-full w-full origin-left rounded-full bg-arm-yellow"
+                className="h-full w-full origin-left rounded-full bg-arm-gold"
                 initial={false}
                 animate={{ scaleX: pct / 100 }}
                 transition={
