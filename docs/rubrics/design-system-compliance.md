@@ -2,13 +2,14 @@
 rubric: design-system-compliance
 name: Design System Compliance
 applies_to: [tsx, css]
-version: 1
+version: 2
 severity_defaults:
   default: p2
 source:
   - docs/DESIGN_SYSTEM.md
   - docs/ARCHITECTURE.md §1, §11
-  - "RC-CC Figma design system (yGDi4yDtptKttboTYV8on7)"
+  - "RC UI Kit (kit-aligned tokens, DECISIONS D-024)"
+  - "src/components/categoryAccent.ts (the category accent mapping)"
 sections:
   tokens:
     order: 1
@@ -27,12 +28,12 @@ sections:
     order: 2
     title: Color usage
     criteria:
-      - id: archetype-mapping
+      - id: category-accent-mapping
         severity: p1
-        check: Builder uses arm-orange, Innovator uses arm-blue, Architect uses arm-teal
-      - id: yellow-reserved
+        check: Category accents come from categoryAccent.ts (operate→arm-gold, repair→arm-orange, program→arm-blue, plan→arm-teal), never an invented per-screen hex
+      - id: gold-reserved
         severity: p2
-        check: arm-yellow signals brand/global only, never an archetype
+        check: arm-gold is the brand signature / primary CTA fill (operate's text-arm-gold accent is the interim step-8 exception)
       - id: no-neon
         severity: p1
         check: No Make.md neon colors (06ffa5, 00d9ff, ff006e) appear anywhere
@@ -74,17 +75,33 @@ sections:
         check: Shadows use shadow-card or shadow-elev-2 and are used sparingly
   layering:
     order: 6
-    title: Two-layer namespacing
+    title: Surface discipline
     criteria:
-      - id: scene-namespace
-        severity: p2
-        check: scene/* tokens are confined to the assembly-line scene, not foundation surfaces
+      - id: no-dead-scene-tokens
+        severity: p3
+        check: No live surface reads the documented-cut scene/* tokens (they are dead, pending removal)
       - id: no-glassmorphism
         severity: p2
         check: No glassmorphism / frosted-glass effects are used
+  motion:
+    order: 7
+    title: Motion (folded from the retired motion-quality rubric)
+    criteria:
+      - id: reduced-motion
+        severity: p1
+        check: prefers-reduced-motion is respected (fast crossfades replace physical motion)
+      - id: no-crossed-engines
+        severity: p1
+        check: Motion and GSAP never animate the same property on the same node
+      - id: gsap-cleanup
+        severity: p2
+        check: Every GSAP animation runs inside useGSAP with a scope ref (auto-reverts on unmount)
+      - id: motion-owns-state
+        severity: p3
+        check: React-state/gesture motion uses Motion; the one GSAP use is the Landing reveal
 ---
 
-Checks whether UI honors the RC.org-derived design system: brand-exact color, the preserved type system, the spacing/radius/shadow foundation, and the two-layer (foundation vs playful-scene) discipline. This rubric governs *system conformance*; the warmth/charm of the playful layer is judged by `goose-game-aesthetic.md`, and motion by `motion-quality.md`.
+Checks whether UI honors the kit-aligned, RC.org-derived design system: brand-exact color, the four-category accents, the preserved type system, the spacing/radius/shadow foundation, and motion discipline. This rubric governs *system conformance* and now also covers motion (folded in from the retired `motion-quality.md`). The visual quality of the high-fidelity results screen is judged by `results-screen.md`. _(The `goose-game-aesthetic.md` scene rubric was retired with the conveyor vision, D-026.)_
 
 ## Scope & Grounding
 
@@ -94,23 +111,24 @@ Checks whether UI honors the RC.org-derived design system: brand-exact color, th
 - *ARM client reviewer* — checks that brand identity is respected exactly (this is an "evolution, not rebrand").
 
 **Realistic scenarios**
-- A role card on Results uses the archetype's accent for its border, match %, and primary button.
-- The sort scene uses the warm `scene-paper` background while the results foundation uses white-on-page-bg cards.
+- A node on the narrative results map uses its category's accent (from `categoryAccent.ts`) for the match indicator.
+- The exam dashboard's category bars read their accent token, not a hardcoded hex.
 
 **Anti-scenarios (should fail)**
-- A component hardcodes `#38A5EE` instead of `text-arm-blue`.
-- An archetype is themed with a brand-new color, or `arm-yellow` is used to denote a role.
-- A neon from the dead Make.md palette resurfaces in the scene.
+- A component hardcodes `#38A5EE` instead of `text-arm-blue`, or invents a per-screen category color.
+- A category is themed with a brand-new color outside `categoryAccent.ts`.
+- A neon from the dead Make.md palette resurfaces anywhere.
 - A "cool" frosted-glass card appears on Results.
+- A physical motion sequence plays regardless of `prefers-reduced-motion`.
 
 ## 1. Tokens, not literals
 Every reused or semantically named value lives in the `@theme` block in `src/styles/globals.css` (color/type/space/radius) or `/src/lib/motion.ts` (durations/easings). Inline hex and magic pixels are the single most common drift and break the Figma↔code token alignment. **Pass:** `className="text-arm-orange p-space-4 rounded-md"`. **Fail:** `style={{ color: '#F56A00', padding: '23px' }}`.
 
 ## 2. Color usage
-The four ARM brand colors are exact and non-negotiable. Archetypes are color-coded **Builder→`arm-orange`, Innovator→`arm-blue`, Architect→`arm-teal`**; `arm-yellow` is the global brand signature and never an archetype. The Make.md neons are dead. Product is light-mode only. **Fail:** inventing a fourth accent, or tinting a Technician (Builder) card blue.
+The kit brand colors are exact and non-negotiable. The four categories are color-coded in one place, `categoryAccent.ts`: **operate→`arm-gold`, repair→`arm-orange`, program→`arm-blue`, plan→`arm-teal`**. A screen reads the token, never a hardcoded hex. `arm-gold` is the global brand signature and the primary CTA fill (operate's `text-arm-gold` accent is the interim step-8 exception). The Make.md neons are dead. Product is light-mode only. **Fail:** inventing a per-screen category color, or hardcoding `#38A5EE` instead of the `categoryAccent.ts` token. _(The classic Builder/Innovator/Architect archetype accents are the documented cut.)_
 
 ## 3. Typography
-Montserrat for headings, Roboto for body — always, across both layers. Sizes come from the scale (H1 56/64 … body 16/22, small 14/22). Match percentage renders as H2 in the archetype accent. **Fail:** a display font swapped in ad hoc, or a hand-set `font-size: 19px`.
+Montserrat for headings, Roboto for body, always. Sizes come from the scale (H1 56/64 … body 16/22, small 14/22). Match percentage renders as H2 in the category accent. **Fail:** a display font swapped in ad hoc, or a hand-set `font-size: 19px`.
 
 ## 4. Spacing & layout
 Use the `space-0..7` scale (4 → 64px) and container tokens (`container-lg` 1248 default; `container-xl` 1500 for the sort scene). **Fail:** `gap: 18px`.
@@ -118,11 +136,14 @@ Use the `space-0..7` scale (4 → 64px) and container tokens (`container-lg` 124
 ## 5. Radius & elevation
 Only `rounded-sm` (4), `rounded-md` (8), `rounded-full`. Two shadow styles (`shadow-card`, `shadow-elev-2`), used sparingly — the playful layer leans on warm fills and soft outlines, not shadow stacks.
 
-## 6. Two-layer namespacing
-Foundation surfaces (forms, cards, results chrome) use Material-flavored conventions; the scene uses `scene/*` tokens (paper cream bg, soft strokes, ground shadows). Keep them from bleeding into each other, and keep transitions between layers explicit. No glassmorphism in either layer.
+## 6. Surface discipline
+Surfaces use the kit conventions (white cards on light surface, kit radii, the two soft shadow tiers, used sparingly). The two-layer (foundation vs playful-scene) model is the documented cut: the scene was never built, so the `scene/*` tokens are dead and no live surface should read them. No glassmorphism.
+
+## 7. Motion (folded from the retired motion-quality rubric)
+Durations (`instant`/`snap`/`glide`/`pour`/`reveal`) and easings (`ease-soft`/`ease-snap`/`ease-physical`) live in `/src/lib/motion.ts` and are read by both engines. The hard rule survives: **a given element + property is owned by exactly one library at a time.** Motion owns React-state/gesture/lifecycle motion (flow-step transitions, the bucket-sort drag, the node-map compare swap); GSAP owns the single Landing `DrawSVG` reveal, inside `useGSAP` with a scope ref (auto-reverts on unmount). `prefers-reduced-motion` is respected globally (a p1). **Fail:** a hard-coded `duration: 0.35`, a bare `gsap.to(selector)` in a component, both engines writing `transform` on one node, or a physical sequence that ignores reduced-motion.
 
 ## Application
-Run via `/design-review`, which screenshots the running screen and inspects the JSX/Tailwind. Report p1s as blocking, p2s as should-fix, p3s as polish. Cite the offending file:line and the correct token.
+Run via `/design-review`, which screenshots the running screen and inspects the JSX/Tailwind (and, for motion, observes it live and toggles reduced-motion). Report p1s as blocking, p2s as should-fix, p3s as polish. Cite the offending file:line and the correct token.
 
 ## Cross-references
-`goose-game-aesthetic.md` (warmth/charm), `motion-quality.md` (motion tokens + reduced-motion), `CLAUDE.md` (tokens-not-literals rule), `DATA_MODEL.md` §7 (color schemes by archetype).
+`results-screen.md` (the high-fidelity results quality bar), `.claude/skills/scene-motion` (the live motion ownership discipline), `CLAUDE.md` (tokens-not-literals rule), `DATA_MODEL.md` §17 (the four-category model + `categoryAccent.ts`).
