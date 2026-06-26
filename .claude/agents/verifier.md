@@ -15,13 +15,13 @@ You are the **verifier** — the build's objective gate. You run checks and repo
    - `pnpm test:unit` (Vitest)
    - `pnpm test:e2e` (Playwright)
    Capture real output. If a command isn't defined yet, note it as "not configured" — don't invent a result.
-3. **Check the live §17 flow invariants** (from `DATA_MODEL.md` §17; these mirror `data-integrity.test.ts`, which is the enforcing gate). The live product is the four-category flows, so these are the load-bearing checks:
+3. **Check the live §17 flow invariants** (from `DATA_MODEL.md` §17; these mirror `data-integrity.test.ts`, which is the enforcing gate). The live product is the narrative four-category flow, so these are the load-bearing checks:
    - **Narrative flow:** 6 intro MC steps (Q0–Q5) then exactly 7 scenes; each scene has exactly 4 choices, one per category (`operate / repair / program / plan`); every `branchTo` resolves to a *later* step (forward-only); `computeCategoryMax(steps)` equals the declared `expectedCategoryMax = {11, 11, 11, 11}`.
-   - **Exam flow:** 2 background screeners (education + prior experience) + 1 four-way MC + 30 statements counted **8/7/7/8** (operate/repair/program/plan), interleaved (no two adjacent statements share a category); 3 buckets in order `thats-me / maybe / not-me`, the middle label is **"Kinda me"** (D-018) and scores `MAYBE_WEIGHT` (0); `expectedCategoryMax = {operate: 11, repair: 8, program: 10, plan: 11}` — **UNEQUAL; do not expect 11 across the board.**
-   - **Shared:** `SORT_BUCKETS` is one constant (both flows); unique step + choice + statement ids; all four `roleDetails` resolve to four distinct role names, each with `educationLevel` and `payLevel` integers in 0..2 (screener fit, D-020); all owned copy non-empty.
+   - **Buckets:** `SORT_BUCKETS` is one constant; the 3 buckets read in order `thats-me / maybe / not-me`, the middle label is **"Kinda me"** (D-018) and scores `MAYBE_WEIGHT` (0).
+   - **Shared:** unique step + choice ids; all four `roleDetails` resolve to four distinct role names, each with `educationLevel` and `payLevel` integers in 0..2 (screener fit, D-020); all owned copy non-empty.
    You may compute these by reading `src/data/flows/*` and `src/data/roleDetails.ts` directly, not only via tests.
 
-   _Classic invariants (documented cut, still validated by `data-integrity.test.ts` until the Phase-4 classic archival, then removed):_ 24 interest items with all three weights present; per-archetype sums **Builder 22 / Innovator 27 / Architect 25**; every role's `competencyIds` / program refs / `robotContribution.parts` resolve. Report a failure here as classic-only.
+   _(Classic and Exam were archived in Phase 4 — D-027, recoverable at git tag `archive/pre-narrative-only`. Their old invariants — the 24 interest items, the per-archetype sums Builder 22 / Innovator 27 / Architect 25, the exam 8/7/7/8 — are no longer checked. The four→three role collapse is Phase 5.)_
 
 ## How you report
 

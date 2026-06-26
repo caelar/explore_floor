@@ -16,7 +16,7 @@ interface DragSortCardProps<T extends string> {
    *  identify the pick). Motion suppresses the tap when a real drag happened; also
    *  makes the card keyboard-operable (Enter/Space). Omit where zones are tappable. */
   onTap?: () => void;
-  /** Card scale: classic sort + statements use the full card; scene grids go compact. */
+  /** Card scale: the default full card, or compact for the scene grids. */
   size?: 'default' | 'compact';
   testId?: string;
 }
@@ -26,9 +26,8 @@ const SIZE_CLASSES = {
   compact: 'w-64 p-space-4 text-h5',
 } as const;
 
-// The draggable sort card, generic over its drop-target ids: the classic sort uses
-// Decision ('keep' | 'pass'), the exam statement sort uses BucketId, the narrative
-// scenes use a single zone id. Motion owns the drag: the card moves freely anywhere
+// The draggable sort card, generic over its drop-target ids: the narrative scene sort
+// buckets each choice by BucketId. Motion owns the drag: the card moves freely anywhere
 // on the canvas, shrinks when picked up (whileDrag), and — when dropped onto a zone —
 // shrinks away into it (the exit scales to 0 in place via popLayout, so it disappears
 // where it was dropped). Dropped off a zone, it glides back to center. No

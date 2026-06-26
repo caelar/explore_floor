@@ -8,7 +8,7 @@ severity_defaults:
 source:
   - docs/knowledge/REALIGNMENT.md §4 (the real work ahead is the narrative results screen)
   - docs/PRD.md §5.0 / §5.4 (recommendation, not a verdict)
-  - docs/DATA_MODEL.md §17 (the node map, the dashboard, the role sheet, the fit line)
+  - docs/DATA_MODEL.md §17 (the node map, the role sheet, the fit line)
 sections:
   clarity:
     order: 1
@@ -42,7 +42,7 @@ sections:
     criteria:
       - id: compare-discoverable
         severity: p1
-        check: The compare interaction (node-map swap / dashboard ranked roles) is discoverable without instruction
+        check: The compare interaction (the node-map swap) is discoverable without instruction
       - id: somewhere-to-go
         severity: p2
         check: The result gives an outbound next step (training programs, real listings), not a dead end
@@ -93,7 +93,7 @@ The number-one content gap from testing is that users can't tell what the percen
 Trust came from the exam's "why you scored that way" breakdown. The live `categoryBreakdown` walks the same path the scorer did. The bar here is *interpretation*, not an echo: "you leaned toward hands-on troubleshooting" beats "you said yes to 6 of 9 repair statements." Detail sits behind progressive disclosure (the breakdown, the role sheet, the fit radar), and the always-on education/pay fit line (`FitNote`, D-020) is present and legible.
 
 ## 3. Discoverability of the compare
-The compare is the specificity payload (PRD §5.4), and the V1 finding was that the node map's discoverability needs work. A user must be able to find the other categories without being told. The result must also give somewhere to go: training programs (`programSelection`) and, eventually, real listings.
+The compare is the specificity payload (PRD §5.4), and the V1 finding was that the node map's discoverability needs work. A user must be able to find the other categories without being told. The result must also give somewhere to go: training programs (a category-keyed set, reintroduced at step 8) and, eventually, real listings.
 
 ## 4. Honest, encouraging framing
 Both participants who landed on Operator felt deflated. An entry-level result must read as a starting rung with a visible path up, paired with outbound links, not a deflating verdict (`REALIGNMENT.md` §11). An all-low result gets a light frame, not a broken-looking empty screen.
@@ -102,7 +102,7 @@ Both participants who landed on Operator felt deflated. An entry-level result mu
 Accents come from `categoryAccent.ts`, type and spacing from the kit tokens. Defer to `design-system-compliance.md` for the token specifics; flag here only when an off-system choice hurts the result's clarity or credibility.
 
 ## Application
-Run via `/design-review` against the narrative node-map results and the exam dashboard, mid-compare. Because clarity and trust are subjective, the reviewer should describe *what* a real teen would misread or distrust and *why*, cite the screenshot, and propose a concrete fix (e.g. "add a one-line definition under the percentage", "rewrite the breakdown to interpret rather than list", "add an upward-path chip to the Operator result").
+Run via `/design-review` against the narrative node-map results, mid-compare. Because clarity and trust are subjective, the reviewer should describe *what* a real teen would misread or distrust and *why*, cite the screenshot, and propose a concrete fix (e.g. "add a one-line definition under the percentage", "rewrite the breakdown to interpret rather than list", "add an upward-path chip to the Operator result").
 
 ## Cross-references
 `design-system-compliance.md` (tokens/color/motion), `PRD.md` §5.0/§5.4 (the conversion moment), `DATA_MODEL.md` §17 (the node map, dashboard, role sheet, fit line), `REALIGNMENT.md` §4/§11 (the research asks and the watch-items).

@@ -7,12 +7,11 @@ import { useFlow, useSessionStore } from '@/state';
 
 import { MCQuestion } from './MCQuestion';
 import { SceneSortView } from './SceneSortView';
-import { StatementSortView } from './StatementSortView';
 
-// The step runner for the study flows (DATA_MODEL §17): one screen that renders the
+// The step runner for the narrative flow (DATA_MODEL §17): one screen that renders the
 // current step by type and walks the flow's step list. Branching is a data fact — an
-// MC choice may carry `branchTo`; everything else falls through sequentially. The
-// classic flow never routes here (it keeps /sort → /build). No robot, by design (D-017).
+// MC choice may carry `branchTo`; everything else falls through sequentially.
+// No robot, by design (D-017).
 
 export function FlowRunner() {
   const navigate = useNavigate();
@@ -26,16 +25,15 @@ export function FlowRunner() {
   const completeFlow = useSessionStore((s) => s.completeFlow);
 
   // Navigation is declarative off currentScreen so it can't race the store updates:
-  // completing the flow sets 'results' (→ /results); a refresh resets the store and the
-  // classic flow has no business here (→ Landing).
-  const active = flow.kind !== 'classic' && currentScreen === 'flow';
+  // completing the flow sets 'results' (→ /results); a refresh resets the store (→ Landing).
+  const active = currentScreen === 'flow';
   useEffect(() => {
-    if (flow.kind !== 'classic' && currentScreen === 'results') {
+    if (currentScreen === 'results') {
       navigate('/results');
     } else if (!active) {
       navigate('/', { replace: true });
     }
-  }, [flow.kind, currentScreen, active, navigate]);
+  }, [currentScreen, active, navigate]);
 
   if (!active) return null;
 
@@ -90,9 +88,6 @@ export function FlowRunner() {
               reduce={reduce}
               onDone={handleSceneDone}
             />
-          )}
-          {step.type === 'statementSort' && (
-            <StatementSortView step={step} reduce={reduce} onComplete={completeFlow} />
           )}
         </motion.div>
       </AnimatePresence>

@@ -94,7 +94,7 @@ The live flows score four RC.org categories, and each carries an accent. **Never
 | Program | Specialist | `arm-blue` |
 | Plan | Integrator | `arm-teal` |
 
-The accent shows up in the match indicator, the category bars (exam dashboard), and the centered-role chrome (narrative node map).
+The accent shows up in the match indicator and the centered-role chrome (narrative node map). _(It also drove the category bars on the cut exam dashboard.)_
 
 > **Interim, being finalized at step 8.** This mapping reuses the four kit brand tokens so the study presentation stays minimal. Two known tensions resolve in the high-fidelity results redesign (`REALIGNMENT.md` step 8): `arm-blue` fails AA as text (2.7:1) and is retoned, and `arm-gold` is a fill rather than a text color on white in the kit (operate's `text-arm-gold` is the interim exception). The target is a restrained, teal-led category palette.
 
@@ -171,7 +171,7 @@ fontSize: {
 - Screen titles: H2.
 - Section titles: H3 or H4.
 - Role / category titles on results: H4.
-- Scene choice and statement labels: Body/Medium (the kid reads it easily, doesn't shout).
+- Scene choice labels (and the cut exam's statement labels): Body/Medium (the kid reads it easily, doesn't shout).
 - Match percentage on results: H2 in the category accent color (`categoryAccent.ts`).
 - Overlines (`Label/Overline`) for short labels. _(The classic "ROUND 2 OF 4" round indicator is a documented-cut use.)_
 
@@ -328,16 +328,15 @@ Figma variant names map to React prop values by the same convention (`Primary` t
 
 Components specific to this experience. Each is named identically in code and (when captured) in Figma, by convention, so the code-to-canvas round-trip stays legible.
 
-**Live (the narrative + exam flows):**
-- `SegmentedControl` — the researcher-facing flow switcher on Landing
-- `BucketSort` — the shared one-card-at-a-time sort into That's me / Kinda me / Not me (used by both the narrative scenes and the exam statements)
-- The flow-step views — `MCQuestion`, `SceneSortView`, `StatementSortView` under the `FlowRunner`
+**Live (the narrative flow):**
+- `SegmentedControl` — the researcher-facing flow switcher on Landing (live segments Narrative / Select)
+- `BucketSort` — the shared one-card-at-a-time sort into That's me / Kinda me / Not me (used by the narrative scenes)
+- The flow-step views — `MCQuestion`, `SceneSortView` under the `FlowRunner`
 - The narrative node map (`Results/category/`) — the centered top-match node, the behind-nodes, the job-title branches
-- The exam dashboard (`Results/exam/`) — the robot anchor, the four `CategoryBars`, the "why you scored that way" breakdown
 - `RoleDetailSheet` — the shared role sheet (RC.org role content + four-axis fit radar)
 - `FitNote` — the always-on education/pay fit line (D-020)
 
-**Documented cut (the conveyor scene):** `ConveyorBelt`, `ConveyorItem`, `RoboticArm`, `SortBin`, `Robot`, `RobotPart`, `Pedestal`, the classic `RoleCard` / `ProgramList` / `MatchIndicator` / `RoundIndicator`, and `SoundToggle`. Parked with the rest of the classic pipeline; never authored as Figma components.
+**Documented cut (deleted Phase 4, D-027):** the exam dashboard (`Results/exam/` — `ExamResults`, the four `CategoryBars`, `ScoreBreakdown`, `YourRoles`) and `StatementSortView`, deleted with the cut Exam flow; and the conveyor scene (`ConveyorBelt`, `ConveyorItem`, `RoboticArm`, `SortBin`, `Robot`, `RobotPart`, `Pedestal`, the classic `RoleCard` / `ProgramList` / `MatchIndicator` / `RoundIndicator`, and `SoundToggle`), parked with the classic pipeline and never authored as Figma components. Recoverable at git tag `archive/pre-narrative-only`.
 
 Capture the live components into Figma at settled checkpoints (`/capture-figma`), grouped under a `Quiz Experience` page, named to match the React components.
 

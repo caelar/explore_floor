@@ -1,9 +1,9 @@
 import type { CategoryId, RoleDetail } from './types';
 
 // Layer-2 role-sheet content for the category results screen (DATA_MODEL §17).
-// Transcribed verbatim from the RC.org role cards on the team's board — see
-// docs/reference/Narrative Quiz Structure Content Spec.md. Shared by both study
-// flows; the classic flow never reads this (it keeps roles.ts).
+// Transcribed verbatim from the RC.org role cards on the team's board (see
+// docs/reference/Narrative Quiz Structure Content Spec.md). Read by the narrative
+// results screen and the /select comparator.
 
 export const roleDetails: Record<CategoryId, RoleDetail> = {
   operate: {

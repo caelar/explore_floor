@@ -13,10 +13,10 @@ import { useFlow, useSessionStore } from '@/state';
 // Landing: the frame + CTA, with a soft hint of the assembly-line scene below it. Motion owns the
 // content entrance (and the CTA); GSAP owns the scene's DrawSVG line-draw reveal — different
 // nodes, so the two engines never touch the same property (scene-motion ownership rule).
-// The flow switcher is a researcher control for the question-structure study (DATA_MODEL §17):
-// flipped here before the laptop is handed over; the choice survives "Start over". The CTA
-// routes by condition — classic walks the Phase 1 sort, the study flows enter the step
-// runner, and 'select' goes to the /select comparator without starting a session.
+// The flow switcher is a researcher control for the study (DATA_MODEL §17): flipped here
+// before the laptop is handed over; the choice survives "Start over". The CTA routes by
+// condition: the narrative flow enters the step runner, and 'select' goes to the /select
+// comparator without starting a session.
 export function Landing() {
   const navigate = useNavigate();
   const startSession = useSessionStore((s) => s.startSession);
@@ -49,7 +49,7 @@ export function Landing() {
       return;
     }
     startSession();
-    navigate(flow.kind === 'classic' ? '/sort' : '/flow');
+    navigate('/flow');
   };
 
   return (
@@ -67,13 +67,13 @@ export function Landing() {
           {landingCopy.cta}
         </Button>
 
-        {/* The study-condition switcher. Classic is dormant (kept in code, no UI entry — D-021);
-            its slot holds the role-select comparator, which arms like the flows do (tap, then
-            start with the CTA) — but the CTA routes to /select instead of starting a session. */}
+        {/* The condition switcher: the narrative flow plus the role-select comparator, which
+            arms like the flow does (tap, then start with the CTA) — but the CTA routes to
+            /select instead of starting a session. */}
         <SegmentedControl<LandingConditionId>
           label="Quiz flow"
           options={[
-            ...flowList.filter((f) => f.kind !== 'classic').map((f) => ({ id: f.id, label: f.name })),
+            ...flowList.map((f) => ({ id: f.id, label: f.name })),
             { id: 'select', label: roleSelectLanding.switcherLabel },
           ]}
           value={flowId}

@@ -8,11 +8,10 @@ import type {
 } from '@/data/types';
 import { CATEGORIES } from '@/data/types';
 
-// The category scoring engine for the study flows (DATA_MODEL §17). Pure, mirrors
-// scoring.ts: each category is normalized against its own achievable max so unequal
-// statement counts (8/7/7/8) don't structurally favor any category. The max is
-// computed over the path the user actually took — a branched-over step (Q2 on the
-// "No" path) contributes to neither raw nor max.
+// The category scoring engine for the narrative flow (DATA_MODEL §17). Pure: each category
+// is normalized against its own achievable max, so categories with more scoring
+// opportunities don't structurally win. The max is computed over the path the user actually
+// took, so a branched-over step (Q2 on the "No" path) contributes to neither raw nor max.
 
 /** How much the middle bucket ("Kinda me", id 'maybe') counts toward its item's category
  *  — for both exam statements and narrative scene choices (D-018). The prior user study

@@ -27,7 +27,7 @@ export function CategoryResults() {
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(null);
   const [openTitle, setOpenTitle] = useState<{ category: CategoryId; title: string } | null>(null);
 
-  if (flow.kind === 'classic' || !categoryResult) {
+  if (!categoryResult) {
     return (
       <main className="mx-auto flex min-h-full max-w-lg flex-col items-center justify-center gap-space-3 p-space-6 text-center">
         <h2 className="font-heading text-h2 text-text-strong">No results yet</h2>

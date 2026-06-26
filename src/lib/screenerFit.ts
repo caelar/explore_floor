@@ -26,16 +26,12 @@ export interface FitLine {
 const levelOf = (choiceId: string | undefined): 0 | 1 | 2 | null =>
   choiceId !== undefined && choiceId in SCREENER_LEVELS ? SCREENER_LEVELS[choiceId] : null;
 
-/** Read the user's school/pay appetite off the flow's screener answers. Per-flow because
- *  the questions differ: the exam asks education directly; the narrative splits it across
- *  Q1 ("going to college?") + Q2 ("how long?") and asks pay in Q3. */
+/** Read the user's school/pay appetite off the narrative screener answers: Q1 ("going to
+ *  college?") + Q2 ("how long?") give education, Q3 gives pay. */
 export function deriveScreenerProfile(
   flowId: FlowId,
   answers: Record<string, string>,
 ): ScreenerProfile {
-  if (flowId === 'exam') {
-    return { education: levelOf(answers['e-q1']), pay: null };
-  }
   if (flowId === 'narrative') {
     // "No college" caps appetite at 0; "Yes" defers to "how long?" (default 1 if Yes but
     // unanswered, which the Q1→Q2 branch shouldn't allow).

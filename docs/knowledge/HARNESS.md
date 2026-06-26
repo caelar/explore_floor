@@ -37,7 +37,7 @@ The model reads these to know the project. **Skills and rubrics cite them; they 
 Skills auto-activate when your request matches their description — you generally don't invoke them by hand (though they're listed in the skills menu). Two are **project-authored**; the rest came from free, open-source skill packs.
 
 **Project skills (`.claude/skills/`)**
-- **`data-author`** — fires when editing anything in `/src/data` (interest items, weights, roles, competencies, programs, robot parts). Encodes "data is data, not code" and the `DATA_MODEL` invariants (24 items, all three weights present, per-archetype sums **B 22 / I 27 / A 25**, references resolve). Keeps content tunable without touching component logic.
+- **`data-author`** — fires when editing anything in `/src/data` (the narrative flow's scenes, intro questions, weights, screeners, `roleDetails`). Encodes "data is data, not code" and the live `DATA_MODEL` §17 narrative invariants (7 scenes of 4 choices covering all four categories, `branchTo` resolves forward, computed full-path max equals the declared `expectedCategoryMax`). Keeps content tunable without touching component logic. _(The old classic invariants it once headlined — 24 items, per-archetype sums B 22 / I 27 / A 25, robot-part references — and the exam's 8/7/7/8 statement counts are the documented cut, deleted in Phase 4, D-027.)_
 - **`scene-motion`** — fires on motion work (GSAP, Motion, drag, layout animations, the Landing reveal, the flow-step transitions, the node-map compare). Encodes the hard **Motion-vs-GSAP ownership boundary**, the `useGSAP` discipline, and the shared motion tokens. It is the source of truth for *our* conventions; the library packs below cover general API correctness. _(Rescoped from the documented-cut conveyor choreography, D-026.)_
 
 **Installed library packs** (free/MIT; in `.agents/skills/`, symlinked into `.claude/skills/`, pinned in `skills-lock.json`)
@@ -74,7 +74,7 @@ Each runs in its **own context window** (keeps the main thread clean) and is dis
 Quality bars made checkable. The `design-reviewer` grades against them. Each is **YAML frontmatter** (machine-checkable `criteria` with `id` / `severity` p1–p3 / `check`) + a **prose body** (a `Scope & Grounding` block of personas/scenarios/anti-scenarios, then rationale + pass/fail examples per section).
 
 - **`design-system-compliance`** — tokens-not-literals, the four-category accent mapping (`categoryAccent.ts`), type scale, radius/shadow, surface discipline, and **motion** (tokens, engine ownership, `prefers-reduced-motion`) folded in from the retired `motion-quality`.
-- **`results-screen`** — the quality bar for the high-fidelity narrative node-map / exam dashboard results: match clarity, trust through explanation, discoverability of the compare, honest framing.
+- **`results-screen`** — the quality bar for the high-fidelity narrative node-map results: match clarity, trust through explanation, discoverability of the compare, honest framing. _(Its exam-dashboard example lines retarget to the narrative node map now that the exam flow is the documented cut, D-027.)_
 - _(Retired with the conveyor vision, D-026: `goose-game-aesthetic` — graded a scene that was never built; `motion-quality` — folded into `design-system-compliance`.)_
 
 Severity: **p1** blocks, **p2** should-fix, **p3** polish. To add one, copy the frontmatter shape, tune the criteria, and cite a source.

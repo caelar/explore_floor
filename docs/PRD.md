@@ -11,7 +11,12 @@
 
 This is an interactive, narrative career-discovery experience for RoboticsCareer.org. A user walks through a day in their life (a morning routine, arriving at school, a class handout, a club lunch, home, homework, a video game) plus a few intro questions, sorting the choices each scene offers into three buckets: That's me / Kinda me / Not me. At the end they reach a results screen that shows how they match four RC.org career categories (Operate, Repair, Program, Plan, which map to Operator, Technician, Specialist, Integrator), featuring their top match while keeping the others live and comparable, with an honest read on the education and pay each path asks for.
 
-The live build ships this as the **Narrative** flow, alongside an **Exam** flow (background questions plus a 30-statement sort) that scores the same four categories for the question-structure study (section 8, `DATA_MODEL.md` §17). The original concept, where a user sorted interest cards on a moving conveyor belt and watched a custom robot get built from their picks, is a **documented cut**: it survives as the dormant **Classic** flow and is preserved for the record in `DATA_MODEL.md` §1–§14 (the classic pipeline), but it is no longer the plan. The realignment that re-centered this spec on the narrative quiz is `docs/knowledge/REALIGNMENT.md`; treat that memo and `DATA_MODEL.md` §17 as the current product, and the conveyor-and-robot material below as the parked original vision.
+The live build ships this as the **Narrative** flow, and the narrative flow is the whole build (Phase 4 stripped it to that one flow, `DECISIONS.md` D-027). Two other flows are the **documented cut**, preserved for the record but removed from the live tree (recoverable at git tag `archive/pre-narrative-only`):
+
+- The **Exam** flow (background questions plus a 30-statement sort, scoring the same four categories) was the study's comparison condition. The narrative won the June 2026 study, so the exam was retired and deleted in Phase 4. It is documented in section 8 and `DATA_MODEL.md` §17.
+- The original concept, where a user sorted interest cards on a moving conveyor belt and watched a custom robot get built from their picks, survived as the dormant **Classic** flow and is preserved in `DATA_MODEL.md` §1–§14 (the classic pipeline). Phase 4 deleted it too.
+
+The realignment that re-centered this spec on the narrative quiz is `docs/knowledge/REALIGNMENT.md`; treat that memo and `DATA_MODEL.md` §17 as the current product, and the exam, conveyor, and robot material below as the parked record. Phase 4 keeps the four-category model; the collapse to ARM's three roles is the later Phase 5.
 
 It replaces three existing tools that currently sit on the site as separate, weak experiences:
 
@@ -39,7 +44,7 @@ The compressed version (full version in `CONTEXT_BRIEF.md`):
 - Let a high schooler discover robotics manufacturing roles through concrete, relatable choices rather than abstract competencies.
 - Produce a recommendation across all four RC.org categories (operate, repair, program, plan), not a single prescriptive verdict.
 - Make the experience genuinely engaging and worth completing, so the narrative and its results feel earned. _(The original "robot payoff" goal is the documented cut.)_
-- Make every piece of content (scene choices, statements, role copy, scoring weights, results text) trivially editable by the team without touching logic.
+- Make every piece of content (scene choices, intro questions, role copy, scoring weights, results text) trivially editable by the team without touching logic.
 - Ship a flow testable with users (the Phase 1 milestone, met).
 
 ### Non-goals (for this build)
@@ -63,17 +68,17 @@ For this prototype we build the gamified track end to end. The architecture leav
 
 The whole flow targets **around 3 to 4 minutes**. Desktop-first, mobile responsive.
 
-> **What's live vs. what's parked (realignment, 2026-06).** The experience the build ships is the **Narrative** flow (and its sibling **Exam** flow for the study), described in §5.0 below and specified step by step in `DATA_MODEL.md` §17. The conveyor-and-robot screens in §5.2–§5.4 and the robot avatar in §6 are the **documented cut**: the original vision, kept for the record as the dormant Classic flow, never built as a scene. Read §5.0 and `DATA_MODEL.md` §17 for the current product; read §5.2–§5.4 as the parked design.
+> **What's live vs. what's parked (realignment, 2026-06).** The experience the build ships is the **Narrative** flow, described in §5.0 below and specified step by step in `DATA_MODEL.md` §17. The **Exam** flow, the conveyor-and-robot screens in §5.2–§5.4, and the robot avatar in §6 are the **documented cut**: the study's comparison condition and the original vision, kept for the record but deleted from the live tree in Phase 4 (D-027). Read §5.0 and `DATA_MODEL.md` §17 for the current product; read §5.2–§5.4 as the parked design.
 
 ### 5.0 The narrative flow (live)
 
-The live experience is a guided "day in the life." After a short researcher-facing landing (§5.1), the user answers a few intro questions (experience, education appetite, salary appetite) and then moves through seven day-in-the-life **scenes** (morning, arriving at school, a class handout, a club lunch, home, homework, a video game). Each scene presents four choices, one tied to each RC.org category, and the user sorts each choice into one of three buckets: **That's me / Kinda me / Not me**. There is no conveyor and no robot build; the sort is a calm, one-card-at-a-time judgement, the same `BucketSort` mechanic the Exam flow uses for its 30 statements.
+The live experience is a guided "day in the life." After a short researcher-facing landing (§5.1), the user answers a few intro questions (experience, education appetite, salary appetite) and then moves through seven day-in-the-life **scenes** (morning, arriving at school, a class handout, a club lunch, home, homework, a video game). Each scene presents four choices, one tied to each RC.org category, and the user sorts each choice into one of three buckets: **That's me / Kinda me / Not me**. There is no conveyor and no robot build; the sort is a calm, one-card-at-a-time judgement on the shared `BucketSort` mechanic. _(The cut Exam flow reused the same `BucketSort` for its 30 statements.)_
 
-The four categories (Operate, Repair, Program, Plan) map to four RC.org roles (Operator, Technician, Specialist, Integrator). Scoring is the pure four-category engine in `lib/categoryScoring.ts`, branch-aware (it only walks the path the user took) and normalized per category against its own max. Results lead with the user's top match and let them compare the others, plus an always-on education/pay fit read. The two flows present results differently on purpose (the study compares presentations too): the **Narrative** results are a node map; the **Exam** results are a dashboard with a score breakdown. Full step structure, scoring, and results model are in `DATA_MODEL.md` §17.
+The four categories (Operate, Repair, Program, Plan) map to four RC.org roles (Operator, Technician, Specialist, Integrator). Scoring is the pure four-category engine in `lib/categoryScoring.ts`, branch-aware (it only walks the path the user took) and normalized per category against its own max. Results lead with the user's top match and let them compare the others, plus an always-on education/pay fit read. The **Narrative** results are a node map. _(The study originally compared presentations too: the cut Exam flow presented its results as a dashboard with a score breakdown.)_ Full step structure, scoring, and results model are in `DATA_MODEL.md` §17.
 
 ### 5.1 Landing
 
-- A single screen that sets the tone and frame and carries a small researcher-facing segmented control that picks the study condition (Narrative / Exam / Select). The landing keeps the "Explore the Floor" name and a "Start the story" CTA. No sign-up, no form.
+- A single screen that sets the tone and frame and carries a small researcher-facing segmented control that picks the study condition. After Phase 4 the live segments are **Narrative / Select** (the switcher filters `flowList` by kind, so the cut Exam segment falls away on its own). The landing keeps the "Explore the Floor" name and a "Start the story" CTA. No sign-up, no form.
 - A stylized scene hints at what's coming behind the CTA. The hero visual is being redesigned alongside the high-fidelity results screen (the prior placeholder line-art conveyor sketch is parked with the rest of the documented cut); see `docs/knowledge/REALIGNMENT.md`.
 - One primary CTA to start.
 
@@ -101,7 +106,7 @@ Details:
 
 ### 5.4 Results — documented cut (Classic flow)
 
-The most important screen. It must read as a recommendation, not a verdict. _(The live narrative and exam results are the node map and the dashboard described in §5.0 and specified in `DATA_MODEL.md` §17. The robot-on-a-pedestal results below are the classic documented cut. The "recommendation, not a verdict" principle and the specificity payload carry forward verbatim into the live results; only the rendering changed.)_
+The most important screen. It must read as a recommendation, not a verdict. _(The live narrative results are the node map described in §5.0 and specified in `DATA_MODEL.md` §17; the cut exam flow presented a dashboard. The robot-on-a-pedestal results below are the classic documented cut. The "recommendation, not a verdict" principle and the specificity payload carry forward verbatim into the live results; only the rendering changed.)_
 
 - The user's built robot sits on a **pedestal, center stage, in front of the role card it most closely matches.** That primary card is fully rendered: role name, plain-language description, a match read, what already fits the user, and a clear next action.
 - The other two role families are present as **ghosted / outlined cards** flanking the primary.
@@ -118,7 +123,7 @@ The most important screen. It must read as a recommendation, not a verdict. _(Th
 
 ## 6. The robot avatar — documented cut
 
-> The live narrative and exam flows **skip the robot build** (the study keeps presentation minimal so participants focus on the questions; `DATA_MODEL.md` §17, `DECISIONS.md` D-017). The exam dashboard shows a static robot placeholder as a visual anchor only. Re-enabling a live build later is a per-flow step, documented but not built. The section below is the parked original design.
+> The live narrative flow **skips the robot build** (the study kept presentation minimal so participants focus on the questions; `DATA_MODEL.md` §17, `DECISIONS.md` D-017). _(The cut exam dashboard had shown a static robot placeholder as a visual anchor only; `RobotPlaceholder.tsx` was deleted with the exam and classic flows in Phase 4.)_ Re-enabling a live build later is a per-flow step, documented but not built. The section below is the parked original design.
 
 - Assembles live during sorting; finalized only on completion (no half-robot if the user bails).
 - Composed of modular SVG parts (base, body, arms, head, tools, accessories, surface treatments). Mapping is **literal and expressive**: each kept interest contributes a specific, semantically obvious part or treatment. Keeping "coding or modding games" might bolt on a chip-pin or spray a binary pattern across the chest; keeping "shop class or robotics club" might attach a mini robotic arm or a hard hat; keeping "planning hangouts" might add a clipboard. The robot is meant to *read* as the user's choices, not merely imply them.
@@ -130,7 +135,7 @@ The most important screen. It must read as a recommendation, not a verdict. _(Th
 
 The principle is fixed across every flow: **a weighted match across all the roles, never a single prescriptive verdict.** What changed in the realignment is the model the live flows score against.
 
-> **Live (narrative + exam): four RC.org categories.** The shipping flows score `operate / repair / program / plan` (mapping to Operator / Technician / Specialist / Integrator) with the pure, branch-aware engine in `lib/categoryScoring.ts`, normalized per category against its own max. Each scored intro answer, each scene choice, and each statement contributes; the middle "Kinda me" bucket scores `MAYBE_WEIGHT` (0 today, tunable). Full algorithm and the per-flow `expectedCategoryMax` are in `DATA_MODEL.md` §17. The three-archetype model below is the **documented cut** (the dormant Classic flow's `lib/scoring.ts`), preserved for the record.
+> **Live (narrative): four RC.org categories.** The shipping narrative flow scores `operate / repair / program / plan` (mapping to Operator / Technician / Specialist / Integrator) with the pure, branch-aware engine in `lib/categoryScoring.ts`, normalized per category against its own max. Each scored intro answer and each scene choice contributes; the middle "Kinda me" bucket scores `MAYBE_WEIGHT` (0 today, tunable). Full algorithm and the narrative `expectedCategoryMax` are in `DATA_MODEL.md` §17. The cut **Exam** flow scored the same four categories off a 30-statement sort. The three-archetype model below is the **documented cut** (the deleted Classic flow's `lib/scoring.ts`), preserved for the record. (Phase 4 keeps four categories; the collapse to ARM's three roles is Phase 5.)
 
 - _(Documented cut — Classic flow.)_ The three role families map to three internal archetypes:
   - **Builder -> Robotics Technician** (hands-on, building, fixing, maintaining)
@@ -146,7 +151,7 @@ The principle is fixed across every flow: **a weighted match across all the role
 
 The locked 24-item set, per team decision. Drawn from the Make.md brainstorm. Final wording is good enough to build against; weights and any small wording polish will iterate inside `/src/data` without touching code.
 
-> **Question-structure study (2026-06-07, supersedes the A/B language test):** for the first user test this 24-item set lives as the **Classic** flow inside the flow registry (`DATA_MODEL.md` §17). It runs alongside two structurally different conditions — **Narrative** (branching intro questions + 7 day-in-the-life scenes, where each scene's four choices are sorted into three buckets) and **Exam** (background questions + a 30-statement sort) — that score four RC.org categories and share a node-map results screen. Both sorts use the same three buckets — **That's me / Kinda me / Not me** (D-018). A three-way landing switcher picks the condition. The earlier formal/playful language A/B (§16, set B) was retired before its content was authored. The registry and switcher are a research instrument, not product scope; see §14 and `DECISIONS.md` D-017, D-018.
+> **Question-structure study (2026-06-07, supersedes the A/B language test; the study has since concluded):** for the first user test this 24-item set lived as the **Classic** flow inside the flow registry (`DATA_MODEL.md` §17). It ran alongside two structurally different conditions — **Narrative** (branching intro questions + 7 day-in-the-life scenes, where each scene's four choices are sorted into three buckets) and **Exam** (background questions + a 30-statement sort) — that scored four RC.org categories. Both sorts used the same three buckets — **That's me / Kinda me / Not me** (D-018). A landing switcher picked the condition. The narrative won, and Phase 4 deleted the Classic and Exam flows (D-027); this 24-item set is part of the documented-cut record now. The earlier formal/playful language A/B (§16, set B) was retired before its content was authored. The registry and switcher are a research instrument, not product scope; see §14 and `DECISIONS.md` D-017, D-018, D-027.
 
 **Round 1 — things you like doing**
 1. Building or fixing things
@@ -184,7 +189,7 @@ Each item maps to archetype weights in `DATA_MODEL.md`. Builder-leaning items em
 
 ## 9. Content: roles, competencies, jobs
 
-> **Documented cut (classic foundation).** The three archetype-tagged role families below are the classic content set. The live flows score four RC.org category roles whose content lives in `roleDetails.ts` (Operator / Technician / Specialist / Integrator; `DATA_MODEL.md` §17). The competency framework here still seeds the shared `competencies.ts` / `programs.ts`, so this section stays useful as reference, but read the roles as the parked taxonomy.
+> **Documented cut (classic foundation).** The three archetype-tagged role families below are the classic content set. The live narrative flow scores four RC.org category roles whose content lives in `roleDetails.ts` (Operator / Technician / Specialist / Integrator; `DATA_MODEL.md` §17). The competency framework here seeded the shared `competencies.ts` / `programs.ts`, which were deleted in Phase 4 (D-027); the live narrative results surface zero programs today, and a category-keyed program/competency set returns at step 8 (`REALIGNMENT.md`). Read this section as reference and as the parked taxonomy.
 
 The role definitions use ARM's **real competency framework**, captured from the existing My Goal screens. This is the mock-data foundation. (We can later replace or extend with scraped/official data; structure stays the same.)
 
@@ -240,11 +245,11 @@ Not built in this prototype. Documented so the architecture accommodates it:
 
 The prototype is successful when:
 
-- A user can complete a study flow (land -> answer the intro questions -> sort the scenes or the statements -> results) in around 3-4 minutes with no dead ends.
-- The results screen shows a believable weighted match across the four categories, with the compare interaction (node-map swap, or the dashboard's ranked roles) working.
+- A user can complete the narrative flow (land -> answer the intro questions -> sort the scenes -> results) in around 3-4 minutes with no dead ends.
+- The results screen shows a believable weighted match across the four categories, with the compare interaction (the node-map swap) working.
 - The result explains itself: the match read, the education/pay fit line, and a path the user can take next.
-- The team can change any scene, statement, intro question, weight, role detail, or piece of results copy by editing `/src/data` alone.
-- The Playwright suite (narrative + exam + role-select) passes and the experience runs with no console errors.
+- The team can change any scene, intro question, weight, role detail, or piece of results copy by editing `/src/data` alone.
+- The Playwright suite (narrative + role-select + reduced-motion) passes and the experience runs with no console errors.
 - It is demoable to the ARM client and testable with the MHCI cohort.
 
 _(Documented cut: the classic measure was "land -> sort 24 items -> build a robot -> three-role results." Preserved in §5.2–§5.4.)_
@@ -265,4 +270,4 @@ Auth, accounts, persistence, backend, real ARM data, the professional track, 3D/
 
 **Note on demo affordances.** Two non-core conveniences are intentionally allowed even though they are not part of the user-facing flow in section 5: a `?demo=true` mode that pre-fills a representative result and jumps straight to Results, and a hidden skip-to-results link for demo and user-test setup. Both are Phase 3 tooling (see `ROADMAP.md` 4.5 and 4.7), exist only to make demos and testing faster, and are the documented exception to "no step not described above."
 
-**Note on the flow switcher (2026-06-07, updated 2026-06).** The Landing screen carries a small researcher-facing segmented control that picks the study condition: Narrative / Exam / Select (`DATA_MODEL.md` §17, `DECISIONS.md` D-017, D-021). Classic is dormant with no UI entry; its switcher slot went to the `/select` role-pick comparator. Like the demo affordances above, the switcher is a documented research instrument, not user-facing product scope; ARM's production build would drop it and ship a single chosen flow. (This supersedes the 2026-06-04 A/B language switcher.)
+**Note on the flow switcher (2026-06-07, updated 2026-06 for Phase 4).** The Landing screen carries a small researcher-facing segmented control that picks the study condition. After Phase 4 the live segments are **Narrative / Select** (`DATA_MODEL.md` §17, `DECISIONS.md` D-017, D-021, D-027); the switcher filters `flowList` by kind, so the cut Exam segment falls away, and the cut Classic flow already had no UI entry. Its slot had gone to the `/select` role-pick comparator. Like the demo affordances above, the switcher is a documented research instrument, not user-facing product scope; ARM's production build would drop it and ship a single chosen flow. (This supersedes the 2026-06-04 A/B language switcher.)

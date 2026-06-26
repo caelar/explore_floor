@@ -4,7 +4,7 @@ This is the schema spec for everything in `/src/data` and the pure helpers in `/
 
 The single guiding principle: **data is data, not code.** All content (scene choices, statements, intro questions, weights, role copy, competency wording, programs) lives here. UI reads it. Logic transforms it. Nothing about the content lives in a component.
 
-> **Read this first (realignment, 2026-06).** The **live model is §17, the four-category flow system** (`operate / repair / program / plan`), which the shipping Narrative and Exam flows score with `lib/categoryScoring.ts`. Treat §17 and `lib/screenerFit.ts` as the **primary** schema. Sections **§1–§14 describe the classic three-archetype / 24-item / robot pipeline**, now a **documented cut**: it survives only as the dormant Classic flow, validated by `data-integrity.test.ts` until the classic archival removes it (the realignment's destructive phase, see `docs/knowledge/REALIGNMENT.md`). The robot-parts schema (§7), robot assembly (§10), and the A/B question-set apparatus (§16) are parked the same way the future 3D path is parked in `ARCHITECTURE.md`: kept for the record, no longer the plan. Where a classic section and §17 appear to disagree, §17 is current.
+> **Read this first (realignment, 2026-06).** The **live model is §17, the four-category flow system** (`operate / repair / program / plan`), which the shipping **Narrative** flow scores with `lib/categoryScoring.ts`. Treat §17 and `lib/screenerFit.ts` as the **primary** schema. Sections **§1–§14 describe the classic three-archetype / 24-item / robot pipeline**, a **documented cut** that was **deleted from the live tree in Phase 4 (D-027)** and is recoverable at git tag `archive/pre-narrative-only`. The **Exam** flow (the study's comparison condition) joined the documented cut in the same phase: it was a real, tested flow, now retired and removed from the live tree, its record preserved here and in §17. The robot-parts schema (§7), robot assembly (§10), and the A/B question-set apparatus (§16) are parked the same way the future 3D path is parked in `ARCHITECTURE.md`: kept for the record, no longer the plan. Where a classic or exam section and §17 appear to disagree, §17 is current. Phase 4 keeps the four-category model; the collapse to ARM's three roles is the later Phase 5 (see `docs/knowledge/REALIGNMENT.md`).
 
 ---
 
@@ -250,7 +250,9 @@ The three Role objects live in `/src/data/roles.ts`. Below is the canonical cont
 
 ## 5. Competencies (real ARM framework)
 
-All entries live in `/src/data/competencies.ts`. The `name` field is the official ARM term. The `plainName` field is a teen-friendly translation used in results copy. Plain names below are starter drafts; final copy is an open question.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** `competencies.ts` was deleted with the classic pipeline. The real ARM competency framework below is kept for the record; a category-keyed competency surface can return alongside the step-8 programs work.
+
+The cut `competencies.ts` held all entries. The `name` field is the official ARM term. The `plainName` field is a teen-friendly translation used in results copy. Plain names below are starter drafts; final copy is an open question.
 
 ### Technician competencies (`roleId: 'technician'`)
 
@@ -295,7 +297,9 @@ All entries live in `/src/data/competencies.ts`. The `name` field is the officia
 
 ## 6. Essential skills
 
-The shared soft-skill list from ARM's framework. Lives in `/src/data/skills.ts`. Used in results to call out cross-cutting strengths the user's sorting revealed.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** `skills.ts` was deleted with the classic pipeline. The shared soft-skill list below is kept for the record.
+
+The shared soft-skill list from ARM's framework lived in `/src/data/skills.ts`. Used in results to call out cross-cutting strengths the user's sorting revealed.
 
 ```
 active-listening, adaptability, attention-to-detail, communication,
@@ -308,7 +312,7 @@ Each is `{ id, name }` only. No plain-name translation needed; the names are alr
 
 ## 7. Robot parts library
 
-> **Documented cut.** The robot was never built as a scene and the live flows skip the robot build (§17). `robotParts.ts` is dormant classic data, validated by `data-integrity.test.ts` only until the classic archival. Parked, not the plan.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** The robot was never built as a scene and the live flow skips the robot build (§17). `robotParts.ts` was deleted with the classic pipeline. Parked, not the plan.
 
 Lives in `/src/data/robotParts.ts`. Each `RobotPart` references an SVG React component that lives in `/src/scene/robot/parts/`. The library is the **interface between data and visuals**: items reference part IDs, the build logic resolves them to SVG components.
 
@@ -352,7 +356,9 @@ Each archetype has a color scheme defined in `/src/data/colorSchemes.ts`. Final 
 
 ## 8. Mock training programs
 
-Lives in `/src/data/programs.ts` (shared, live). Seed about 6-10 representative programs covering the three role families. Accuracy is not required; structure is. The team can swap these out wholesale without breaking anything. _(`programs.ts` is keyed by the classic `RoleId`s — technician/specialist/integrator. The live four-category results reach it through the category-to-role mapping, Operate→Operator, Repair→Technician, Program→Specialist, Plan→Integrator.)_
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** `programs.ts` (along with `competencies.ts` and `skills.ts`) was deleted with the classic pipeline. **The live narrative results surface zero programs today** — a known gap. A category-keyed program set returns at the step-8 narrative results work (the "somewhere to go" payload the research asks for; `REALIGNMENT.md` step 8). The schema below is kept for the record and as the shape that step-8 set will follow.
+
+The cut `programs.ts` lived in `/src/data/programs.ts`. It seeded about 6-10 representative programs covering the three role families. Accuracy is not required; structure is. _(It was keyed by the classic `RoleId`s — technician/specialist/integrator. The four-category results reached it through the category-to-role mapping, Operate→Operator, Repair→Technician, Program→Specialist, Plan→Integrator.)_
 
 Seed examples:
 
@@ -415,7 +421,9 @@ Seed examples:
 
 ## 9. The scoring engine
 
-Lives in `/src/lib/scoring.ts`. Pure function, no React, no side effects, fully unit-testable.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** This is the classic three-archetype engine. The **live** brain is `lib/categoryScoring.ts` (the four-category engine, §17), which mirrors the pure-function shape below. The algorithm here is kept for the record.
+
+Lived in `/src/lib/scoring.ts`. Pure function, no React, no side effects, fully unit-testable.
 
 ### Signature
 
@@ -450,9 +458,9 @@ The pass-equals-zero rule means a picky user can produce all-low scores honestly
 
 ## 10. Robot assembly
 
-> **Documented cut.** Parked with the robot build (§6/§7). The live flows never touch `robot` state. `robotAssembly.ts` is dormant classic code until the classic archival.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** Parked with the robot build (§6/§7). The live flow never touches `robot` state. `robotAssembly.ts` was removed with the classic pipeline.
 
-Lives in `/src/lib/robotAssembly.ts`. Pure function.
+Lived in `/src/lib/robotAssembly.ts`. Pure function.
 
 ### Signature
 
@@ -482,7 +490,9 @@ If the user bails (closes, navigates away, refreshes) before completion, no robo
 
 ## 11. Program selection
 
-Lives in `/src/lib/programSelection.ts`. Given a role the user is "trying on," pick the most relevant programs.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** Deleted with `programs.ts` (§8). The live narrative results surface zero programs today; the category-keyed program selection returns at step 8. The shape below is kept for the record.
+
+Lived in `/src/lib/programSelection.ts`. Given a role the user is "trying on," pick the most relevant programs.
 
 ### Signature
 
@@ -529,44 +539,35 @@ Conventions:
 
 ```
 /src/data
-  types.ts              All TypeScript interfaces (classic + the §17 flow/category types)
-  flows/                LIVE (§17) — the question-structure study
+  types.ts              All TypeScript interfaces (the §17 flow/category types; the classic
+                        types remain in the deleted-flow record below)
+  flows/                LIVE (§17) — the narrative flow
     narrativeFlow.ts    Narrative flow: intro MC (Q0-Q5) + 7 scenes
-    examFlow.ts         Exam flow: background MC + the 30-statement sort
-    classicFlow.ts      Classic flow: wraps question set A by reference (dormant)
     screeners.ts        Screener appetite levels + fit copy (D-020)
     buckets.ts          The shared SORT_BUCKETS (That's me / Kinda me / Not me)
-    index.ts            Registry: flows map, flowList, defaultFlowId
+    index.ts            Registry: flows map, flowList, defaultFlowId (narrative only)
   roleDetails.ts        LIVE (§17) — the four RC.org category roles (keyed by CategoryId)
-  competencies.ts       All Competency objects (grouped by role internally)
-  skills.ts             The 14 EssentialSkill objects
-  programs.ts           Mock TrainingProgram objects (~6-10)
-  colorSchemes.ts       Archetype -> color scheme mapping
-  items.ts              [documented cut] The 24 InterestItem objects
-  roles.ts              [documented cut] The 3 Role objects
-  robotParts.ts         [documented cut] The RobotPart library
-  questionSets/         [documented cut] A/B language-test variants (see section 16)
-    setA.ts             Set A — wrapped by the classic flow; owns its landing/sort/results copy
-    index.ts            Registry: questionSets map, defaultSetId, questionSetList
+  roleSelect.ts         LIVE — /select role-pick copy
   index.ts              Barrel export
 
 /src/lib
   categoryScoring.ts    LIVE (§17) — calculateCategoryScores + computeCategoryMax
   screenerFit.ts        LIVE (§17) — deriveScreenerProfile + screenerFitLines (D-020)
-  categoryBreakdown.ts  LIVE (§17) — the "why you scored that way" provenance
+  categoryBreakdown.ts  LIVE (§17) — the "why you scored that way" provenance (pure + tested;
+                        unwired until the step-8 narrative results work)
   nodeLayout.ts         LIVE (§17) — node-graph + fit-radar geometry
-  scoring.ts            [documented cut] calculateScores (three-archetype)
-  robotAssembly.ts      [documented cut] assembleRobot
-  programSelection.ts   selectProgramsForRole (shared — results programs)
   index.ts              Barrel export
 
 /src/state
   sessionStore.ts       Zustand store
 
-/src/scene/robot/parts/ One SVG React component per RobotPart
+/src/scene
+  LandingSceneHint.tsx  The Landing hero placeholder (the sole live scene file)
 ```
 
-Tests for the three lib functions live in `/src/lib/__tests__/`. They run as part of the standard `pnpm test` and are independent of Playwright.
+> **Deleted in Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** The Exam flow (`flows/examFlow.ts`), the classic flow (`flows/classicFlow.ts`), the A/B question sets (`flows/questionSets/`), the classic data (`items.ts`, `roles.ts`, `robotParts.ts`, `competencies.ts`, `skills.ts`, `programs.ts`, `colorSchemes.ts`), the classic libs (`scoring.ts`, `robotAssembly.ts`, `fit.ts`, `programSelection.ts`, `audio.ts`), and `src/scene/RobotPlaceholder.tsx` were all removed from the live tree. The schema sections that describe them (§1–§14, §16) are kept here for the record, no longer the plan.
+
+Tests for the live lib functions live in `/src/lib/__tests__/` (49 tests across `categoryScoring`, `screenerFit`, `categoryBreakdown`, `nodeLayout`, and `data-integrity`). They run as part of the standard `pnpm test` and are independent of Playwright.
 
 ## 14. Tuning surface
 
@@ -574,9 +575,8 @@ What's expected to change without code edits:
 
 - **Any text:** item labels, role descriptions, plain-name competency translations, job descriptions, program blurbs.
 - **All archetype weights** in `items.ts`. This is the primary scoring tuning surface.
-- **A whole flow's content** (§17): a flow's scene choices, statements, intro-question tags, weights, and owned copy are authored in `src/data/flows/` via the data-author skill, no component edits. _(Documented cut: §16's set B authoring path is retired; only set A survives, wrapped by the dormant classic flow.)_
-- **Robot part assignments** per item (which partId each item references).
-- **Mock training programs** added, removed, or edited freely.
+- **A whole flow's content** (§17): the narrative flow's scene choices, intro-question tags, weights, and owned copy are authored in `src/data/flows/` via the data-author skill, no component edits. _(Documented cut: §16's whole question-set authoring path went with the classic flow delete, D-027.)_
+- _(Documented cut)_ Robot part assignments per item, and mock training programs — deleted with the classic data (§7, §8).
 
 What requires a code edit:
 
@@ -588,7 +588,9 @@ If a content change feels like it needs a code edit, stop and ask. It probably d
 
 ## 15. Sanity checks before considering this doc "applied"
 
-When `/src/data` is scaffolded from this doc, verify:
+> **Documented cut — these checks validated classic data deleted in Phase 4 (D-027).** They no longer run (the classic `data-integrity` blocks were removed with the data). The live invariants are the §17 narrative-flow checks. The list below is kept for the record of what the classic pipeline guaranteed.
+
+When `/src/data` was scaffolded from the classic sections, the build verified:
 
 - All 24 items exist with all three weights set (no missing zeros). _(Per question set — see section 16.)_
 - Sum-per-archetype across all items matches the set's **declared `expectedSums`** (Set A: Builder 22, Innovator 27, Architect 25). Sums are recomputed from live items and compared against the declaration, per set.
@@ -601,7 +603,7 @@ When `/src/data` is scaffolded from this doc, verify:
 
 ## 16. Question sets (A/B language test)
 
-> **Documented cut.** The A/B language test was superseded by the question-structure study (§17, D-017) before set B was authored. The `QuestionSet` shape survives because the dormant **Classic** flow still wraps set A by reference; everything else here (set B, the `b-` cross-set machinery, the worksheet path) is parked. When the classic flow is archived, this whole section goes with it.
+> **Documented cut — deleted Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** The A/B language test was superseded by the question-structure study (§17, D-017) before set B was authored. The `QuestionSet` shape lived on only because the classic flow wrapped set A by reference; the classic flow was deleted in Phase 4, and this whole apparatus (set A, set B, the `b-` cross-set machinery, the worksheet path) went with it. Kept here for the record.
 
 Added 2026-06-04 for the first user test (see `DECISIONS.md` D-016; flagged in `PRD.md` §8/§14). The test compares two language treatments — formal/exam-like vs playful/narrativized — so the content the user reads ships as two swappable **question sets**.
 
@@ -640,23 +642,27 @@ interface QuestionSet {
 
 ### Status (superseded for the live study)
 
-The formal-vs-playful A/B was **superseded by the question-structure study** (§17, `DECISIONS.md` D-017) before set B's content was authored. Set B and the `b-` cross-set machinery are removed; `QuestionSetId` is now just `'a'` and `questionSetList` holds only set A. The QuestionSet shape itself survives intact: the **classic** flow wraps set A by reference (§17), so the Phase 1 interest-sort pipeline is unchanged. `QUESTION_SET_WORKSHEET.md` is retained as a historical artifact but is no longer the live authoring path.
+The formal-vs-playful A/B was **superseded by the question-structure study** (§17, `DECISIONS.md` D-017) before set B's content was authored. Set B and the `b-` cross-set machinery were removed at that point, leaving `QuestionSetId` as just `'a'`. The QuestionSet shape and set A then survived only because the **classic** flow wrapped set A by reference (§17). Phase 4 deleted the classic flow (D-027), so the question-set apparatus is gone from the live tree. `QUESTION_SET_WORKSHEET.md` is retained as a historical artifact.
 
 ## 17. Flows (question-structure study) — the primary model
 
-> **This is the live schema.** The shipping product is the Narrative and Exam flows defined here; the four-category model (`operate / repair / program / plan`) and its entities (`Flow`, `FlowStep`, `CategoryId`, `RoleDetail`, `CategoryResult`) are the current data model. §1–§14 are the documented-cut classic pipeline. `data-integrity.test.ts` enforces the invariants in this section per flow (the gate docs, `verifier` and `data-author`, headline these).
+> **This is the live schema.** The shipping product is the **Narrative** flow defined here; the four-category model (`operate / repair / program / plan`) and its entities (`Flow`, `FlowStep`, `CategoryId`, `RoleDetail`, `CategoryResult`) are the current data model. §1–§14 are the documented-cut classic pipeline. `data-integrity.test.ts` enforces the live invariants in this section (the gate docs, `verifier` and `data-author`, headline these).
+>
+> **Documented cut — the Exam flow (Phase 4, D-027).** The study originally shipped two category flows: Narrative and **Exam** (background questions + a 30-statement sort, scored on the same four categories, presented as a dashboard). The narrative won the June 2026 study, so Phase 4 stripped the build to the narrative flow and **removed the Exam flow from the live tree** (recoverable at git tag `archive/pre-narrative-only`). The exam shapes, scoring, results, and invariants below are kept for the record — they describe a cut flow, not a live one. Where this section still names the Exam flow, read it as the parked comparison condition.
 
-Added 2026-06-07 for the first user test (see `DECISIONS.md` D-017; flagged in `PRD.md`). The test compares which **question structure** is most engaging and produces the most trusted results. Three selectable flows ship on one build; a researcher-facing segmented control on Landing switches between them per participant.
+Added 2026-06-07 for the first user test (see `DECISIONS.md` D-017; flagged in `PRD.md`). The study compared which **question structure** is most engaging and produces the most trusted results. It ran two category flows plus the dormant classic; a researcher-facing segmented control on Landing switched between them per participant. After the study, Phase 4 cut the build down to the Narrative flow alone (D-027).
 
-The original A/B (§16) assumed both conditions shared one flow shape (24-item sort → build → 3-archetype results). The study breaks that: the two new flows have different step structures, score **four** RC.org categories instead of three archetypes, and share a new results experience. So `QuestionSet` grew a sibling: the **flow**.
+The original A/B (§16) assumed both conditions shared one flow shape (24-item sort → build → 3-archetype results). The study broke that: the new flows had different step structures, scored **four** RC.org categories instead of three archetypes, and shared a new results experience. So `QuestionSet` grew a sibling: the **flow**.
 
-### The three flows
+### The flows (Narrative live; Classic and Exam are the documented cut)
 
-| Flow | `kind` | Shape | Results |
-|---|---|---|---|
-| **Classic** | `classic` | The Phase 1 experience, wrapping set A by reference. | 3 role cards (archetype pipeline, unchanged) |
-| **Narrative** | `narrative` | 6 intro MC questions (Q0–Q5; Q1 branches), then 7 day-in-the-life **scenes**; each scene's 4 choices are sorted into the 3 buckets, one card at a time (D-018). | category node map |
-| **Exam** | `exam` | 2 background MC + 1 mapped MC, then a **30-statement sort** into 3 buckets. | category dashboard |
+| Flow | `kind` | Shape | Results | Status |
+|---|---|---|---|---|
+| **Narrative** | `narrative` | 6 intro MC questions (Q0–Q5; Q1 branches), then 7 day-in-the-life **scenes**; each scene's 4 choices are sorted into the 3 buckets, one card at a time (D-018). | category node map | **Live** |
+| **Classic** | `classic` | The Phase 1 experience, wrapping set A by reference. | 3 role cards (archetype pipeline) | Documented cut — deleted Phase 4 (D-027) |
+| **Exam** | `exam` | 2 background MC + 1 mapped MC, then a **30-statement sort** into 3 buckets. | category dashboard | Documented cut — deleted Phase 4 (D-027) |
+
+The live registry holds only the narrative flow (`FlowId = 'narrative'`, `defaultFlowId = 'narrative'`); the classic and exam rows above are the record of what the study ran.
 
 ### The four categories
 
@@ -688,34 +694,35 @@ interface CategoryResult { raw; matchPercentages; ranking; primaryCategory; } //
 
 `calculateCategoryScores(flow, answers, statementBuckets)` walks the **path the answers actually took** (branch-aware: a skipped Q2 contributes to neither raw nor max), tallying per category: each scored MC choice, each scene choice, and each statement adds 1 to its category's `max`. For `raw`, a scored MC choice adds 1 to each category it maps to (a two-category choice feeds both); **scene choices and statements are bucketed** — `thats-me` → 1, `maybe` (the "Kinda me" middle bucket) → `MAYBE_WEIGHT` (a tunable constant, **0** today — the prior study asked for a middle option but the team wants it scored as a no for now, D-018), `not-me`/unanswered → 0. Because a scene's four choices are each bucketed independently, one scene can credit several categories or none (unlike the old single-pick). Each category normalizes against its own max; `ranking` is sorted desc with the stable `operate > repair > program > plan` tiebreak.
 
-### Results — one per flow (the study compares presentations too)
+### Results (the live narrative node map; the exam dashboard is the documented cut)
 
-Each new flow has its **own** results presentation; they share the `categoryResult` data and the role-detail **sheet**, not the layout.
+The narrative results presentation is the **node map**; it reads `categoryResult` data and the role-detail **sheet**. The exam dashboard below is preserved as the record of the cut comparison flow.
 
 - **Narrative → node map** (`Results/category/`): an Obsidian-style node graph (the earlier concentric rings read as "funky" — redesigned). The top-matched role sits front-and-center; the other three sit behind it (arced above, faded). Tapping a behind-node swaps it into the center (Motion `layout`); the heading names the centered role ("Your top match" vs "You're exploring"). The active role's `commonJobTitles` branch off the front on hairline connectors (`fanPoints` arcs them down); tap a title for the role sheet.
-- **Exam → dashboard** (`Results/exam/`): a robot anchor (static `RobotPlaceholder`, tinted by the top category via `CATEGORY_ACCENT_TEXT`) + four category **bars**; then **"Why you scored that way"** (score provenance from `categoryContributions` — the items you said yes to, n of m, walking the same path the scorer did) and **"Your roles"** (top-2 ranked → the role sheet).
-- **Shared role sheet** (`category/RoleDetailSheet`): the RC.org role-card content (description, activities, education, titles, salary) + a stub "Add this Role to your profile" link + a four-axis **fit radar** of the user's category percentages. Opened with a specific job title (node map) or on the role itself (exam "your roles" — `jobTitle` omitted).
-- `Results.tsx` dispatches three ways by `flow.kind`: classic → `ClassicResults`, narrative → node map, exam → dashboard.
+- **Exam → dashboard** (`Results/exam/`) — _documented cut, deleted Phase 4 (D-027)._ The cut exam flow rendered a robot anchor (static `RobotPlaceholder`, tinted by the top category via `CATEGORY_ACCENT_TEXT`) + four category **bars**; then **"Why you scored that way"** (score provenance from `categoryContributions` — the items you said yes to, n of m, walking the same path the scorer did) and **"Your roles"** (top-2 ranked → the role sheet). The provenance engine `lib/categoryBreakdown.ts` it used was **kept** (pure and tested), unwired until the step-8 narrative results graft match-explanation onto the node map.
+- **Shared role sheet** (`category/RoleDetailSheet`): the RC.org role-card content (description, activities, education, titles, salary) + a stub "Add this Role to your profile" link + a four-axis **fit radar** of the user's category percentages. Opened with a specific job title (node map) or on the role itself (it was also reused by the cut exam "your roles" — `jobTitle` omitted; today the live openers are the node map and `/select`).
+- `Results.tsx` now dispatches a single way: narrative → node map. (It previously dispatched three ways by `flow.kind`: classic → `ClassicResults`, narrative → node map, exam → dashboard; the classic and exam branches went with the Phase-4 delete.)
 
 ### Robot build: skipped (this iteration)
 
-Both new flows **skip the robot build + build beat** — the study keeps presentation minimal so participants focus on the questions. Category flows never touch `robot` state and never route through `/build`. Re-enabling later is a per-flow `'build'` step or flag routed through `/build`; documented, not built.
+The narrative flow **skips the robot build + build beat** — the study kept presentation minimal so participants focus on the questions, and the build was never wired. Category flows never touch `robot` state and never route through `/build`. Re-enabling later is a per-flow `'build'` step or flag routed through `/build`; documented, not built.
 
 ### Runtime model
 
-- Registry: `flows/index.ts` (`flows`, `flowList` ordered Narrative/Exam/Classic, `defaultFlowId` = `'narrative'` — classic is dormant, D-021). The store holds `flowId` **next to** session state (same survives-`reset()` mechanism as §16's `questionSetId`). The landing switcher calls `selectFlow`; the CTA routes by condition (`select` → `/select` with no session, `classic` → `/sort`, else → `/flow`).
-- `FlowRunner` (`/flow`) renders the current step by type and advances via `recordAnswer`/`recordStatement`/`advanceStep`/`completeFlow`; navigation is declarative off `currentScreen` so completion can't race the redirect. `/results` dispatches to `ClassicResults` or `CategoryResults` by kind.
+- Registry: `flows/index.ts` (`flows`, `flowList`, `defaultFlowId` = `'narrative'`). After Phase 4 the registry holds the narrative flow only; `FlowId = 'narrative'` is a single-member type. _(Documented cut: `flowList` was ordered Narrative/Exam/Classic; the exam and classic entries were deleted with their flows, D-027.)_ The store holds `flowId` **next to** session state (same survives-`reset()` mechanism as §16's `questionSetId`). The landing switcher calls `selectFlow` and filters `flowList` by kind, so the Exam/Classic segments fall away on their own; the CTA routes by condition (`select` → `/select` with no session, narrative → `/flow`). _(The `classic` → `/sort` route went with the classic delete.)_
+- `FlowRunner` (`/flow`) renders the current step by type and advances via `recordAnswer`/`advanceStep`/`completeFlow`; navigation is declarative off `currentScreen` so completion can't race the redirect. _(The `recordStatement` action and the `statementSort` render branch served the cut exam flow.)_ `/results` dispatches to `CategoryResults` (narrative node map). _(The `ClassicResults`/exam-dashboard branches went with the delete.)_
 
-### Invariants (enforced per flow by `data-integrity.test.ts`)
+### Invariants (enforced by `data-integrity.test.ts`)
 
-- Narrative: exactly 7 scenes, each with 4 choices covering all four categories; every `branchTo` resolves forward; computed full-path category max equals declared `expectedCategoryMax`.
-- Exam: exactly 30 statements counted 8/7/7/8 (operate/repair/program/plan), interleaved (no two adjacent share a category), the 3 shared `SORT_BUCKETS` in order (`thats-me`/`maybe`/`not-me`) with the middle label asserted as "Kinda me" (D-018).
-- Both: unique step + choice + statement ids; all owned copy non-empty; four `roleDetails` resolve to four distinct role names.
+- Narrative (live): exactly 7 scenes, each with 4 choices covering all four categories; every `branchTo` resolves forward; computed full-path category max equals declared `expectedCategoryMax`; unique step + choice ids; all owned copy non-empty; four `roleDetails` resolve to four distinct role names.
+- _(Documented cut — Exam, deleted Phase 4.)_ The exam invariant was: exactly 30 statements counted 8/7/7/8 (operate/repair/program/plan), interleaved (no two adjacent share a category), the 3 shared `SORT_BUCKETS` in order (`thats-me`/`maybe`/`not-me`) with the middle label asserted as "Kinda me" (D-018). The gate's `§17 exam flow shape` block was removed with the flow; the parametrized cross-flow blocks self-collapse to the single live flow.
 
 ### Screener fit (D-020)
 
-The initial screener questions also produce an **always-on fit line** on results (`Results/category/FitNote`), separate from the match score. Each role carries an `educationLevel` and `payLevel` (0/1/2) in `roleDetails`. `lib/screenerFit.ts` (pure) `deriveScreenerProfile(flowId, answers)` reads the user's school/pay appetite (0/1/2) off the screener answers — exam Q1 directly; narrative Q1+Q2 for education, Q3 for pay — and `screenerFitLines(category, profile)` compares it to the role in focus, returning a line per axis: **green check** when appetite ≥ the role's level, **amber heads-up** when the role needs more school / pays a tier below the user's target. Education shows in both flows; pay is narrative-only. Levels + copy are data (`src/data/flows/screeners.ts`). Shown next to the top match (exam) / centered role (narrative).
+The initial screener questions also produce an **always-on fit line** on results (`Results/category/FitNote`), separate from the match score. Each role carries an `educationLevel` and `payLevel` (0/1/2) in `roleDetails`. `lib/screenerFit.ts` (pure) `deriveScreenerProfile(flowId, answers)` reads the user's school/pay appetite (0/1/2) off the screener answers — narrative Q1+Q2 for education, Q3 for pay — and `screenerFitLines(category, profile)` compares it to the role in focus, returning a line per axis: **green check** when appetite ≥ the role's level, **amber heads-up** when the role needs more school / pays a tier below the user's target. Levels + copy are data (`src/data/flows/screeners.ts`). Shown next to the centered role on the narrative node map. _(Documented cut: the exam path read education directly off exam Q1; that `if (flowId === 'exam')` branch was removed with the exam flow, D-027.)_
 
 ### Open item
 
-Background-question mapping is **partly recovered**: the **exam** Q1/Q2 now nudge the match on a tier ladder (No→Operator, Maybe/Yes→Specialist+Integrator — "not planning" vs "open to it", D-019; max {operate 11, repair 8, program 10, plan 11}), and the 0/1/2 screener appetites feed the fit line (D-020). The exam **salary** isn't asked; the narrative salary stays fit-line-only (no score nudge). The **narrative** intro questions (Q1 college, Q2 how-long, Q3 salary) remain **unmapped for scoring** — they drive the fit line via their answers but carry empty `MCChoice.categories`. Adding their score weights later is a data edit. See D-017, D-019, D-020.
+The **narrative** intro questions (Q1 college, Q2 how-long, Q3 salary) remain **unmapped for scoring** — they drive the fit line via their answers but carry empty `MCChoice.categories`. Adding their score weights later is a data edit. The narrative salary stays fit-line-only (no score nudge). See D-017, D-019, D-020.
+
+_(Documented cut — Exam background mapping, deleted Phase 4.)_ The cut exam flow had partly recovered its background-question mapping: exam Q1/Q2 nudged the match on a tier ladder (No→Operator, Maybe/Yes→Specialist+Integrator — "not planning" vs "open to it", D-019), giving the exam flow an unequal full-path ceiling of `expectedCategoryMax {operate 11, repair 8, program 10, plan 11}`. That ceiling described the exam flow only and went with it; the live narrative flow has its own `expectedCategoryMax`. The verifier and `data-author` gates no longer headline the exam's 8/7/7/8 statement counts or its unequal max.

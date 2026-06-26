@@ -112,7 +112,7 @@ Checks whether UI honors the kit-aligned, RC.org-derived design system: brand-ex
 
 **Realistic scenarios**
 - A node on the narrative results map uses its category's accent (from `categoryAccent.ts`) for the match indicator.
-- The exam dashboard's category bars read their accent token, not a hardcoded hex.
+- The fit radar's axes and the node ring read their category accent token, not a hardcoded hex.
 
 **Anti-scenarios (should fail)**
 - A component hardcodes `#38A5EE` instead of `text-arm-blue`, or invents a per-screen category color.

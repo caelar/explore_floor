@@ -15,7 +15,7 @@ const resultsCopy = {
 };
 
 const makeFlow = (steps: FlowStep[]): CategoryFlow => ({
-  id: 'exam',
+  id: 'narrative',
   kind: 'exam',
   name: 'Fixture',
   landingCopy,

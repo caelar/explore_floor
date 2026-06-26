@@ -1,10 +1,10 @@
 # RC.org Career Discovery — "Explore the Floor" (prototype)
 
-An interactive, narrative career-discovery experience for **RoboticsCareer.org** (the ARM Institute's workforce platform). A user walks through a day in their life, sorting the choices each scene offers into three buckets, and lands on a results screen that recommends how they match four RC.org career categories (Operate, Repair, Program, Plan → Operator, Technician, Specialist, Integrator). It ships as the **Narrative** flow alongside an **Exam** flow for a question-structure study.
+An interactive, narrative career-discovery experience for **RoboticsCareer.org** (the ARM Institute's workforce platform). A user walks through a day in their life, sorting the choices each scene offers into three buckets, and lands on a results screen that recommends how they match four RC.org career categories (Operate, Repair, Program, Plan → Operator, Technician, Specialist, Integrator). The build is the **Narrative** flow; Phase 4 stripped it to that one flow (D-027).
 
 This is a **high-fidelity prototype** for an MHCI capstone with ARM as client — built to prove the concept and be user-tested, not to ship to production. ARM's dev team would rebuild from it later.
 
-> The original concept (a stylized assembly-line sort that built a custom robot scoring three role families) is the documented cut: it survives as a dormant Classic flow but was never built as a scene. The plan of record is [`docs/knowledge/REALIGNMENT.md`](./docs/knowledge/REALIGNMENT.md); the live data model is `DATA_MODEL.md` §17.
+> Two flows are the documented cut, deleted in Phase 4 (recoverable at git tag `archive/pre-narrative-only`): the **Exam** flow (the study's comparison condition, a 30-statement sort scoring the same four categories — the narrative won the study), and the original **Classic** concept (a stylized assembly-line sort that built a custom robot scoring three role families, never built as a scene). The plan of record is [`docs/knowledge/REALIGNMENT.md`](./docs/knowledge/REALIGNMENT.md); the live data model is `DATA_MODEL.md` §17. (Phase 4 keeps four categories; the collapse to ARM's three roles is the later Phase 5.)
 
 > **New here? Read [`CLAUDE.md`](./CLAUDE.md) first** — it's the operating manual. Then skim [`docs/`](./docs), starting with [`docs/knowledge/REALIGNMENT.md`](./docs/knowledge/REALIGNMENT.md) and [`docs/knowledge/STATUS.md`](./docs/knowledge/STATUS.md).
 

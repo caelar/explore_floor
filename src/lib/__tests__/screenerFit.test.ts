@@ -5,19 +5,6 @@ import { deriveScreenerProfile, screenerFitLines } from '@/lib/screenerFit';
 // Technician 1, Specialist 2, Integrator 2. Pay levels mirror them.
 
 describe('deriveScreenerProfile', () => {
-  it('reads the exam education screener directly and asks no pay question', () => {
-    expect(deriveScreenerProfile('exam', { 'e-q1': 'e-q1-no' })).toEqual({ education: 0, pay: null });
-    // "Maybe" counts as full appetite (level 2), same as Yes (D-019).
-    expect(deriveScreenerProfile('exam', { 'e-q1': 'e-q1-maybe' })).toEqual({
-      education: 2,
-      pay: null,
-    });
-    expect(deriveScreenerProfile('exam', { 'e-q1': 'e-q1-yes' })).toEqual({
-      education: 2,
-      pay: null,
-    });
-  });
-
   it('caps narrative education at 0 when the user is not going to college', () => {
     // n-q1 No branches over n-q2 — appetite is 0 regardless of any stale n-q2.
     expect(deriveScreenerProfile('narrative', { 'n-q1': 'n-q1-no', 'n-q3': 'n-q3-60' })).toEqual({
@@ -44,9 +31,8 @@ describe('deriveScreenerProfile', () => {
     expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-80' }).pay).toBe(2);
   });
 
-  it('returns nulls for the classic flow and for unanswered screeners', () => {
-    expect(deriveScreenerProfile('classic', {})).toEqual({ education: null, pay: null });
-    expect(deriveScreenerProfile('exam', {})).toEqual({ education: null, pay: null });
+  it('returns nulls for unanswered narrative screeners', () => {
+    expect(deriveScreenerProfile('narrative', {})).toEqual({ education: null, pay: null });
   });
 });
 

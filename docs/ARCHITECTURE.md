@@ -47,7 +47,7 @@ The build is a design showcase, so motion gets two complementary engines with a 
 ### Testing
 
 - **Playwright** for end-to-end and visual regression. Set up in Phase 0 with one happy-path test. Expanded each phase.
-- **Vitest** for unit tests of pure functions. The live brain is `categoryScoring.ts` (exhaustively tested), with `screenerFit.ts`, `categoryBreakdown.ts`, and `nodeLayout.ts` alongside it; `data-integrity.test.ts` guards the §17 invariants. The classic `scoring.ts` / `robotAssembly.ts` specs are dormant (documented cut).
+- **Vitest** for unit tests of pure functions. The live brain is `categoryScoring.ts` (exhaustively tested), with `screenerFit.ts`, `categoryBreakdown.ts`, and `nodeLayout.ts` alongside it; `data-integrity.test.ts` guards the §17 narrative invariants. 49 tests across 5 files. The classic `scoring.ts` / `robotAssembly.ts` specs were deleted with the classic flow in Phase 4 (D-027).
 
 ### Tooling
 
@@ -66,7 +66,7 @@ The build is a design showcase, so motion gets two complementary engines with a 
 
 ## 2. Data flow at a glance
 
-> The diagram below shows the **classic** (documented-cut) path. The **live** flows follow the same shape with different actors: `sessionStore` actions `recordAnswer` / `recordStatement` / `advanceStep` / `completeFlow` feed `lib/categoryScoring` (the four-category engine), `lib/screenerFit` (the fit line), and `lib/categoryBreakdown` (the score provenance); the `Flow` and `roleDetails` data come from `/src/data/flows` and `roleDetails.ts`. The principle is identical: data down, actions up, logic in pure `/src/lib` functions.
+> The diagram below shows the **classic** (documented-cut) path. The **live** narrative flow follows the same shape with different actors: `sessionStore` actions `recordAnswer` / `advanceStep` / `completeFlow` feed `lib/categoryScoring` (the four-category engine), `lib/screenerFit` (the fit line), and `lib/categoryBreakdown` (the score provenance, kept but unwired until step 8); the `Flow` and `roleDetails` data come from `/src/data/flows` and `roleDetails.ts`. The principle is identical: data down, actions up, logic in pure `/src/lib` functions. _(The `recordStatement` action served the cut exam flow.)_
 
 ```
                   ┌──────────────────────┐
@@ -126,69 +126,59 @@ The principle: **data flows down, actions flow up, logic lives in pure functions
 │   │
 │   ├── screens/
 │   │   ├── Landing/               Landing.tsx (the researcher flow switcher) + index
-│   │   ├── Flow/                  LIVE — the narrative + exam runner
+│   │   ├── Flow/                  LIVE — the narrative runner
 │   │   │   ├── FlowRunner.tsx     Renders the current step by type; advances the flow
-│   │   │   ├── MCQuestion.tsx     Intro / background multiple-choice steps
+│   │   │   ├── MCQuestion.tsx     Intro multiple-choice steps
 │   │   │   ├── SceneSortView.tsx  A narrative scene: its 4 choices, bucket-sorted
-│   │   │   ├── StatementSortView.tsx  The exam's 30-statement sort
 │   │   │   ├── BucketSort.tsx     Shared one-card-at-a-time bucket sort
 │   │   │   └── index.ts
 │   │   ├── Results/
-│   │   │   ├── Results.tsx        Dispatches by flow.kind (classic | narrative | exam)
+│   │   │   ├── Results.tsx        Dispatches to the narrative node map
 │   │   │   ├── category/          LIVE — narrative node map
 │   │   │   │   ├── CategoryResults.tsx, NodeMap.tsx
 │   │   │   │   ├── RoleDetailSheet.tsx, FitRadar.tsx, FitNote.tsx
-│   │   │   ├── exam/              LIVE — exam dashboard
-│   │   │   │   ├── ExamResults.tsx, CategoryBars.tsx, ScoreBreakdown.tsx, YourRoles.tsx
-│   │   │   └── [documented cut] ClassicResults.tsx, RoleCard.tsx, Pedestal.tsx,
-│   │   │       ProgramList.tsx, FourPartRead.tsx
-│   │   ├── Select/                RoleSelect.tsx — the /select role-pick comparator
-│   │   ├── Sort/                  [documented cut, dormant] Sort.tsx, RoundBeat.tsx
-│   │   └── Build/                 [documented cut, dormant] Build.tsx
+│   │   └── Select/                RoleSelect.tsx — the /select role-pick comparator
 │   │
-│   ├── scene/                     [documented cut] LandingSceneHint.tsx, RobotPlaceholder.tsx
-│   │                              (placeholders only; the conveyor/robot scene was never built)
+│   ├── scene/                     LandingSceneHint.tsx — the Landing hero placeholder
+│   │                              (the sole live scene file; the conveyor/robot scene was
+│   │                              never built)
 │   │
 │   ├── components/                Button, SegmentedControl, DragSortCard, DropZone, ProgressBar,
-│   │                              RoundIndicator, MatchIndicator, categoryAccent.ts (live),
-│   │                              accent.ts (classic)
+│   │                              categoryAccent.ts (live)
 │   │
 │   ├── state/                     sessionStore.ts, useFlow.ts, useQuestionSet.ts
 │   │
 │   ├── data/                      See DATA_MODEL.md §17 (live) + §1–§14 (documented cut)
-│   │   ├── flows/                 LIVE — narrativeFlow, examFlow, classicFlow, screeners,
-│   │   │                          buckets, index (registry)
+│   │   ├── flows/                 LIVE — narrativeFlow, screeners, buckets, index (registry)
 │   │   ├── roleDetails.ts         LIVE — the four category roles
 │   │   ├── roleSelect.ts          /select copy
-│   │   ├── competencies.ts, skills.ts, programs.ts, colorSchemes.ts  (shared)
-│   │   ├── [documented cut] items.ts, roles.ts, robotParts.ts, resultsCopy.ts,
-│   │   │                    rounds.ts, questionSets/
-│   │   ├── types.ts               classic + §17 flow/category types
+│   │   ├── types.ts               §17 flow/category types (the classic types live in the
+│   │   │                          deleted-flow record)
 │   │   └── index.ts
 │   │
 │   ├── lib/
 │   │   ├── categoryScoring.ts     LIVE — calculateCategoryScores + computeCategoryMax
 │   │   ├── screenerFit.ts         LIVE — the education/pay fit line
-│   │   ├── categoryBreakdown.ts   LIVE — the "why you scored that way" provenance
+│   │   ├── categoryBreakdown.ts   LIVE — the "why you scored that way" provenance (kept;
+│   │   │                          unwired until step 8)
 │   │   ├── nodeLayout.ts          LIVE — node-graph + fit-radar geometry
 │   │   ├── gsap.ts                LIVE — GSAP plugin registration + the Landing reveal
 │   │   ├── motion.ts              Motion tokens (durations/easings); both engines read these
-│   │   ├── programSelection.ts    Shared — results programs
-│   │   ├── [documented cut] scoring.ts, robotAssembly.ts, fit.ts, audio.ts
 │   │   ├── __tests__/             categoryScoring, screenerFit, categoryBreakdown, nodeLayout,
-│   │   │                          data-integrity (+ classic specs, dormant)
+│   │   │                          data-integrity (49 tests across 5 files)
 │   │   └── index.ts
 │   │
 │   └── styles/
 │       └── globals.css            Tailwind v4 entry (@import) + @theme design tokens (canonical source)
 │
 ├── tests/
-│   └── e2e/                       narrative.spec, exam.spec, role-select.spec (live);
-│                                  happy-path, compare, reduced-motion (classic, dormant)
+│   └── e2e/                       narrative.spec, role-select.spec, reduced-motion.spec (live)
 │
 ├── tsconfig.json, vite.config.ts, playwright.config.ts, package.json, pnpm-lock.yaml
 └── README.md                      Teammate onboarding + MCP/toolchain setup; defers to docs/
 ```
+
+> **Deleted in Phase 4 (D-027), recoverable at git tag `archive/pre-narrative-only`.** The tree above is the live tree. Phase 4 removed: the Exam flow (`data/flows/examFlow.ts`, `screens/Results/exam/*`, `screens/Flow/StatementSortView.tsx`, `tests/e2e/exam.spec.ts`); the Classic flow (`screens/Sort/*`, `screens/Build/*`, `screens/Results/{ClassicResults,RoleCard,Pedestal,ProgramList,FourPartRead}.tsx`, the classic libs `scoring.ts`/`robotAssembly.ts`/`fit.ts`/`audio.ts`/`programSelection.ts`, the classic data `items.ts`/`roles.ts`/`robotParts.ts`/`competencies.ts`/`skills.ts`/`programs.ts`/`colorSchemes.ts`/`rounds.ts`/`resultsCopy.ts`/`classicFlow.ts`/`questionSets/`, the classic components `MatchIndicator.tsx`/`accent.ts`/`RoundIndicator.tsx`); `scene/RobotPlaceholder.tsx`; and the classic E2E (`happy-path.spec`, `compare.spec`). `categoryBreakdown.ts` and `programs`/`competencies`/`skills` are discussed below — the breakdown engine was **kept**, the data files were **deleted** (the live results surface zero programs today; a category-keyed set returns at step 8).
 
 ### Sizing rules
 
@@ -224,7 +214,7 @@ None in v1. State lives in memory and resets on refresh. This is intentional for
 
 ## 5. Scene composition — documented cut
 
-> **Parked.** The assembly-line scene was never built; `/src/scene/` holds only two placeholders (`LandingSceneHint`, `RobotPlaceholder`). None of the `ConveyorBelt` / `RoboticArm` / `Bin` / `Factory` / `robot/parts` hierarchy below exists. The two-engine ownership rule (§1) still governs the **live** modest motion: Motion owns the bucket-sort drag, step transitions, and the node-map compare; GSAP owns the single Landing `DrawSVG` reveal. The composition spec below is the original direction, kept for the record.
+> **Parked.** The assembly-line scene was never built; `/src/scene/` holds only the `LandingSceneHint` placeholder (`RobotPlaceholder` went with the Phase-4 Exam/Classic archive). None of the `ConveyorBelt` / `RoboticArm` / `Bin` / `Factory` / `robot/parts` hierarchy below exists. The two-engine ownership rule (§1) still governs the **live** modest motion: Motion owns the bucket-sort drag, step transitions, and the node-map compare; GSAP owns the single Landing `DrawSVG` reveal. The composition spec below is the original direction, kept for the record.
 
 The assembly-line scene is built as a hierarchy of SVG React components. The scene choreography (belt, item travel, arm, part-to-robot) is driven by GSAP timelines; the drag-to-bin gesture and any React-state-driven transitions are Motion. See the ownership rule in section 1.
 
@@ -254,11 +244,11 @@ SVG performs fine at our scale. Cap the number of animated nodes to a few dozen 
 
 Routes (`/src/app/router.tsx`):
 
-- `/` — Landing (the researcher flow switcher)
-- `/flow` — the `FlowRunner` (narrative + exam): renders the current step by type
-- `/results` — Results (dispatches by `flow.kind`: node map, dashboard, or classic)
+- `/` — Landing (the researcher flow switcher; live segments are Narrative / Select)
+- `/flow` — the `FlowRunner` (narrative): renders the current step by type
+- `/results` — Results (dispatches to the narrative node map)
 - `/select` — the role-pick comparator (`RoleSelect`, the industry-professional arm)
-- `/sort`, `/build` — **documented cut, dormant.** The classic interest-sort and Build beat. Kept registered so the classic data stays exercised, but they have no UI entry (the landing switcher reads Narrative / Exam / Select; `defaultFlowId = 'narrative'`, D-021).
+- _(Documented cut: `/flow` also ran the cut Exam flow; `/results` also dispatched the exam dashboard and the classic results; the `/sort` and `/build` routes served the classic interest-sort and Build beat. All deleted in Phase 4, D-027. `defaultFlowId = 'narrative'`, D-021.)_
 
 Navigation happens via store actions that update `state.currentScreen` *and* call `navigate()`; completion is declarative off `currentScreen` so it can't race the redirect. Refresh-on-results redirecting to landing is acceptable for a prototype.
 
@@ -318,9 +308,9 @@ Playwright is set up in Phase 0 and runs as part of `pnpm test`. It serves two p
 
 ### Test types
 
-- **Flow E2E (live).** `narrative.spec` and `exam.spec` walk a known set of answers through `/flow` to `/results`, asserting the displayed percentages match the engine and the right top match shows; `role-select.spec` covers the `/select` comparator.
+- **Flow E2E (live).** `narrative.spec` walks a known set of answers through `/flow` to `/results`, asserting the displayed percentages match the engine and the right top match shows; `role-select.spec` covers the `/select` comparator; `reduced-motion.spec` (rehomed to the narrative flow in Phase 4) checks the `prefers-reduced-motion` path. Three specs total.
 - **Interaction tests.** The bucket-sort drag, the node-map compare swap, the landing flow switcher.
-- **Classic specs (dormant).** `happy-path`, `compare`, `reduced-motion` drive the documented-cut classic flow via a dev-only store handle (D-021); they re-baseline when the classic flow is archived.
+- _(Documented cut: `exam.spec` drove the cut exam flow, and `happy-path`/`compare` drove the classic flow via a dev-only store handle. All deleted in Phase 4, D-027.)_
 - **Visual regression.** Snapshot key screens. A later add.
 
 ### Self-verification by Claude Code
