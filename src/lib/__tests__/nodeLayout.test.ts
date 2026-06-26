@@ -45,23 +45,23 @@ describe('CATEGORY_ANGLES', () => {
 });
 
 describe('radarPoints', () => {
-  const weights: CategoryWeights = { operate: 100, repair: 50, program: 0, plan: 100 };
+  const weights: CategoryWeights = { technician: 100, specialist: 50, integrator: 0 };
 
-  it('returns one vertex per category in CATEGORIES order', () => {
+  it('returns one vertex per role in CATEGORIES order', () => {
     const points = radarPoints(weights, 200);
     expect(points).toHaveLength(CATEGORIES.length);
-    // operate (100%) sits at full radius on its axis; program (0%) collapses to center.
+    // technician (100%) sits at full radius on its axis; integrator (0%) collapses to center.
     expect(Math.hypot(points[0].x, points[0].y)).toBeCloseTo(200);
     expect(Math.hypot(points[2].x, points[2].y)).toBeCloseTo(0);
   });
 
   it('scales vertices linearly with the match percentage', () => {
     const points = radarPoints(weights, 200);
-    expect(Math.hypot(points[1].x, points[1].y)).toBeCloseTo(100); // repair 50%
+    expect(Math.hypot(points[1].x, points[1].y)).toBeCloseTo(100); // specialist 50%
   });
 
   it('clamps out-of-range percentages into 0-100', () => {
-    const points = radarPoints({ operate: 150, repair: -20, program: 0, plan: 0 }, 200);
+    const points = radarPoints({ technician: 150, specialist: -20, integrator: 0 }, 200);
     expect(Math.hypot(points[0].x, points[0].y)).toBeCloseTo(200);
     expect(Math.hypot(points[1].x, points[1].y)).toBeCloseTo(0);
   });

@@ -64,7 +64,7 @@ This is the single most actionable finding and the explicit foundation of this b
 
 > *"The problem isn't a lack of interest, it's a lack of specificity. There's a large 'maybe' group that hasn't converted interest into career intent because they can't picture what the work actually looks like."*
 
-The build's results screen exists to be the answer to that question, in the specific way: here are the RC.org career categories, here's how you match each, here are the concrete skills and competencies you'd build for them, here are the programs that get you there.
+The build's results screen exists to be the answer to that question, in the specific way: here are the RC.org career roles, here's how you match each, here are the concrete skills and competencies you'd build for them, here are the programs that get you there.
 
 ## 4. How this build maps to the insights
 

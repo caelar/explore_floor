@@ -25,7 +25,7 @@ For each rubric, a short health line then the findings:
 
 ```
 ## design-system-compliance — <pass-rate or PASS/ISSUES>
-- [p1] category-accent-mapping — exam/CategoryBars.tsx:31 hardcodes `#38A5EE`; read it from categoryAccent.ts.
+- [p1] role-accent-mapping — NodeMap.tsx hardcodes `#38A5EE`; read it from categoryAccent.ts.
 - [p1] reduced-motion — node-map swap plays a physical spring regardless of prefers-reduced-motion.
 - [p2] ...
 ## results-screen — ...

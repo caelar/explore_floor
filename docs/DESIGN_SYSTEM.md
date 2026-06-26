@@ -23,7 +23,7 @@ The Figma file (RC-CC) is the source for tokens. The `@theme` block in `src/styl
 | `color/brand/gold` | `arm-gold` | The "ARM gold" (kit-aligned; renamed from `arm-yellow`, D-024) |
 | `color/brand/gold-soft` | `arm-gold-soft` | CTA hover tint |
 | `color/brand/orange` | `arm-orange` | Secondary Orange (kit `#BF5309`, AA-safe) |
-| `color/brand/blue` | `arm-blue` | TEMP holdout (program accent + links); retoned at step 8 |
+| `color/brand/blue` | `arm-blue` | TEMP holdout (specialist accent + links); retoned at step 8 |
 | `color/brand/teal` | `arm-teal` | Secondary Teal, the interactive voice |
 | `color/semantic/page-bg` | `page-bg` | |
 | `color/semantic/bg` | `bg` | |
@@ -62,7 +62,7 @@ Snapped to the RC UI Kit, matching `career_dashboard` (D-024 here; its D-026). V
 | `arm-gold-soft` | `#FDC547` | CTA hover tint. |
 | `arm-teal` | `#117289` | Secondary Teal — the single interactive voice: links, CTAs, the match indicator. |
 | `arm-orange` | `#BF5309` | Secondary Orange — rare attention, AA-safe as text at 4.71:1 (was `#F56A00`, which failed AA at 3.02:1). |
-| `arm-blue` | `#38A5EE` | **TEMP.** The program category accent + legacy link voice; fails AA as text (2.7:1). Retired/retoned in the step-8 results-accent redesign. |
+| `arm-blue` | `#38A5EE` | **TEMP.** The specialist role accent + legacy link voice; fails AA as text (2.7:1). Retired/retoned in the step-8 results-accent redesign. |
 
 ### 3.2 Semantic (light mode foundation)
 
@@ -83,20 +83,19 @@ Inherited verbatim from RC-CC. The product is light-mode by default.
 | `overlay` | `#262626F2` |
 | `near-black` | `#262626` |
 
-### 3.3 Category accents (live)
+### 3.3 Role accents (live)
 
-The live flows score four RC.org categories, and each carries an accent. **Never invent a new color for a category** and never hardcode a hex per screen; the mapping lives in one place, `src/components/categoryAccent.ts` (`CATEGORY_ACCENT_TEXT`), so a screen reads the token, not a literal.
+The live narrative flow scores ARM's three RC.org roles, and each carries an accent. **Never invent a new color for a role** and never hardcode a hex per screen; the mapping lives in one place, `src/components/categoryAccent.ts` (`CATEGORY_ACCENT_TEXT`), so a screen reads the token, not a literal.
 
-| Category | Role | Accent token |
-|---|---|---|
-| Operate | Operator | `arm-gold` |
-| Repair | Technician | `arm-orange` |
-| Program | Specialist | `arm-blue` |
-| Plan | Integrator | `arm-teal` |
+| Role | Accent token |
+|---|---|
+| Technician (entry) | `arm-gold` |
+| Specialist (mid) | `arm-blue` |
+| Integrator (planning) | `arm-teal` |
 
 The accent shows up in the match indicator and the centered-role chrome (narrative node map). _(It also drove the category bars on the cut exam dashboard.)_
 
-> **Interim, being finalized at step 8.** This mapping reuses the four kit brand tokens so the study presentation stays minimal. Two known tensions resolve in the high-fidelity results redesign (`REALIGNMENT.md` step 8): `arm-blue` fails AA as text (2.7:1) and is retoned, and `arm-gold` is a fill rather than a text color on white in the kit (operate's `text-arm-gold` is the interim exception). The target is a restrained, teal-led category palette.
+> **Interim, being finalized at step 8.** This mapping reuses kit brand tokens so the study presentation stays minimal. (Phase 5, D-028, collapsed the study's four categories to these three roles — the entry Technician inherits the old Operate's gold; Specialist keeps the old Program's blue; Integrator keeps the old Plan's teal; the old Repair orange drops out.) Two known tensions resolve in the high-fidelity results redesign (`REALIGNMENT.md` step 8): `arm-blue` fails AA as text (2.7:1) and is retoned, and `arm-gold` is a fill rather than a text color on white in the kit (the technician's `text-arm-gold` is the interim exception). The target is a restrained, teal-led role palette.
 
 **Documented cut — classic archetype accents.** The dormant Classic flow tied three archetypes to brand colors (Builder→`arm-orange`, Innovator→`arm-blue`, Architect→`arm-teal`), driving the robot color scheme (`DATA_MODEL.md` §7, `colorSchemes.ts`). Parked with the rest of the classic pipeline.
 
@@ -172,7 +171,7 @@ fontSize: {
 - Section titles: H3 or H4.
 - Role / category titles on results: H4.
 - Scene choice labels (and the cut exam's statement labels): Body/Medium (the kid reads it easily, doesn't shout).
-- Match percentage on results: H2 in the category accent color (`categoryAccent.ts`).
+- Match percentage on results: H2 in the role accent color (`categoryAccent.ts`).
 - Overlines (`Label/Overline`) for short labels. _(The classic "ROUND 2 OF 4" round indicator is a documented-cut use.)_
 
 ### 4.5 Playful layer additions
@@ -333,7 +332,7 @@ Components specific to this experience. Each is named identically in code and (w
 - `BucketSort` — the shared one-card-at-a-time sort into That's me / Kinda me / Not me (used by the narrative scenes)
 - The flow-step views — `MCQuestion`, `SceneSortView` under the `FlowRunner`
 - The narrative node map (`Results/category/`) — the centered top-match node, the behind-nodes, the job-title branches
-- `RoleDetailSheet` — the shared role sheet (RC.org role content + four-axis fit radar)
+- `RoleDetailSheet` — the shared role sheet (RC.org role content + three-axis fit radar)
 - `FitNote` — the always-on education/pay fit line (D-020)
 
 **Documented cut (deleted Phase 4, D-027):** the exam dashboard (`Results/exam/` — `ExamResults`, the four `CategoryBars`, `ScoreBreakdown`, `YourRoles`) and `StatementSortView`, deleted with the cut Exam flow; and the conveyor scene (`ConveyorBelt`, `ConveyorItem`, `RoboticArm`, `SortBin`, `Robot`, `RobotPart`, `Pedestal`, the classic `RoleCard` / `ProgramList` / `MatchIndicator` / `RoundIndicator`, and `SoundToggle`), parked with the classic pipeline and never authored as Figma components. Recoverable at git tag `archive/pre-narrative-only`.
@@ -345,7 +344,7 @@ Capture the live components into Figma at settled checkpoints (`/capture-figma`)
 > The two-layer model (a Material foundation plus a Goose-game illustrated scene) assumed a scene that was never built, so there is one layer now: the kit. The durable discipline from this section survives and applies to the whole build:
 
 - **Type is constant.** Montserrat headings, Roboto body. Always.
-- **Brand color usage stays consistent.** ARM Gold is the brand signature and CTA fill; the four category accents come from `categoryAccent.ts` (§3.3). No invented colors.
+- **Brand color usage stays consistent.** ARM Gold is the brand signature and CTA fill; the three role accents come from `categoryAccent.ts` (§3.3). No invented colors.
 - **Surfaces use kit conventions** (white cards on light surface, kit radii, the two soft shadow tiers, used sparingly).
 
 The retired two-layer rules (foundation-vs-scene namespacing, scene-on-top-of-foundation transitions) are parked with the conveyor vision.

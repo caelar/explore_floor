@@ -28,12 +28,12 @@ sections:
     order: 2
     title: Color usage
     criteria:
-      - id: category-accent-mapping
+      - id: role-accent-mapping
         severity: p1
-        check: Category accents come from categoryAccent.ts (operate→arm-gold, repair→arm-orange, program→arm-blue, plan→arm-teal), never an invented per-screen hex
+        check: Role accents come from categoryAccent.ts (technician→arm-gold, specialist→arm-blue, integrator→arm-teal), never an invented per-screen hex
       - id: gold-reserved
         severity: p2
-        check: arm-gold is the brand signature / primary CTA fill (operate's text-arm-gold accent is the interim step-8 exception)
+        check: arm-gold is the brand signature / primary CTA fill (technician's text-arm-gold accent is the interim step-8 exception)
       - id: no-neon
         severity: p1
         check: No Make.md neon colors (06ffa5, 00d9ff, ff006e) appear anywhere
@@ -146,4 +146,4 @@ Durations (`instant`/`snap`/`glide`/`pour`/`reveal`) and easings (`ease-soft`/`e
 Run via `/design-review`, which screenshots the running screen and inspects the JSX/Tailwind (and, for motion, observes it live and toggles reduced-motion). Report p1s as blocking, p2s as should-fix, p3s as polish. Cite the offending file:line and the correct token.
 
 ## Cross-references
-`results-screen.md` (the high-fidelity results quality bar), `.claude/skills/scene-motion` (the live motion ownership discipline), `CLAUDE.md` (tokens-not-literals rule), `DATA_MODEL.md` §17 (the four-category model + `categoryAccent.ts`).
+`results-screen.md` (the high-fidelity results quality bar), `.claude/skills/scene-motion` (the live motion ownership discipline), `CLAUDE.md` (tokens-not-literals rule), `DATA_MODEL.md` §17 (the three-role model + `categoryAccent.ts`).

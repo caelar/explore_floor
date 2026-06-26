@@ -3,11 +3,12 @@ import { CATEGORIES } from '@/data/types';
 
 import { walkPath } from './categoryScoring';
 
-// Score provenance for the exam results "why you scored that way" panel (DATA_MODEL §17).
-// Pure, and walks the SAME branch-aware path as calculateCategoryScores, so the labels it
-// surfaces are exactly the items that moved each category's raw score. `maybe` statements
-// are reported separately — they earn nothing today (MAYBE_WEIGHT = 0) but are worth showing
-// as "on the fence".
+// Score provenance for the results "why you scored that way" read (DATA_MODEL §17). Pure,
+// and walks the SAME branch-aware path as calculateCategoryScores, so the labels it surfaces
+// are exactly the items that moved each role's raw score. Currently unwired — it's the
+// match-explanation engine the high-fidelity narrative results screen (step 8) will graft on.
+// `maybe` choices are reported separately — they earn nothing today (MAYBE_WEIGHT = 0) but
+// are worth showing as "on the fence".
 
 export interface CategoryContribution {
   category: CategoryId;
@@ -57,19 +58,6 @@ export function categoryContributions(
             entry.earnedCount += 1;
           } else if (bucket === 'maybe') {
             entry.maybe.push(choice.label);
-          }
-        }
-        break;
-      case 'statementSort':
-        for (const statement of step.statements) {
-          const entry = out[statement.category];
-          entry.totalCount += 1;
-          const bucket = statementBuckets[statement.id];
-          if (bucket === 'thats-me') {
-            entry.earned.push(statement.label);
-            entry.earnedCount += 1;
-          } else if (bucket === 'maybe') {
-            entry.maybe.push(statement.label);
           }
         }
         break;

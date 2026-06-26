@@ -15,13 +15,13 @@ You are the **verifier** — the build's objective gate. You run checks and repo
    - `pnpm test:unit` (Vitest)
    - `pnpm test:e2e` (Playwright)
    Capture real output. If a command isn't defined yet, note it as "not configured" — don't invent a result.
-3. **Check the live §17 flow invariants** (from `DATA_MODEL.md` §17; these mirror `data-integrity.test.ts`, which is the enforcing gate). The live product is the narrative four-category flow, so these are the load-bearing checks:
-   - **Narrative flow:** 6 intro MC steps (Q0–Q5) then exactly 7 scenes; each scene has exactly 4 choices, one per category (`operate / repair / program / plan`); every `branchTo` resolves to a *later* step (forward-only); `computeCategoryMax(steps)` equals the declared `expectedCategoryMax = {11, 11, 11, 11}`.
+3. **Check the live §17 flow invariants** (from `DATA_MODEL.md` §17; these mirror `data-integrity.test.ts`, which is the enforcing gate). The live product is the narrative three-role flow, so these are the load-bearing checks:
+   - **Narrative flow:** 6 intro MC steps (Q0–Q5) then exactly 7 scenes; each scene has exactly 3 choices, one per role (`technician / specialist / integrator`); every `branchTo` resolves to a *later* step (forward-only); `computeCategoryMax(steps)` equals the declared `expectedCategoryMax = {11, 11, 11}`. The intro ladder scores one point each (D-023): no-college (Q1 "No") / $45k → technician, 4yr+ / $85k+ → specialist + integrator; "1-2 years" and "Whatever" are unscored (which keeps the three role ceilings equal at 11).
    - **Buckets:** `SORT_BUCKETS` is one constant; the 3 buckets read in order `thats-me / maybe / not-me`, the middle label is **"Kinda me"** (D-018) and scores `MAYBE_WEIGHT` (0).
-   - **Shared:** unique step + choice ids; all four `roleDetails` resolve to four distinct role names, each with `educationLevel` and `payLevel` integers in 0..2 (screener fit, D-020); all owned copy non-empty.
+   - **Shared:** unique step + choice ids; all three `roleDetails` resolve to three distinct role names, each with `educationLevel` and `payLevel` integers in 0..2 (screener fit, D-020); all owned copy non-empty.
    You may compute these by reading `src/data/flows/*` and `src/data/roleDetails.ts` directly, not only via tests.
 
-   _(Classic and Exam were archived in Phase 4 — D-027, recoverable at git tag `archive/pre-narrative-only`. Their old invariants — the 24 interest items, the per-archetype sums Builder 22 / Innovator 27 / Architect 25, the exam 8/7/7/8 — are no longer checked. The four→three role collapse is Phase 5.)_
+   _(Classic and Exam were archived in Phase 4 — D-027, recoverable at git tag `archive/pre-narrative-only`. Phase 5 (D-028) then collapsed the four categories to ARM's three roles. The old invariants — the 24 interest items, the per-archetype sums Builder 22 / Innovator 27 / Architect 25, the exam 8/7/7/8, and the four-category maxes — are no longer checked.)_
 
 ## How you report
 

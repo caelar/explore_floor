@@ -23,25 +23,25 @@ test('role select: land, open a detail, select, confirm, return to Landing', asy
   await page.getByTestId('start-cta').click();
   await expect(page).toHaveURL(/\/select$/);
 
-  // All four cards, in ladder order (Operate → Repair → Program → Plan), named from roleDetails.
+  // All three cards, in ladder order (Technician → Specialist → Integrator), named from roleDetails.
   const cards = page.locator('[data-testid^="select-card-"]');
-  await expect(cards).toHaveCount(4);
+  await expect(cards).toHaveCount(3);
   for (let i = 0; i < CATEGORIES.length; i++) {
     await expect(cards.nth(i)).toContainText(roleDetails[CATEGORIES[i]].roleName);
   }
 
   // "See details" opens the shared role sheet — content yes, fit radar no (no scores here).
-  await page.getByTestId('select-details-repair').click();
+  await page.getByTestId('select-details-technician').click();
   await expect(page.getByTestId('role-sheet')).toBeVisible();
-  await expect(page.getByTestId('role-sheet')).toContainText(roleDetails.repair.roleName);
+  await expect(page.getByTestId('role-sheet')).toContainText(roleDetails.technician.roleName);
   await expect(page.getByTestId('fit-radar')).toHaveCount(0);
   await page.getByTestId('sheet-close').click();
   await expect(page.getByTestId('role-sheet')).not.toBeVisible();
 
   // "This is me" → the thin confirmation, then Continue returns to Landing.
-  await page.getByTestId('select-role-program').click();
+  await page.getByTestId('select-role-specialist').click();
   await expect(page.getByTestId('select-confirm')).toHaveText(
-    `You’re set as ${roleDetails.program.roleName}`,
+    `You’re set as ${roleDetails.specialist.roleName}`,
   );
   await page.getByTestId('select-continue').click();
   await expect(page).toHaveURL(/\/$/);

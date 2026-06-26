@@ -76,9 +76,9 @@ export function* walkPath(
   }
 }
 
-/** A step's ceiling contribution: single-select steps add 1 per category *present*
- *  among their choices (two plan-mapped choices in one question still cap plan at 1);
- *  each sort statement adds 1 to its own category. */
+/** A step's ceiling contribution: single-select steps add 1 per role *present* among their
+ *  choices (two integrator-mapped choices in one question still cap integrator at 1); each
+ *  scene choice adds 1 to its own role. */
 function addStepMax(max: CategoryWeights, step: FlowStep): void {
   switch (step.type) {
     case 'mc': {
@@ -88,9 +88,6 @@ function addStepMax(max: CategoryWeights, step: FlowStep): void {
     }
     case 'scene':
       for (const choice of step.choices) max[choice.category] += 1;
-      break;
-    case 'statementSort':
-      for (const statement of step.statements) max[statement.category] += 1;
       break;
   }
 }
@@ -108,15 +105,10 @@ function addStepRaw(
       break;
     }
     case 'scene':
-      // Each scene choice is sorted into a bucket (keyed by choice id in statementBuckets),
-      // exactly like a statement — a scene can credit several categories, or none (D-018).
+      // Each scene choice is sorted into a bucket (keyed by choice id in statementBuckets);
+      // a scene can credit several roles, or none (D-018).
       for (const choice of step.choices) {
         raw[choice.category] += bucketWeight(statementBuckets[choice.id]);
-      }
-      break;
-    case 'statementSort':
-      for (const statement of step.statements) {
-        raw[statement.category] += bucketWeight(statementBuckets[statement.id]);
       }
       break;
   }
@@ -129,7 +121,8 @@ function bucketWeight(bucket: BucketId | undefined): number {
 }
 
 function zeroWeights(): CategoryWeights {
-  return { operate: 0, repair: 0, program: 0, plan: 0 };
+  // Derived from CATEGORIES so it can't drift when the role set changes.
+  return Object.fromEntries(CATEGORIES.map((c) => [c, 0])) as CategoryWeights;
 }
 
 function toPercent(value: number, total: number): number {

@@ -8,7 +8,7 @@ interface FitRadarProps {
 }
 
 // The "How you fit" graphic on the role sheet (the team's results wireframe 2):
-// a four-axis radar — one axis per category, same orientation as the node map —
+// a three-axis radar (a triangle) — one axis per role, same orientation as the node map —
 // with the user's match polygon filled over light gridlines. Static by design.
 
 const RADIUS = 110;
@@ -18,12 +18,9 @@ const GRID_LEVELS = [25, 50, 75, 100];
 const toPointsAttr = (points: { x: number; y: number }[]) =>
   points.map((p) => `${p.x},${p.y}`).join(' ');
 
-const gridWeights = (level: number): CategoryWeights => ({
-  operate: level,
-  repair: level,
-  program: level,
-  plan: level,
-});
+// Derived from CATEGORIES so the grid follows the role set (no hardcoded keys to drift).
+const gridWeights = (level: number): CategoryWeights =>
+  Object.fromEntries(CATEGORIES.map((c) => [c, level])) as CategoryWeights;
 
 export function FitRadar({ matchPercentages }: FitRadarProps) {
   return (

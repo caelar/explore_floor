@@ -2,7 +2,9 @@
 
 Source: FigJam board "Narrative Quiz Structure" (figma.com/board/HP9OFVXI69y7tKaFUJP1Lz), node 7:313, pulled 2026-06-22 (V3 language pass).
 
-**Purpose.** This document gives the questions, answer choices, category mappings, and flow for two versions of the Explore the Floor interest quiz. We're building both versions to test which style users prefer. This spec covers content and order only. It says nothing about visual design or implementation, and it isn't a recommendation for either.
+> **Updated for the three-role collapse (Phase 5, D-028, 2026-06-25).** The shipping product is **Version 1 (Narrative) only**, and it now scores ARM's **three** published robotics roles, not the four study categories the board drew. Version 1 below has been rewritten to match the live `src/data/flows/narrativeFlow.ts` + `src/data/roleDetails.ts` exactly. **Version 2 (Exam)** is the **archived/retired comparison condition** — the narrative won the June 2026 study and the exam was deleted from the live tree in Phase 4 (D-027). Its section is kept for the record on the original four study categories; it is not built and is not a recommendation.
+
+**Purpose.** This document gives the questions, answer choices, role mappings, and flow for the Explore the Floor interest quiz. It's the cited content source for the data files, so it must match them. This spec covers content and order only. It says nothing about visual design or implementation.
 
 **Light copyedits.** Sticky-note typos from the board were cleaned in transcription (spelling, apostrophes, "median in" to "median is"). No wording was otherwise changed.
 
@@ -10,16 +12,17 @@ Source: FigJam board "Narrative Quiz Structure" (figma.com/board/HP9OFVXI69y7tKa
 
 ## Shared framework
 
-Both versions score the user across the same four interest categories, each tied to a role:
+The live narrative flow scores the user across ARM's three robotics roles:
 
-| Category | Role |
+| Role | Level |
 |---|---|
-| Operate | Operator |
-| Repair | Technician |
-| Program | Specialist |
-| Plan | Integrator |
+| Technician | Entry (folds the old Operate + Repair) |
+| Specialist | Mid (the old Program) |
+| Integrator | Planning (the old Plan) |
 
-Scored choices and statements tally toward one or more categories. The category totals drive the shared results experience (described at the end of this doc).
+Scored choices tally toward one or more roles. The role totals drive the shared results experience (described at the end of this doc).
+
+_(Historical: the board and the study scored four categories — Operate→Operator, Repair→Technician, Program→Specialist, Plan→Integrator. Phase 5, D-028, collapsed those to the three roles above: Operate + Repair fold into the entry Technician, built from the Operate/Operator card. The archived Version 2 below still uses the four study categories.)_
 
 ---
 
@@ -33,132 +36,125 @@ Opening prompt, shown with Q0: **"Let's start with some basic questions..."**
 
 **Q0. Do you have any experience in this field?** _(new in V3; background, unscored)_
 
-| Choice | Category mapping | Branch |
+| Choice | Role mapping | Branch |
 |---|---|---|
 | Yes | none | go to Q1 |
 | No | none | go to Q1 |
 
 **Q1. Are you planning on going to college?**
 
-| Choice | Category mapping | Branch |
+| Choice | Role mapping | Branch |
 |---|---|---|
 | Yes | none | go to Q2 |
-| No | none | skip to Q3 |
+| No | Technician | skip to Q3 |
 
 **Q2. How long?** _(only shown if Q1 = Yes)_
 
-| Choice | Category mapping |
+| Choice | Role mapping |
 |---|---|
-| Little as possible (1-2 years) | none |
-| Typical (4 years) | none |
-| Long as possible (4+ years) | none |
-| Whatever | none |
+| Little as possible (1-2 years) | none (unscored) |
+| Typical (4 years) | Specialist + Integrator |
+| Long as possible (4+ years) | Specialist + Integrator |
+| Whatever | none (unscored) |
 
 **Q3. What is the lowest salary you would feel satisfied with?**
-Prompt shown with the question: "Keep in mind, the median is $60,000 in the US."
+Prompt shown with the question: **"Robotics roles run from about $46,000 to over $150,000."**
 
-| Choice | Category mapping |
+| Choice | Role mapping |
 |---|---|
-| $40,000 | none |
-| $60,000 | none |
-| $80,000+ | none |
+| $45,000 | Technician |
+| $85,000 | Specialist + Integrator |
+| $105,000+ | Specialist + Integrator |
 
 **Q4. What would you be happy spending your day doing?**
 Prompt: **"Workers in robotics do many different things throughout the day..."**
 
-| Choice | Category mapping |
+| Choice | Role |
 |---|---|
-| Doing hands-on work | Operate |
-| Making sure that things are working correctly | Repair |
-| Typing on a computer | Program |
-| Leading others | Plan |
+| Doing hands-on work to keep things running | Technician |
+| Typing on a computer | Specialist |
+| Leading others | Integrator |
 
 **Q5. What do you think will bring you the most happiness?**
 Prompt: **"Okay, one last thing. What will bring you fulfillment?"**
 
-| Choice | Category mapping |
+| Choice | Role |
 |---|---|
-| Inspiring others | Plan |
-| Feeling like I'm helping people | Repair |
-| Building | Operate |
-| Solving difficult problems | Program |
+| Inspiring others | Integrator |
+| Seeing something I built actually work | Technician |
+| Solving difficult problems | Specialist |
 
-Note: On the board these questions carry no category mappings. As built (V3 intro-question scoring, D-023), education (Q1 "college?" combined with Q2 "how long?") and salary (Q3) now nudge the match one point each on the role tier ladder: level 0 (no college / $40k) → Operate, level 1 (1-2 years / $60k) → Repair, level 2 (4+ years / $80k+) → Program + Plan. This mirrors the exam's intro screeners so the two instruments stop disagreeing by construction. Q0 (experience) stays unscored (routing parked for later), and Q2 "Whatever" stays unscored as a noncommittal answer. These tags are a parallel signal to the always-on education/pay fit line, kept consistent with its levels but not merged.
+Note: On the board these intro questions carried no mappings. As built (V3 intro-question scoring, D-023, three-role re-cut D-028), education (Q1 "college?" combined with Q2 "how long?") and salary (Q3) nudge the match one point each on the role tier ladder: no college (Q1 "No") / $45k (Q3) → **Technician**; 4 years / 4+ years (Q2) and $85k / $105k+ (Q3) → **Specialist + Integrator**. Q2 "Little as possible (1-2 years)" is **unscored** — it sits above HS/GED but below a Bachelor's, matching no role, which also keeps the three role ceilings equal at 11. Q0 (experience) stays unscored (routing parked for later), and Q2 "Whatever" stays unscored as a noncommittal answer. These tags are a parallel signal to the always-on education/pay fit line, kept consistent with its levels but not merged.
 
 ### Part 2: Story
 
-Transition line before Scene 1: **"Alright, let's get started."**
+Transition line before Scene 1 (shown on Scene 1's prompt): **"Alright, let's get started."**
 
-Seven scenes walk through a school day. Every scene has four choices, one per category. _(As built, D-018: the user sorts **each** of the four choices into the three buckets — That's me / Kinda me / Not me — one card at a time, the same structure as Version 2's statement sort. This corrected an earlier "pick one choice" build. See the board-notes section.)_
+Seven scenes walk through a school day. Every scene has **three** choices, one per role. _(As built, D-018: the user sorts **each** of the three choices into the three buckets — That's me / Kinda me / Not me — one card at a time. This corrected an earlier "pick one choice" build. The three-role re-cut, D-028, dropped each scene's old Repair choice and folded the Operate/Repair signal into the entry Technician; see the board-notes section.)_
 
-**Scene 1.** Prompt: "Your alarm goes off in the morning. You're getting ready for your first day of school." **How do you start the day?**
+**Scene 1.** Prompt: "Alright, let's get started. Your alarm goes off in the morning. You're getting ready for your first day of school." **How do you start the day?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Get dressed in the outfit I planned the night before | Plan |
-| Helping a younger sibling get ready | Repair |
-| Write down a step-by-step to-do list | Program |
-| Make breakfast for myself | Operate |
+| Get dressed in the outfit I planned the night before | Integrator |
+| Make breakfast and help a younger sibling get ready | Technician |
+| Write down a step-by-step to-do list | Specialist |
 
 **Scene 2.** Prompt: "You arrive at school, but have some time to kill." **What do you want to check out in that time?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Take a look at the shop class | Operate |
-| Explore the computer lab | Program |
-| Meet with my friends to make some afterschool plans | Plan |
-| Double-check my homework | Repair |
+| Take a look at the shop class | Technician |
+| Explore the computer lab | Specialist |
+| Meet with my friends to make some afterschool plans | Integrator |
 
 **Scene 3.** Prompt: "The bell rings so you head to class. Your teacher hands you a handout of all the assignments for that year." **What are you most excited for?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Taking the lead on a group project | Plan |
-| Building a 3D model | Operate |
-| Being a tutor to a younger student | Repair |
-| Solving some difficult math problems | Program |
+| Taking the lead on a group project | Integrator |
+| Building a 3D model | Technician |
+| Solving some difficult math problems | Specialist |
 
 **Scene 4.** Prompt: "It's lunch time! You usually spend this time with the club you are a part of." **Where will you be?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Shop club | Operate |
-| Computer science club | Program |
-| Debate club | Plan |
-| IT club | Repair |
+| Shop club | Technician |
+| Computer science club | Specialist |
+| Debate club | Integrator |
 
 **Scene 5.** Prompt: "You're back home after a long day of school." **What are you doing around the house?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Coding a game | Program |
-| Fix your bike | Repair |
-| Assemble a bird house | Operate |
-| Planning the rest of my week | Plan |
+| Coding a game | Specialist |
+| Fix your bike | Technician |
+| Planning the rest of my week | Integrator |
 
 **Scene 6.** Prompt: "You have to do some homework." **Which assignment would you want to complete the most?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Working on my presentation | Plan |
-| Editing an essay | Repair |
-| Writing code | Program |
-| Make 10 posters for a club event | Operate |
+| Working on my presentation | Integrator |
+| Make 10 posters for a club event | Technician |
+| Writing code | Specialist |
 
 **Scene 7.** Prompt: "You finally have some time to relax. You decide to play a video game." **What are you playing?**
 
-| Choice | Category |
+| Choice | Role |
 |---|---|
-| Puzzle-solving game | Program |
-| Strategy game | Plan |
-| Building game | Operate |
-| Simulation games | Repair |
+| Puzzle-solving game | Specialist |
+| Strategy game | Integrator |
+| Building game | Technician |
 
 After Scene 7 the user goes to results.
 
 ---
 
-## Version 2: Direct questions + statement sort (FigJam Page 2)
+## Version 2: Direct questions + statement sort (FigJam Page 2) — ARCHIVED (retired comparison condition)
+
+> **Archived, not built.** This is the study's **Exam** comparison condition. The narrative won the June 2026 study, so the exam flow was deleted from the live tree in Phase 4 (D-027) and never went through the three-role collapse. The section below is preserved for the record on the **original four study categories** (Operate/Repair/Program/Plan → Operator/Technician/Specialist/Integrator). Do not treat its mappings as live.
 
 Three parts in order: starting questions, one mapped multiple-choice question, then a statement sort.
 
@@ -241,61 +237,57 @@ After the last statement the user goes to results.
 
 ---
 
-## Results (shared by both versions)
+## Results (the live narrative; the archived exam shared the layout)
 
 Two layers, matching the two wireframes on FigJam Page 1.
 
-### Layer 1: Category node map (wireframe 1)
+### Layer 1: Role node map (wireframe 1)
 
-A map of nodes on concentric circles. The four category nodes (Operate, Repair, Program, Plan) are placed by match strength: innermost ring is most like you, outermost ring is least like you. The center is labeled "Recommended titles."
+A graph of nodes. The three role nodes (Technician, Specialist, Integrator) are placed by match strength — the top-matched role sits front-and-center, the other two sit behind it and swap in on tap. The center is labeled with the centered role's recommended titles.
 
-Clicking a category node spawns job-title nodes connected to it, drawn from that category's common job titles (listed below). Clicking a job-title node opens Layer 2.
+Tapping a role node brings it to the center; the active role's job titles branch off the front on connector lines (drawn from that role's common job titles, listed below). Tapping a job-title node opens Layer 2.
 
 ### Layer 2: Role detail sheet (wireframe 2)
 
-A sheet opens over the map explaining the category that the title belongs to. Content per sheet: role name, description, "Add this Role to your profile" link, job activities, education, common job titles, salary, and a "How you fit" graphic showing the user's four category scores.
+A sheet opens over the map explaining the role that the title belongs to. Content per sheet: role name, description, "Add this Role to your profile" link, job activities, education, common job titles, salary, and a "How you fit" graphic (a three-axis triangle radar) showing the user's three role scores.
 
-### Role detail content (from RC.org role cards)
+### Role detail content (matches `src/data/roleDetails.ts`, from RC.org's three-role cards)
 
-**Operate**
+These three are the live roles. The entry **Technician** is built from RC.org's Operate/Operator card (the old four-category Operate + Repair fold into it).
+
+**Technician** (entry)
 
 - Description: In entry-level robot operating roles, you'll be responsible for the set-up, operation, and maintenance of robots and other automation equipment.
 - Job activities: Supervise and instruct robots on existing tasks. Ensure quality outputs. Teach robots new tasks. Generate data for machine learning algorithms. Load parts. Work with the team to identify and solve issues.
 - Education: High school diploma or GED certificate required
-- Common job titles: Robot Operator; Entry Level Robotics; Assembly Operator
-- Salary: national median $40,300/yr
+- Common job titles: Robot Operator; Entry Level Robotics; Assembly Operator; Automation Technician; Robotics Maintenance Technician
+- Salary: National median $45,936/yr
 
-**Repair**
-
-- Description: In entry-level repair roles, you'll focus on the day-to-day maintenance of robots on the manufacturing floor and collaborate with those operating the robots.
-- Job activities: Install, service, maintain, troubleshoot, and repair robots and automated production systems. Maximize the efficiency of robotic systems and minimize downtime. Understand computers, electrical and electronic systems, sensor and feedback principles, and how robots work as machines.
-- Education: Associate's degree or a post-secondary certificate required
-- Common job titles: Automation Technician; Robotics Maintenance Technician; Mechatronics & Robotics Technician; Robotics Process Controls Technician
-- Salary: range $54,000 to $78,000/yr; national median $66,000/yr
-
-**Program**
+**Specialist** (mid)
 
 - Description: In mid-level robotics roles, you'll design, develop, program, and implement robotic systems and technologies to enhance the efficiency, productivity, and functionality of a manufacturer.
 - Job activities: Build, configure, or test robots or robotic applications. Design robotic systems and end-of-arm tooling. Supervise technologists, technicians, or other engineers. Design software to control robotic systems for applications. Evaluate robotic systems or prototypes.
-- Education: Bachelor's Degree (preferred), Associate's Degree (required)
+- Education: Bachelor's Degree (required) or Master's Degree (sometimes preferred)
 - Common job titles: Robotics Specialist; Robotics Engineer; Mechatronics Engineer; Automation Engineer; Robotic Systems Engineer
-- Salary: range $86,000 to $124,000/yr; national median $105,000/yr
+- Salary: $85,000 to $147,700/yr; national median $105,000/yr
 
-**Plan**
+**Integrator** (planning)
 
 - Description: Planning roles require experts who understand robotics at the highest level. You'll create automation plans and recommend the most efficient, effective, and profitable automation work centers for your company.
 - Job activities: Perform feasibility studies on the automation projects, including data analysis to understand the initial process metrics and potential improvements. Test and plan using system simulation and modeling to ensure all automation systems (conveyors, sorters, industrial robots, collaborative robots, AMR, etc.) work cohesively as one unit. Determine an automation plan and oversee the implementation and testing processes to ensure improvement goals are met.
 - Education: Bachelor's Degree (required) or Master's Degree (sometimes preferred)
 - Common job titles: Robotics Integrator; Robotic Integration Design Engineer; Robotics Software Integrator; Robotics Application Development Engineer; Advanced Industrial Integrator
-- Salary: range $87,000 to $153,000/yr; national median $127,000/yr
+- Salary: $87,000 to $153,000/yr; national median $99,250/yr
+
+_(Source: `docs/reference/ARM Updated Role Structure - Source Content.md`, RC.org's live three-role cards. The archived four-category Exam read an Operate card, a separate Repair card, and the same Program/Plan content; that four-card set is the documented cut.)_
 
 ---
 
 ## Board notes and open items
 
-- The wireframe sketch shows three job-title nodes per category; the actual title lists above run three to five. The board doesn't say whether to cap at three.
-- _(Resolved in V3.)_ Two choices previously carried question marks on the board, meaning the team wasn't settled on them: "IT club" (Version 1, Scene 4) and "Writing code" (Version 1, Scene 6). The team has settled on both; they ship as-labeled.
-- _(Corrected 2026-06-07, verified against the live board.)_ Page 1's two format labels, "Multiple choice" (pink) and "Drag and drop" (blue), are a **color legend**, not unattached: the intro questions are pink (multiple choice, tap-to-select) and all seven story scenes are blue (drag and drop). As built: intro questions are single-select MC. _(Revised D-018:)_ each scene is a **per-choice sort** — the user judges all four choices, sorting each into one of three buckets (drag or tap), the same structure as Version 2's statement sort. This replaced the D-017 "drag your one pick into a zone" build after the team clarified the board's intent.
-- _(Corrected 2026-06-07; relabeled D-018.)_ The sort uses **three** buckets — "That's me" / **"Kinda me"** / "Not me" — not two, shared by both the statement sort (Version 2) and the narrative scenes (Version 1). The middle bucket reads "Kinda me" (renamed from "Maybe"). A prior user study asked for a middle option; it currently scores as a no (`MAYBE_WEIGHT = 0`, tunable). See D-017, D-018.
-- Page 2 of the board also holds an earlier rough results sketch (robot character, four-category percentage breakdown, "Breakdowns" and "Your roles" panels). The node-map flow described above is the intended results experience.
-- _As built:_ results wireframe 1 was reworked into an Obsidian-style node graph — the top-matched role sits front-and-center, the other three sit behind it and swap in on tap, and the active role's job titles branch off the front on connector lines (all titles shown, no cap at three). This replaced an earlier concentric-rings version that read as "funky" (D-017).
+- The wireframe sketch shows three job-title nodes per role; the actual title lists above run five. The board doesn't say whether to cap at three; as built, all titles show.
+- _(Resolved in V3.)_ Two choices previously carried question marks on the board, meaning the team wasn't settled on them: "IT club" (Version 1, Scene 4) and "Writing code" (Version 1, Scene 6). The team settled on both. "Writing code" ships as-labeled; "IT club" was the old Repair choice in Scene 4 and was dropped in the three-role re-cut (D-028) along with each scene's Repair option.
+- _(Corrected 2026-06-07, verified against the live board.)_ Page 1's two format labels, "Multiple choice" (pink) and "Drag and drop" (blue), are a **color legend**, not unattached: the intro questions are pink (multiple choice, tap-to-select) and all seven story scenes are blue (drag and drop). As built: intro questions are single-select MC. _(Revised D-018; re-cut D-028:)_ each scene is a **per-choice sort** — the user judges all three choices, sorting each into one of three buckets (drag or tap), the same structure as the archived Version 2's statement sort. This replaced the D-017 "drag your one pick into a zone" build after the team clarified the board's intent.
+- _(Corrected 2026-06-07; relabeled D-018.)_ The sort uses **three** buckets — "That's me" / **"Kinda me"** / "Not me" — not two, used by the narrative scenes (and, historically, the archived Version 2 statement sort). The middle bucket reads "Kinda me" (renamed from "Maybe"). A prior user study asked for a middle option; it currently scores as a no (`MAYBE_WEIGHT = 0`, tunable). See D-017, D-018.
+- Page 2 of the board also holds an earlier rough results sketch (robot character, a percentage breakdown, "Breakdowns" and "Your roles" panels). The node-map flow described above is the intended results experience.
+- _As built:_ results wireframe 1 was reworked into an Obsidian-style node graph — the top-matched role sits front-and-center, the other two sit behind it and swap in on tap, and the active role's job titles branch off the front on connector lines (all titles shown, no cap at three). This replaced an earlier concentric-rings version that read as "funky" (D-017).

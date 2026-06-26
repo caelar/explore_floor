@@ -1,19 +1,19 @@
 import type { CategoryFlow } from '../types';
 
-// The Narrative study flow (DATA_MODEL §17): six intro questions, then a
-// day-in-the-life story in seven scenes. Content verbatim from the team's board —
-// docs/reference/Narrative Quiz Structure Content Spec.md (Version 1, V3 language pass).
+// The Narrative flow (DATA_MODEL §17): six intro questions, then a day-in-the-life story in
+// seven scenes. Scores ARM's three robotics roles — Technician (entry), Specialist (mid),
+// Integrator (planning). Content from docs/reference/Narrative Quiz Structure Content Spec.md
+// (three-role re-cut, Phase 5 / D-028), grounded in the role salaries + education in
+// docs/reference/ARM Updated Role Structure - Source Content.md.
 //
 // Q0 (experience) is an unscored background question (routing parked for later).
-// Education (Q1 "college?" + Q2 "how long?") and salary (Q3) now nudge the score on
-// the role tier ladder — one point each — mirroring the exam's intro screeners so the
-// two instruments stop disagreeing by construction (DECISIONS D-023, parallels D-019):
-// level 0 (no college / $40k) → operate, level 1 (1-2 yrs / $60k) → repair,
-// level 2 (4+ yrs / $80k+) → program + plan. Q2 "Whatever" stays unscored. These tags
-// are a parallel signal to the screener fit line (flows/screeners.ts), kept consistent
-// with its levels but not merged. Q4 and Q5 each map exactly one choice per category
-// (V3). The two previously `??`-flagged scene choices, "IT club" (scene 4) and
-// "Writing code" (scene 6), are now settled.
+// Education (Q1 "college?" + Q2 "how long?") and salary (Q3) nudge the score on the role
+// tier ladder — one point each (D-023): no college / $45k → technician; 4+ years / $85k+ →
+// specialist + integrator. "1-2 years" is deliberately UNSCORED — it sits between the entry
+// Technician (HS/GED) and the degreed roles (Bachelor's), matching no role, which also keeps
+// the three role ceilings equal at 11. Q2 "Whatever" stays unscored too. These tags are a
+// parallel signal to the screener fit line (flows/screeners.ts), kept consistent with its
+// levels but not merged. Q4 and Q5 each map one choice per role.
 
 export const narrativeFlow: CategoryFlow = {
   id: 'narrative',
@@ -43,7 +43,7 @@ export const narrativeFlow: CategoryFlow = {
       question: 'Are you planning on going to college?',
       choices: [
         { id: 'n-q1-yes', label: 'Yes', categories: [] }, // education defers to Q2
-        { id: 'n-q1-no', label: 'No', categories: ['operate'], branchTo: 'n-q3' }, // level 0
+        { id: 'n-q1-no', label: 'No', categories: ['technician'], branchTo: 'n-q3' }, // level 0
       ],
     },
     {
@@ -51,21 +51,30 @@ export const narrativeFlow: CategoryFlow = {
       id: 'n-q2',
       question: 'How long?',
       choices: [
-        { id: 'n-q2-short', label: 'Little as possible (1-2 years)', categories: ['repair'] }, // level 1
-        { id: 'n-q2-typical', label: 'Typical (4 years)', categories: ['program', 'plan'] }, // level 2
-        { id: 'n-q2-long', label: 'Long as possible (4+ years)', categories: ['program', 'plan'] }, // level 2
+        // "1-2 years" matches no role (above HS, below Bachelor's) — unscored on purpose.
+        { id: 'n-q2-short', label: 'Little as possible (1-2 years)', categories: [] },
+        { id: 'n-q2-typical', label: 'Typical (4 years)', categories: ['specialist', 'integrator'] }, // level 2
+        {
+          id: 'n-q2-long',
+          label: 'Long as possible (4+ years)',
+          categories: ['specialist', 'integrator'],
+        }, // level 2
         { id: 'n-q2-whatever', label: 'Whatever', categories: [] }, // noncommittal — unscored (D-023)
       ],
     },
     {
       type: 'mc',
       id: 'n-q3',
-      prompt: 'Keep in mind, the median is $60,000 in the US.',
+      prompt: 'Robotics roles run from about $46,000 to over $150,000.',
       question: 'What is the lowest salary you would feel satisfied with?',
       choices: [
-        { id: 'n-q3-40', label: '$40,000', categories: ['operate'] }, // level 0
-        { id: 'n-q3-60', label: '$60,000', categories: ['repair'] }, // level 1
-        { id: 'n-q3-80', label: '$80,000+', categories: ['program', 'plan'] }, // level 2
+        { id: 'n-q3-45', label: '$45,000', categories: ['technician'] }, // Technician median $45,936
+        { id: 'n-q3-85', label: '$85,000', categories: ['specialist', 'integrator'] }, // degreed floor
+        {
+          id: 'n-q3-105',
+          label: '$105,000+',
+          categories: ['specialist', 'integrator'],
+        }, // degreed medians
       ],
     },
     {
@@ -74,14 +83,9 @@ export const narrativeFlow: CategoryFlow = {
       prompt: 'Workers in robotics do many different things throughout the day...',
       question: 'What would you be happy spending your day doing?',
       choices: [
-        { id: 'n-q4-hands', label: 'Doing hands-on work', categories: ['operate'] },
-        {
-          id: 'n-q4-maintain',
-          label: 'Making sure that things are working correctly',
-          categories: ['repair'],
-        },
-        { id: 'n-q4-typing', label: 'Typing on a computer', categories: ['program'] },
-        { id: 'n-q4-leading', label: 'Leading others', categories: ['plan'] },
+        { id: 'n-q4-hands', label: 'Doing hands-on work to keep things running', categories: ['technician'] },
+        { id: 'n-q4-typing', label: 'Typing on a computer', categories: ['specialist'] },
+        { id: 'n-q4-leading', label: 'Leading others', categories: ['integrator'] },
       ],
     },
     {
@@ -90,14 +94,9 @@ export const narrativeFlow: CategoryFlow = {
       prompt: 'Okay, one last thing. What will bring you fulfillment?',
       question: 'What do you think will bring you the most happiness?',
       choices: [
-        { id: 'n-q5-inspiring', label: 'Inspiring others', categories: ['plan'] },
-        {
-          id: 'n-q5-helping',
-          label: "Feeling like I'm helping people",
-          categories: ['repair'],
-        },
-        { id: 'n-q5-building', label: 'Building', categories: ['operate'] },
-        { id: 'n-q5-solving', label: 'Solving difficult problems', categories: ['program'] },
+        { id: 'n-q5-inspiring', label: 'Inspiring others', categories: ['integrator'] },
+        { id: 'n-q5-building', label: 'Seeing something I built actually work', categories: ['technician'] },
+        { id: 'n-q5-solving', label: 'Solving difficult problems', categories: ['specialist'] },
       ],
     },
     {
@@ -108,13 +107,16 @@ export const narrativeFlow: CategoryFlow = {
       question: 'How do you start the day?',
       choices: [
         {
-          id: 'n-s1-plan',
+          id: 'n-s1-integrator',
           label: 'Get dressed in the outfit I planned the night before',
-          category: 'plan',
+          category: 'integrator',
         },
-        { id: 'n-s1-repair', label: 'Helping a younger sibling get ready', category: 'repair' },
-        { id: 'n-s1-program', label: 'Write down a step-by-step to-do list', category: 'program' },
-        { id: 'n-s1-operate', label: 'Make breakfast for myself', category: 'operate' },
+        {
+          id: 'n-s1-technician',
+          label: 'Make breakfast and help a younger sibling get ready',
+          category: 'technician',
+        },
+        { id: 'n-s1-specialist', label: 'Write down a step-by-step to-do list', category: 'specialist' },
       ],
     },
     {
@@ -123,14 +125,13 @@ export const narrativeFlow: CategoryFlow = {
       prompt: 'You arrive at school, but have some time to kill.',
       question: 'What do you want to check out in that time?',
       choices: [
-        { id: 'n-s2-operate', label: 'Take a look at the shop class', category: 'operate' },
-        { id: 'n-s2-program', label: 'Explore the computer lab', category: 'program' },
+        { id: 'n-s2-technician', label: 'Take a look at the shop class', category: 'technician' },
+        { id: 'n-s2-specialist', label: 'Explore the computer lab', category: 'specialist' },
         {
-          id: 'n-s2-plan',
+          id: 'n-s2-integrator',
           label: 'Meet with my friends to make some afterschool plans',
-          category: 'plan',
+          category: 'integrator',
         },
-        { id: 'n-s2-repair', label: 'Double-check my homework', category: 'repair' },
       ],
     },
     {
@@ -140,13 +141,12 @@ export const narrativeFlow: CategoryFlow = {
         'The bell rings so you head to class. Your teacher hands you a handout of all the assignments for that year.',
       question: 'What are you most excited for?',
       choices: [
-        { id: 'n-s3-plan', label: 'Taking the lead on a group project', category: 'plan' },
-        { id: 'n-s3-operate', label: 'Building a 3D model', category: 'operate' },
-        { id: 'n-s3-repair', label: 'Being a tutor to a younger student', category: 'repair' },
+        { id: 'n-s3-integrator', label: 'Taking the lead on a group project', category: 'integrator' },
+        { id: 'n-s3-technician', label: 'Building a 3D model', category: 'technician' },
         {
-          id: 'n-s3-program',
+          id: 'n-s3-specialist',
           label: 'Solving some difficult math problems',
-          category: 'program',
+          category: 'specialist',
         },
       ],
     },
@@ -156,10 +156,9 @@ export const narrativeFlow: CategoryFlow = {
       prompt: "It's lunch time! You usually spend this time with the club you are a part of.",
       question: 'Where will you be?',
       choices: [
-        { id: 'n-s4-operate', label: 'Shop club', category: 'operate' },
-        { id: 'n-s4-program', label: 'Computer science club', category: 'program' },
-        { id: 'n-s4-plan', label: 'Debate club', category: 'plan' },
-        { id: 'n-s4-repair', label: 'IT club', category: 'repair' },
+        { id: 'n-s4-technician', label: 'Shop club', category: 'technician' },
+        { id: 'n-s4-specialist', label: 'Computer science club', category: 'specialist' },
+        { id: 'n-s4-integrator', label: 'Debate club', category: 'integrator' },
       ],
     },
     {
@@ -168,10 +167,9 @@ export const narrativeFlow: CategoryFlow = {
       prompt: "You're back home after a long day of school.",
       question: 'What are you doing around the house?',
       choices: [
-        { id: 'n-s5-program', label: 'Coding a game', category: 'program' },
-        { id: 'n-s5-repair', label: 'Fix your bike', category: 'repair' },
-        { id: 'n-s5-operate', label: 'Assemble a bird house', category: 'operate' },
-        { id: 'n-s5-plan', label: 'Planning the rest of my week', category: 'plan' },
+        { id: 'n-s5-specialist', label: 'Coding a game', category: 'specialist' },
+        { id: 'n-s5-technician', label: 'Fix your bike', category: 'technician' },
+        { id: 'n-s5-integrator', label: 'Planning the rest of my week', category: 'integrator' },
       ],
     },
     {
@@ -180,10 +178,9 @@ export const narrativeFlow: CategoryFlow = {
       prompt: 'You have to do some homework.',
       question: 'Which assignment would you want to complete the most?',
       choices: [
-        { id: 'n-s6-plan', label: 'Working on my presentation', category: 'plan' },
-        { id: 'n-s6-repair', label: 'Editing an essay', category: 'repair' },
-        { id: 'n-s6-program', label: 'Writing code', category: 'program' },
-        { id: 'n-s6-operate', label: 'Make 10 posters for a club event', category: 'operate' },
+        { id: 'n-s6-integrator', label: 'Working on my presentation', category: 'integrator' },
+        { id: 'n-s6-technician', label: 'Make 10 posters for a club event', category: 'technician' },
+        { id: 'n-s6-specialist', label: 'Writing code', category: 'specialist' },
       ],
     },
     {
@@ -192,17 +189,17 @@ export const narrativeFlow: CategoryFlow = {
       prompt: 'You finally have some time to relax. You decide to play a video game.',
       question: 'What are you playing?',
       choices: [
-        { id: 'n-s7-program', label: 'Puzzle-solving game', category: 'program' },
-        { id: 'n-s7-plan', label: 'Strategy game', category: 'plan' },
-        { id: 'n-s7-operate', label: 'Building game', category: 'operate' },
-        { id: 'n-s7-repair', label: 'Simulation games', category: 'repair' },
+        { id: 'n-s7-specialist', label: 'Puzzle-solving game', category: 'specialist' },
+        { id: 'n-s7-integrator', label: 'Strategy game', category: 'integrator' },
+        { id: 'n-s7-technician', label: 'Building game', category: 'technician' },
       ],
     },
   ],
-  // Intro (+2 each: operate from Q1+Q3, repair/program/plan from Q2+Q3) + Q4 + Q5 (1 each)
-  // + 7 scenes (1 each) = 11 per category. computeCategoryMax sums each step's per-category
-  // presence over all steps, so the Q1/Q2 branch split doesn't change the ceiling.
-  expectedCategoryMax: { operate: 11, repair: 11, program: 11, plan: 11 },
+  // technician: Q1(no-college) + Q3 + Q4 + Q5 + 7 scenes = 11. specialist/integrator:
+  // Q2(4yr) + Q3 + Q4 + Q5 + 7 scenes = 11. "1-2 years" unscored keeps the three equal.
+  // computeCategoryMax sums each step's per-role presence, so the Q1/Q2 branch split doesn't
+  // change the ceiling.
+  expectedCategoryMax: { technician: 11, specialist: 11, integrator: 11 },
   resultsCopy: {
     heading: 'Here’s how your day matches up',
     mapHint: 'Tap another role to bring it front and center, then tap a job title to learn more.',

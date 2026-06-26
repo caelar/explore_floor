@@ -1,14 +1,16 @@
 // All shared data types for the experience. Schema spec: docs/DATA_MODEL.md §17.
 // Data is data, not code — content lives in the sibling files, never in components.
 
-// ---------- Categories (study flow — DATA_MODEL §17) ----------
+// ---------- Roles (narrative flow — DATA_MODEL §17) ----------
 
-/** The four RC.org career-pathway categories the narrative flow scores. */
-export type CategoryId = 'operate' | 'repair' | 'program' | 'plan';
+/** The three ARM robotics career roles the narrative flow scores: Technician (entry),
+ *  Specialist (mid), Integrator (planning). Mirrors RC.org's live three-role structure
+ *  (docs/reference/ARM Updated Role Structure - Source Content.md). */
+export type CategoryId = 'technician' | 'specialist' | 'integrator';
 
 /** Order matters: it encodes the deterministic tiebreak (and the fixed axis order
- *  for the node map and fit radar): operate > repair > program > plan. */
-export const CATEGORIES: readonly CategoryId[] = ['operate', 'repair', 'program', 'plan'];
+ *  for the node map and fit radar): technician > specialist > integrator. */
+export const CATEGORIES: readonly CategoryId[] = ['technician', 'specialist', 'integrator'];
 
 export type CategoryWeights = Record<CategoryId, number>;
 
@@ -20,21 +22,21 @@ export interface LandingCopy {
   cta: string;
 }
 
-/** Layer-2 role-sheet content (from the RC.org role cards on the team's board).
- *  Keyed by category. */
+/** Layer-2 role-sheet content (from the RC.org role cards). Keyed by role. */
 export interface RoleDetail {
   categoryId: CategoryId;
-  roleName: string; // "Operator"
+  roleName: string; // "Technician"
   description: string;
   jobActivities: string[];
   education: string;
-  /** Education ladder for the screener fit line (D-020): 0 = HS/GED, 1 = associate/cert,
-   *  2 = bachelor's+. Compared against the user's stated school appetite. */
+  /** Education ladder for the screener fit line (D-020): 0 = HS/GED, 2 = bachelor's+
+   *  (level 1, an associate/cert, has no role in the three-role model but stays a valid
+   *  user-appetite rung). Compared against the user's stated school appetite. */
   educationLevel: 0 | 1 | 2;
   commonJobTitles: string[];
   salary: string;
-  /** Pay ladder for the screener fit line (D-020): 0 = ~$40k, 1 = ~$66k, 2 = $105k+.
-   *  Compared against the user's stated pay expectation. */
+  /** Pay ladder for the screener fit line (D-020): 0 = ~$46k (Technician), 2 = $85k+
+   *  (Specialist/Integrator). Compared against the user's stated pay expectation. */
   payLevel: 0 | 1 | 2;
 }
 
@@ -59,7 +61,7 @@ export interface MCChoice {
   id: string;
   label: string;
   /** Empty = unscored background question. One or more = scored; a choice can feed two
-   *  categories (e.g. hands-on → operate + repair). */
+   *  roles (e.g. "$85,000+" → specialist + integrator). */
   categories: CategoryId[];
   /** Step id to jump to after this choice (Q1 "No" skips Q2). Omitted = next step. */
   branchTo?: string;
@@ -77,10 +79,10 @@ export interface MCStep {
 export interface SceneChoice {
   id: string;
   label: string;
-  category: CategoryId; // exactly one; the four choices in a scene cover all four
+  category: CategoryId; // exactly one; the three choices in a scene cover all three roles
 }
 
-/** A day-in-the-life story beat. Interaction (D-018): sort each of the four choices into
+/** A day-in-the-life story beat. Interaction (D-018): sort each of the three choices into
  *  the three buckets (That's me / Kinda me / Not me), one card at a time. A choice's bucket
  *  is recorded in the shared statementBuckets slice keyed by SceneChoice.id; the buckets are
  *  fixed chrome (SORT_BUCKETS), so they aren't per-scene data. */
@@ -92,23 +94,7 @@ export interface SceneStep {
   choices: SceneChoice[];
 }
 
-export interface SortStatement {
-  id: string;
-  label: string;
-  category: CategoryId;
-}
-
-/** A statement sort, one statement at a time into three buckets. Retained as a flow-step
- *  shape (categoryScoring/categoryBreakdown still handle it); no live flow uses it after the
- *  strip — the exam flow that did was archived (Phase 4). */
-export interface StatementSortStep {
-  type: 'statementSort';
-  id: string;
-  statements: SortStatement[];
-  buckets: BucketDef[];
-}
-
-export type FlowStep = MCStep | SceneStep | StatementSortStep;
+export type FlowStep = MCStep | SceneStep;
 
 /** Copy the category results screen reads (node map + role sheet chrome). */
 export interface FlowResultsCopy {
@@ -133,10 +119,9 @@ interface FlowBase {
   landingCopy: LandingCopy;
 }
 
-/** A step-driven flow scored across the four categories. No robot: the build beat is
- *  intentionally out of scope (D-017). */
+/** A step-driven flow scored across the three roles. */
 export interface CategoryFlow extends FlowBase {
-  kind: 'narrative' | 'exam';
+  kind: 'narrative';
   steps: FlowStep[];
   /** Declared full-path max per category — data-integrity asserts declared == computed. */
   expectedCategoryMax: CategoryWeights;

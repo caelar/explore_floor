@@ -12,7 +12,7 @@ import type { BucketId } from '../../src/data/types';
 const mcAnswers: Record<string, string> = {
   'n-q0': 'n-q0-no',
   'n-q1': 'n-q1-no', // branches over n-q2
-  'n-q3': 'n-q3-60',
+  'n-q3': 'n-q3-85',
   'n-q4': 'n-q4-typing',
   'n-q5': 'n-q5-solving',
 };
@@ -25,11 +25,11 @@ const sceneStep = (id: string) => {
   return step;
 };
 
-// Each scene's program choice → "That's me"; the other three → "Not me".
+// Each scene's specialist choice → "That's me"; the other two → "Not me".
 const sceneBuckets: Record<string, BucketId> = {};
 for (const id of sceneIds) {
   for (const choice of sceneStep(id).choices) {
-    sceneBuckets[choice.id] = choice.category === 'program' ? 'thats-me' : 'not-me';
+    sceneBuckets[choice.id] = choice.category === 'specialist' ? 'thats-me' : 'not-me';
   }
 }
 
@@ -72,10 +72,10 @@ test('narrative flow works under prefers-reduced-motion', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/results$/, { timeout: 7000 });
 
-  // The node-map compare still swaps without motion: every scene's program choice was
-  // "That's me", so Specialist (program) is the top match; tapping the repair node swaps in.
+  // The node-map compare still swaps without motion: every scene's specialist choice was
+  // "That's me", so Specialist is the top match; tapping the technician node swaps in.
   await expect(page.getByRole('heading', { name: 'Specialist' })).toBeVisible();
-  await page.getByTestId('category-node-repair').click();
+  await page.getByTestId('category-node-technician').click();
   await expect(page.getByRole('heading', { name: 'Technician' })).toBeVisible();
 
   expect(consoleErrors, `console errors:\n${consoleErrors.join('\n')}`).toEqual([]);

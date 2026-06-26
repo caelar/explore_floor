@@ -6,9 +6,9 @@ This file is the operating manual for this repo. Read it fully at the start of e
 
 ## What this is
 
-An interactive, narrative career-discovery experience for **RoboticsCareer.org** (RC.org), the ARM Institute's workforce platform. A user walks through a day in their life, sorting the choices each scene offers into three buckets (That's me / Kinda me / Not me), and lands on a results screen that recommends how they match four RC.org career categories (Operate, Repair, Program, Plan → Operator, Technician, Specialist, Integrator). It replaces three weak existing tools on the site (Explore the Floor, My Goal, Interest Quiz) with one focused, engaging flow. This ships as the **Narrative** flow alongside an **Exam** flow for a question-structure study (`DATA_MODEL.md` §17).
+An interactive, narrative career-discovery experience for **RoboticsCareer.org** (RC.org), the ARM Institute's workforce platform. A user walks through a day in their life, sorting the choices each scene offers into three buckets (That's me / Kinda me / Not me), and lands on a results screen that recommends how they match ARM's three robotics career roles (Robotics Technician, Specialist, Integrator). It replaces three weak existing tools on the site (Explore the Floor, My Goal, Interest Quiz) with one focused, engaging flow. This ships as the single **Narrative** flow (`DATA_MODEL.md` §17).
 
-> **Realignment (2026-06).** The original concept, a stylized assembly-line sort that built a custom robot scoring three role families, is the **documented cut**: it survives as the dormant Classic flow but was never built as a scene. The plan of record is `docs/knowledge/REALIGNMENT.md`; the live model is `DATA_MODEL.md` §17. The classic three-archetype/robot/conveyor scaffolding is still in the tree (it gets archived in a later realignment phase), which is why the hard rules below still mention three role families.
+> **Realignment (2026-06, Phases 4–5 done).** The original concept, a stylized assembly-line sort that built a custom robot, is the **documented cut**: it was never built as a scene and its scaffolding (Classic flow + the Exam study condition) was deleted in Phase 4 (D-027, recoverable at git tag `archive/pre-narrative-only`). The live build is the **narrative quiz only**, and as of Phase 5 (D-028) it scores ARM's live **three-role** structure (Technician / Specialist / Integrator), collapsed from the four categories the study used. Plan of record: `docs/knowledge/REALIGNMENT.md`; live model: `DATA_MODEL.md` §17.
 
 This is a **high-fidelity prototype**, not production code. It exists to (a) prove the concept to the ARM client and (b) be tested with real users. ARM's dev team would rebuild from it later. Optimize for clarity, feel, and iteration speed, not for production hardening.
 
@@ -48,7 +48,7 @@ Research found the barrier to robotics manufacturing careers is not lack of inte
 | Scene rendering | SVG (React components) | The live SVG is the results geometry (node map, fit radar). _(The composed-SVG assembly line is the documented cut.)_ |
 | State | Zustand | One store per domain. No Redux. |
 | Audio | Howler.js | _(Documented cut: sound was a Phase 3 seasoning, never integrated.)_ |
-| Testing | Vitest + Playwright | Vitest for pure-function units (the category scoring engine especially, `data-integrity`); Playwright for the flow E2E specs (narrative / exam / role-select). |
+| Testing | Vitest + Playwright | Vitest for pure-function units (the category scoring engine especially, `data-integrity`); Playwright for the flow E2E specs (narrative / role-select / reduced-motion). |
 | Package manager | pnpm | |
 | Lint/format | ESLint + Prettier | Run before considering a task done. |
 
@@ -61,14 +61,14 @@ If you want to add a dependency, check `ARCHITECTURE.md` first. Prefer the stack
 /public               Static assets, fonts
 /src
   /app                App shell, routing, top-level providers
-  /screens            Landing, Flow (the narrative/exam runner), Results (category + exam), Select; Sort/Build dormant
-  /scene              [documented cut] placeholders only; the conveyor/robot scene was never built (archived in a later realignment phase)
+  /screens            Landing, Flow (the narrative runner), Results (the node-map results), Select
+  /scene              [documented cut] LandingSceneHint only; the conveyor/robot scene was never built
   /components         Shared UI (buttons, sort cards, segmented control, accents)
   /state              Zustand stores (sessionStore, useFlow)
-  /data               Mock data: the flows (§17, live), roleDetails, competencies, programs; classic items/roles/robotParts dormant
-  /lib                Pure helpers: categoryScoring (the brain), screenerFit, categoryBreakdown, nodeLayout; classic scoring dormant
+  /data               Mock data: the flow (§17, live), roleDetails (three roles), screeners, roleSelect
+  /lib                Pure helpers: categoryScoring (the brain), screenerFit, categoryBreakdown, nodeLayout
   /styles             Tailwind v4 entry + the @theme design-token block (globals.css)
-/tests                Playwright specs (narrative/exam/role-select live; classic dormant)
+/tests                Playwright specs (narrative / role-select / reduced-motion)
 src/styles/globals.css  Design tokens via Tailwind v4 @theme. Single source of truth for color/type/spacing (motion tokens live in src/lib/motion.ts).
 ```
 See `ARCHITECTURE.md` §3 for the full tree and `DATA_MODEL.md` §17 for the live data model.
@@ -77,7 +77,7 @@ See `ARCHITECTURE.md` §3 for the full tree and `DATA_MODEL.md` §17 for the liv
 
 - **Small files, split by responsibility.** A screen orchestrates: layout, state reads, event handlers. It does not hold a reusable sub-element's JSX, inline business logic, or more than one distinct UI concern. When any of those appear, extract them (logic into `/lib`, data into `/data`, sub-UI into `/components` or `/scene`). A file crossing ~250 lines is a signal to re-check it against this rule, not an automatic split. Do not pad or fragment to hit a number; split because the responsibilities are distinct.
 - **Data is data, not code.** Scene choices, statements, intro questions, category weights, role details, and results copy live in typed objects under `/src/data` (the flows in `/src/data/flows`, §17). Changing content must never require editing component logic. This is the single most important convention in the repo: the team will be tuning content constantly.
-- **The scoring engine is pure and isolated.** The live brain is `/src/lib/categoryScoring.ts`: it takes the user's answers and bucketed sorts and returns a normalized match score for all four categories, normalized per category against its own maximum (so the category maxes need not be equal). Branch-aware (it only walks the path the user took). No React, no side effects, fully unit-tested. _(The classic `/src/lib/scoring.ts` three-archetype engine is the documented cut.)_
+- **The scoring engine is pure and isolated.** The live brain is `/src/lib/categoryScoring.ts`: it takes the user's answers and bucketed sorts and returns a normalized match score for all three roles, normalized per role against its own maximum (so the maxes need not be equal). Branch-aware (it only walks the path the user took). No React, no side effects, fully unit-tested. _(The classic `scoring.ts` three-archetype engine was the documented cut, deleted in Phase 4.)_
 - **Tokens, not literals.** Colors, spacing, radii, type, and motion durations come from Tailwind config. No inline hex, no random pixel values.
 - **Types first.** Define the shape in `/src/data/types.ts` (or local types) before wiring UI. Avoid `any`.
 - **Comment the why, not the what.** The docs explain intent; code comments should only clarify non-obvious decisions.
@@ -88,7 +88,7 @@ Before calling any task complete:
 
 1. `pnpm dev` runs with no console errors.
 2. `pnpm lint` and `pnpm typecheck` pass.
-3. `pnpm test` passes — Vitest unit tests (the category scoring engine, `data-integrity`) and the Playwright specs (narrative / exam / role-select).
+3. `pnpm test` passes — Vitest unit tests (the category scoring engine, `data-integrity`) and the Playwright specs (narrative / role-select / reduced-motion).
 4. The change matches the live plan (`docs/knowledge/REALIGNMENT.md` + `DATA_MODEL.md` §17); `ROADMAP.md` Phase 0/1 are done and Phase 2/3 are largely the documented cut.
 
 Use Playwright to self-check visual and flow changes rather than asking the user to manually verify. Screenshot the relevant screen and inspect it.
@@ -109,15 +109,17 @@ Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). T
 
 - **Phase 0** — Scaffold, tokens, mock data, screens stubbed, clickable end to end. **Complete.**
 - **Phase 1** — Real flow content, working scoring, testable results. **Complete** (first user test).
-- **Study insert** — the Narrative + Exam flows, four categories, per-flow results (`DECISIONS.md` D-016–D-023). **Live.**
+- **Study insert** — the Narrative + Exam flows, four categories, per-flow results (`DECISIONS.md` D-016–D-023). _Both shipped; the narrative won the June study._
+- **Realignment Phase 4 (strip)** — Classic deleted, Exam archived; the build is the narrative flow only (D-027). **Done.**
+- **Realignment Phase 5 (three roles)** — the four categories collapsed to ARM's three live roles (D-028). **Done.**
 - **Phase 2 (conveyor feel pass) — documented cut.** The conveyor scene, the robotic arm, the live robot, and the Build beat were never built and are no longer the plan.
 - **Phase 3 — partly superseded.** The polish that applies to the live flows survives (copy, light a11y, mobile, reduced-motion, Figma sync); the sound/conveyor/robot polish is cut.
 - **Next** — the high-fidelity narrative results screen (`REALIGNMENT.md` step 8), on the kit-aligned tokens.
 
 ## Hard rules
 
-- Never invent the ARM role taxonomy. The **classic** experience has exactly three role families: **Robotics Integrator, Robotics Specialist, Robotics Technician.** Their competencies are fixed mock data in `/src/data`. Do not add or rename roles. _Carve-out (D-017):_ the question-structure **study flows** score RC.org's four published career categories — Operate/Repair/Program/**Plan** → Operator/Technician/Specialist/Integrator. "Operator" is a real RC.org entry-level role; it lives only in the category world (`roleDetails.ts`, `CategoryId`), never touches the three-archetype taxonomy or `roles.ts`. Don't invent beyond these four either.
-- Never make the result a single prescriptive role. Always a weighted match across all three (classic) or all four (study flows). See `PRD.md` scoring section + `DATA_MODEL.md` §17.
+- Never invent the ARM role taxonomy. The live model scores RC.org's **three published robotics roles: Robotics Technician (entry), Robotics Specialist (mid), Robotics Integrator (planning)** — ARM's current site structure (`docs/reference/ARM Updated Role Structure - Source Content.md`). Their content is fixed mock data in `roleDetails.ts`, keyed by `CategoryId` = `technician | specialist | integrator`. Do not add or rename roles. (The entry Technician folds in what the site used to split as Operate/Operator and Repair; "Operator" survives only as a common job title under Technician. The old four-category model and the D-017 carve-out are retired — D-028.)
+- Never make the result a single prescriptive role. Always a weighted match across all three roles. See `PRD.md` scoring section + `DATA_MODEL.md` §17.
 - Never use the neon palette from early brainstorm docs. Palette is defined in `DESIGN_SYSTEM.md` and the `@theme` block in `src/styles/globals.css`.
 - Never add a screen, step, or feature not described in `PRD.md` without flagging it first.
 - When in doubt about scope, content, or direction, stop and ask. The user is driving and prefers to be consulted before you expand scope.
@@ -129,7 +131,7 @@ Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). T
 - `CONTEXT_BRIEF.md` — the research story, compressed. The why.
 - `DESIGN_SYSTEM.md` — tokens, components, motion. Kit-aligned to the RC UI Kit (D-024).
 - `ARCHITECTURE.md` — stack rationale, file structure, state, scoring engine, the 3D path (parked).
-- `DATA_MODEL.md` — every schema. **§17 (the four-category flows) is the live model;** §1–§14 are the classic documented cut.
+- `DATA_MODEL.md` — every schema. **§17 (the three-role narrative flow) is the live model;** §1–§14 are the classic documented cut.
 - `ROADMAP.md` — Phase 0/1 done; Phase 2/3 largely the documented cut.
 - `docs/knowledge/` — living project memory: status, decisions, lessons, case study, session handoffs. **Read `STATUS.md` first each session.**
 - `docs/rubrics/` — design-quality rubrics the `design-reviewer` subagent grades against.

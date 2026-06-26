@@ -4,16 +4,16 @@ import { narrativeFlow } from '../../src/data/flows/narrativeFlow';
 import type { BucketId } from '../../src/data/types';
 import { calculateCategoryScores } from '../../src/lib/categoryScoring';
 
-// The Narrative study flow (DATA_MODEL §17): switch the condition on Landing, answer the
-// intro questions (taking the Q1 "No" branch — Q2 must be skipped), then in each of the
-// seven scenes sort all four choices into the three buckets (D-018). Bucketing each
-// scene's program choice "That's me" and the rest "Not me" makes program the runaway top
+// The Narrative flow (DATA_MODEL §17): switch the condition on Landing, answer the intro
+// questions (taking the Q1 "No" branch — Q2 must be skipped), then in each of the seven
+// scenes sort all three choices into the three buckets (D-018). Bucketing each scene's
+// specialist choice "That's me" and the rest "Not me" makes Specialist the runaway top
 // match; displayed percentages match the scoring engine. Retake keeps the condition.
 
 const mcAnswers: Record<string, string> = {
-  'n-q0': 'n-q0-no', // new experience question, unscored
+  'n-q0': 'n-q0-no', // experience question, unscored
   'n-q1': 'n-q1-no', // branches over n-q2
-  'n-q3': 'n-q3-60',
+  'n-q3': 'n-q3-85',
   'n-q4': 'n-q4-typing',
   'n-q5': 'n-q5-solving',
 };
@@ -26,11 +26,11 @@ const sceneStep = (id: string) => {
   return step;
 };
 
-// Each scene's program choice → "That's me"; the other three → "Not me".
+// Each scene's specialist choice → "That's me"; the other two → "Not me".
 const sceneBuckets: Record<string, BucketId> = {};
 for (const id of sceneIds) {
   for (const choice of sceneStep(id).choices) {
-    sceneBuckets[choice.id] = choice.category === 'program' ? 'thats-me' : 'not-me';
+    sceneBuckets[choice.id] = choice.category === 'specialist' ? 'thats-me' : 'not-me';
   }
 }
 
@@ -92,20 +92,20 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
     }
   }
 
-  // Category results: the node graph. program (→ Specialist) is the runaway top match;
-  // displayed percentages equal the engine's read of the same MC answers + scene buckets.
+  // Role results: the node graph. Specialist is the runaway top match; displayed percentages
+  // equal the engine's read of the same MC answers + scene buckets.
   await expect(page).toHaveURL(/\/results$/, { timeout: 7000 });
   const expected = calculateCategoryScores(narrativeFlow, mcAnswers, sceneBuckets);
-  expect(expected.primaryCategory).toBe('program'); // every scene's program choice was "That's me"
+  expect(expected.primaryCategory).toBe('specialist'); // every scene's specialist choice was "That's me"
   await expect(page.getByRole('heading', { name: 'Specialist' })).toBeVisible();
-  for (const category of ['operate', 'repair', 'program', 'plan'] as const) {
+  for (const category of ['technician', 'specialist', 'integrator'] as const) {
     await expect(page.getByTestId(`category-pct-${category}`)).toHaveText(
       `${expected.matchPercentages[category]}%`,
     );
   }
 
   // Screener fit line (D-020): education + pay read on the top match. No college (Q1=No) +
-  // a Specialist top match → an education heads-up; $60k target under Specialist pay → fits.
+  // a Specialist top match → an education heads-up; $85k target under Specialist pay → fits.
   await expect(page.getByTestId('fit-note')).toBeVisible();
   await expect(page.getByTestId('fit-education')).toContainText('Heads up');
   await expect(page.getByTestId('fit-pay')).toBeVisible();
@@ -121,7 +121,8 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await expect(page.getByTestId('role-sheet')).not.toBeVisible();
 
   // Tapping a behind-node swaps it into the center: the heading and its branched titles update.
-  await page.getByTestId('category-node-repair').click();
+  // The entry Technician (Operate-derived, $45,936) is the node that yields "Technician".
+  await page.getByTestId('category-node-technician').click();
   await expect(page.getByRole('heading', { name: 'Technician' })).toBeVisible();
   await expect(
     page.getByTestId('title-node').filter({ hasText: 'Automation Technician' }),

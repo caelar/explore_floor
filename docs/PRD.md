@@ -9,14 +9,14 @@
 
 ## 1. Overview
 
-This is an interactive, narrative career-discovery experience for RoboticsCareer.org. A user walks through a day in their life (a morning routine, arriving at school, a class handout, a club lunch, home, homework, a video game) plus a few intro questions, sorting the choices each scene offers into three buckets: That's me / Kinda me / Not me. At the end they reach a results screen that shows how they match four RC.org career categories (Operate, Repair, Program, Plan, which map to Operator, Technician, Specialist, Integrator), featuring their top match while keeping the others live and comparable, with an honest read on the education and pay each path asks for.
+This is an interactive, narrative career-discovery experience for RoboticsCareer.org. A user walks through a day in their life (a morning routine, arriving at school, a class handout, a club lunch, home, homework, a video game) plus a few intro questions, sorting the choices each scene offers into three buckets: That's me / Kinda me / Not me. At the end they reach a results screen that shows how they match ARM's three RC.org robotics roles (Technician, Specialist, Integrator), featuring their top match while keeping the others live and comparable, with an honest read on the education and pay each path asks for.
 
-The live build ships this as the **Narrative** flow, and the narrative flow is the whole build (Phase 4 stripped it to that one flow, `DECISIONS.md` D-027). Two other flows are the **documented cut**, preserved for the record but removed from the live tree (recoverable at git tag `archive/pre-narrative-only`):
+The live build ships this as the **Narrative** flow, and the narrative flow is the whole build (Phase 4 stripped it to that one flow, `DECISIONS.md` D-027). Phase 5 (D-028) then collapsed the earlier four study categories (Operate, Repair, Program, Plan) into ARM's three published roles: the entry **Technician** folds the old Operate + Repair, **Specialist** is the old Program, **Integrator** is the old Plan. Two other flows are the **documented cut**, preserved for the record but removed from the live tree (recoverable at git tag `archive/pre-narrative-only`):
 
-- The **Exam** flow (background questions plus a 30-statement sort, scoring the same four categories) was the study's comparison condition. The narrative won the June 2026 study, so the exam was retired and deleted in Phase 4. It is documented in section 8 and `DATA_MODEL.md` §17.
+- The **Exam** flow (background questions plus a 30-statement sort, scoring the same four study categories) was the study's comparison condition. The narrative won the June 2026 study, so the exam was retired and deleted in Phase 4. It is documented in section 8 and `DATA_MODEL.md` §17.
 - The original concept, where a user sorted interest cards on a moving conveyor belt and watched a custom robot get built from their picks, survived as the dormant **Classic** flow and is preserved in `DATA_MODEL.md` §1–§14 (the classic pipeline). Phase 4 deleted it too.
 
-The realignment that re-centered this spec on the narrative quiz is `docs/knowledge/REALIGNMENT.md`; treat that memo and `DATA_MODEL.md` §17 as the current product, and the exam, conveyor, and robot material below as the parked record. Phase 4 keeps the four-category model; the collapse to ARM's three roles is the later Phase 5.
+The realignment that re-centered this spec on the narrative quiz is `docs/knowledge/REALIGNMENT.md`; treat that memo and `DATA_MODEL.md` §17 as the current product, and the exam, conveyor, and robot material below as the parked record. Phase 5 is done: the live model is ARM's three roles.
 
 It replaces three existing tools that currently sit on the site as separate, weak experiences:
 
@@ -42,7 +42,7 @@ The compressed version (full version in `CONTEXT_BRIEF.md`):
 ### Goals
 
 - Let a high schooler discover robotics manufacturing roles through concrete, relatable choices rather than abstract competencies.
-- Produce a recommendation across all four RC.org categories (operate, repair, program, plan), not a single prescriptive verdict.
+- Produce a recommendation across all three RC.org roles (technician, specialist, integrator), not a single prescriptive verdict.
 - Make the experience genuinely engaging and worth completing, so the narrative and its results feel earned. _(The original "robot payoff" goal is the documented cut.)_
 - Make every piece of content (scene choices, intro questions, role copy, scoring weights, results text) trivially editable by the team without touching logic.
 - Ship a flow testable with users (the Phase 1 milestone, met).
@@ -72,9 +72,9 @@ The whole flow targets **around 3 to 4 minutes**. Desktop-first, mobile responsi
 
 ### 5.0 The narrative flow (live)
 
-The live experience is a guided "day in the life." After a short researcher-facing landing (§5.1), the user answers a few intro questions (experience, education appetite, salary appetite) and then moves through seven day-in-the-life **scenes** (morning, arriving at school, a class handout, a club lunch, home, homework, a video game). Each scene presents four choices, one tied to each RC.org category, and the user sorts each choice into one of three buckets: **That's me / Kinda me / Not me**. There is no conveyor and no robot build; the sort is a calm, one-card-at-a-time judgement on the shared `BucketSort` mechanic. _(The cut Exam flow reused the same `BucketSort` for its 30 statements.)_
+The live experience is a guided "day in the life." After a short researcher-facing landing (§5.1), the user answers a few intro questions (experience, education appetite, salary appetite) and then moves through seven day-in-the-life **scenes** (morning, arriving at school, a class handout, a club lunch, home, homework, a video game). Each scene presents three choices, one tied to each RC.org role, and the user sorts each choice into one of three buckets: **That's me / Kinda me / Not me**. There is no conveyor and no robot build; the sort is a calm, one-card-at-a-time judgement on the shared `BucketSort` mechanic. _(The cut Exam flow reused the same `BucketSort` for its 30 statements.)_
 
-The four categories (Operate, Repair, Program, Plan) map to four RC.org roles (Operator, Technician, Specialist, Integrator). Scoring is the pure four-category engine in `lib/categoryScoring.ts`, branch-aware (it only walks the path the user took) and normalized per category against its own max. Results lead with the user's top match and let them compare the others, plus an always-on education/pay fit read. The **Narrative** results are a node map. _(The study originally compared presentations too: the cut Exam flow presented its results as a dashboard with a score breakdown.)_ Full step structure, scoring, and results model are in `DATA_MODEL.md` §17.
+The three roles are ARM's published RC.org career paths: **Technician** (entry), **Specialist** (mid), **Integrator** (planning). Scoring is the pure three-role engine in `lib/categoryScoring.ts`, branch-aware (it only walks the path the user took) and normalized per role against its own max. Results lead with the user's top match and let them compare the others, plus an always-on education/pay fit read. The **Narrative** results are a node map. _(The study originally compared presentations too: the cut Exam flow presented its results as a dashboard with a score breakdown. Phase 5, D-028, collapsed the study's four categories — Operate/Repair/Program/Plan — into these three roles: Operate + Repair fold into the entry Technician, Program becomes Specialist, Plan becomes Integrator.)_ Full step structure, scoring, and results model are in `DATA_MODEL.md` §17.
 
 ### 5.1 Landing
 
@@ -135,7 +135,7 @@ The most important screen. It must read as a recommendation, not a verdict. _(Th
 
 The principle is fixed across every flow: **a weighted match across all the roles, never a single prescriptive verdict.** What changed in the realignment is the model the live flows score against.
 
-> **Live (narrative): four RC.org categories.** The shipping narrative flow scores `operate / repair / program / plan` (mapping to Operator / Technician / Specialist / Integrator) with the pure, branch-aware engine in `lib/categoryScoring.ts`, normalized per category against its own max. Each scored intro answer and each scene choice contributes; the middle "Kinda me" bucket scores `MAYBE_WEIGHT` (0 today, tunable). Full algorithm and the narrative `expectedCategoryMax` are in `DATA_MODEL.md` §17. The cut **Exam** flow scored the same four categories off a 30-statement sort. The three-archetype model below is the **documented cut** (the deleted Classic flow's `lib/scoring.ts`), preserved for the record. (Phase 4 keeps four categories; the collapse to ARM's three roles is Phase 5.)
+> **Live (narrative): ARM's three RC.org roles.** The shipping narrative flow scores `technician / specialist / integrator` with the pure, branch-aware engine in `lib/categoryScoring.ts`, normalized per role against its own max. Each scored intro answer and each scene choice contributes; the middle "Kinda me" bucket scores `MAYBE_WEIGHT` (0 today, tunable). Full algorithm and the narrative `expectedCategoryMax` (11/11/11) are in `DATA_MODEL.md` §17. The cut **Exam** flow scored the study's four categories off a 30-statement sort. The three-archetype model below is the **documented cut** (the deleted Classic flow's `lib/scoring.ts`), preserved for the record. (Phase 5, D-028, collapsed the study's four categories — Operate/Repair/Program/Plan — to these three roles: Operate + Repair → the entry Technician, Program → Specialist, Plan → Integrator.)
 
 - _(Documented cut — Classic flow.)_ The three role families map to three internal archetypes:
   - **Builder -> Robotics Technician** (hands-on, building, fixing, maintaining)
@@ -189,7 +189,7 @@ Each item maps to archetype weights in `DATA_MODEL.md`. Builder-leaning items em
 
 ## 9. Content: roles, competencies, jobs
 
-> **Documented cut (classic foundation).** The three archetype-tagged role families below are the classic content set. The live narrative flow scores four RC.org category roles whose content lives in `roleDetails.ts` (Operator / Technician / Specialist / Integrator; `DATA_MODEL.md` §17). The competency framework here seeded the shared `competencies.ts` / `programs.ts`, which were deleted in Phase 4 (D-027); the live narrative results surface zero programs today, and a category-keyed program/competency set returns at step 8 (`REALIGNMENT.md`). Read this section as reference and as the parked taxonomy.
+> **Documented cut (classic foundation).** The three archetype-tagged role families below are the classic content set. The live narrative flow scores ARM's three RC.org roles whose content lives in `roleDetails.ts` (Technician / Specialist / Integrator; `DATA_MODEL.md` §17). The competency framework here seeded the shared `competencies.ts` / `programs.ts`, which were deleted in Phase 4 (D-027); the live narrative results surface zero programs today, and a role-keyed program/competency set returns at step 8 (`REALIGNMENT.md`). Read this section as reference and as the parked taxonomy.
 
 The role definitions use ARM's **real competency framework**, captured from the existing My Goal screens. This is the mock-data foundation. (We can later replace or extend with scraped/official data; structure stays the same.)
 
@@ -225,7 +225,7 @@ Full detail in `DESIGN_SYSTEM.md`. The essentials:
 
 - **On the RC UI Kit, no rebrand.** The design system is kit-aligned (`DECISIONS.md` D-024), matching `career_dashboard`: ARM Gold `#FFB81C` as the brand signature and primary CTA fill, Secondary Teal `#117289` as the interactive voice, a charcoal ink ramp, Montserrat + Roboto. This reads as part of RC.org because it shares the kit. Calm, warm, plainspoken, confident with negative space.
 - **Supersede the neon palette.** The Make.md brainstorm colors (neon teal/blue/magenta) are dropped, permanently.
-- **The four category accents** are a restrained, teal-led set being finalized with the high-fidelity results screen (`categoryAccent.ts` today; the kit reconciliation and the `arm-blue` retone are the step-8 results work in `REALIGNMENT.md`). No invented per-screen colors.
+- **The three role accents** are a restrained, teal-led set being finalized with the high-fidelity results screen (`categoryAccent.ts` today — technician→gold, specialist→blue, integrator→teal; the kit reconciliation and the `arm-blue` retone are the step-8 results work in `REALIGNMENT.md`). No invented per-screen colors.
 - **Motion is modest and state-driven.** Motion (the React library formerly called Framer Motion) carries the UI: screen and flow-step transitions, the bucket-sort drag, the node-map compare swap. GSAP carries the one ambient flourish that ships, the Landing reveal (`DrawSVG`). Smooth and calm, never frantic. Full rationale in `ARCHITECTURE.md` section 1. _(The conveyor, robotic arm, parts arcing into a robot, and the cinematic build beat are the documented cut, never built.)_
 - **Sound is a light seasoning.** Subtle clicks and a soft completion cue, if added. Muted by default with a visible toggle. _(Documented as a Phase 3 polish item; not load-bearing.)_
 
@@ -235,7 +235,7 @@ Full detail in `DESIGN_SYSTEM.md`. The essentials:
 
 Not built in this prototype. Documented so the architecture accommodates it:
 
-- Same role and category data, same scoring engine. The live shared foundation is the four-category model (`roleDetails.ts` + `lib/categoryScoring.ts`); the "three role families" wording elsewhere in this doc is the dormant classic seam.
+- Same role data, same scoring engine. The live shared foundation is the three-role model (`roleDetails.ts` + `lib/categoryScoring.ts`); the "three role families" wording elsewhere in this doc is the dormant classic seam (a separate, parallel taxonomy that happens to share the technician/specialist/integrator names).
 - Different input: explicit competency and skill self-report (the existing My Goal grids, modernized), since the adult audience can answer those.
 - Different UI: streamlined, professional, no robot, no conveyor.
 - Different output: still a ranked recommendation across the categories, but presented soberly.
@@ -246,7 +246,7 @@ Not built in this prototype. Documented so the architecture accommodates it:
 The prototype is successful when:
 
 - A user can complete the narrative flow (land -> answer the intro questions -> sort the scenes -> results) in around 3-4 minutes with no dead ends.
-- The results screen shows a believable weighted match across the four categories, with the compare interaction (the node-map swap) working.
+- The results screen shows a believable weighted match across the three roles, with the compare interaction (the node-map swap) working.
 - The result explains itself: the match read, the education/pay fit line, and a path the user can take next.
 - The team can change any scene, intro question, weight, role detail, or piece of results copy by editing `/src/data` alone.
 - The Playwright suite (narrative + role-select + reduced-motion) passes and the experience runs with no console errors.
@@ -258,7 +258,7 @@ _(Documented cut: the classic measure was "land -> sort 24 items -> build a robo
 
 After the team conversation, the resolved decisions are: the 24-item set is locked, the robot-part mapping is literal and expressive, passed items contribute zero (with the schema allowing negative for later experimentation), and archetype weights will be designer defaults that ARM's dev team owns tuning for production.
 
-What remains (the live open questions are tracked in `docs/knowledge/REALIGNMENT.md` §11: define what the match percentage means in one line, frame an Operator result as a starting rung rather than a verdict, and settle whether "Kinda me" keeps scoring zero):
+What remains (the live open questions are tracked in `docs/knowledge/REALIGNMENT.md` §11: define what the match percentage means in one line, frame the entry Technician result as a starting rung rather than a verdict, and settle whether "Kinda me" keeps scoring zero):
 
 - **Results copy:** the per-role fit descriptions, the "why you scored that way" interpretation for a teen, the way mocked programs are described.
 - **Landing copy:** the single sentence that frames the whole experience.

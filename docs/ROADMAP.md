@@ -1,6 +1,6 @@
 # Roadmap
 
-> **Realignment (2026-06): the original Phase 2–3 plan is superseded.** Phase 0 and Phase 1 shipped (the classic flow, scaffold through testable results). Then the product pivoted: a question-structure study (`DECISIONS.md` D-016–D-023) replaced the classic flow with the **Narrative** and **Exam** flows scoring four RC.org categories, and testing crowned the narrative. **Phase 4 then stripped the build to the narrative flow alone** (D-027), deleting the Classic and Exam flows from the live tree (recoverable at git tag `archive/pre-narrative-only`). So the **conveyor "feel pass" (Phase 2) and most of Phase 3 are the documented cut**: the conveyor scene, the user-controlled arm, the live-building robot, the Build beat, and the results pedestal were never built and are no longer the plan. The real next product work is the **high-fidelity narrative results screen** (`REALIGNMENT.md` step 8), built on the kit-aligned tokens. Read Phase 2/§3 and the conveyor parts of Phase 3 as parked; the surviving Phase 3 polish (copy, light a11y, mobile, reduced-motion, Figma sync) still applies to the live narrative flow. (Phase 4 keeps four categories; the collapse to ARM's three roles is the later Phase 5.)
+> **Realignment (2026-06): the original Phase 2–3 plan is superseded.** Phase 0 and Phase 1 shipped (the classic flow, scaffold through testable results). Then the product pivoted: a question-structure study (`DECISIONS.md` D-016–D-023) replaced the classic flow with the **Narrative** and **Exam** flows scoring four RC.org categories, and testing crowned the narrative. **Phase 4 then stripped the build to the narrative flow alone** (D-027), deleting the Classic and Exam flows from the live tree (recoverable at git tag `archive/pre-narrative-only`). **Phase 5 then collapsed the four study categories to ARM's three published roles** (D-028) — Technician (entry, folding the old Operate + Repair), Specialist (the old Program), Integrator (the old Plan). So the **conveyor "feel pass" (Phase 2) and most of Phase 3 are the documented cut**: the conveyor scene, the user-controlled arm, the live-building robot, the Build beat, and the results pedestal were never built and are no longer the plan. The real next product work is the **high-fidelity narrative results screen** (`REALIGNMENT.md` step 8), built on the kit-aligned tokens. Read Phase 2/§3 and the conveyor parts of Phase 3 as parked; the surviving Phase 3 polish (copy, light a11y, mobile, reduced-motion, Figma sync) still applies to the live narrative flow. (Phase 5 is done: the live model is ARM's three roles.)
 
 The build ran in four phases. Each phase had a clear goal, a concrete task list, and verifiable acceptance criteria. Phase 0 and Phase 1 are complete; the realignment re-centered everything after them.
 
@@ -18,6 +18,7 @@ This doc is the operational counterpart to `PRD.md` (what we're building), `DATA
 | ~~Phase 2~~ | ~~Feel pass (conveyor scene, live robot)~~ | **Documented cut** — superseded by the narrative pivot |
 | Phase 3 | Polish | The surviving items (copy, light a11y, mobile, reduced-motion, Figma sync) apply to the live narrative flow; the conveyor/robot/sound polish is cut |
 | Phase 4 | Strip to narrative | Deleted the Classic + Exam flows; narrative-only, still four categories (D-027) — **done** |
+| Phase 5 | Collapse to three roles | Collapsed the four study categories to ARM's three published roles — Technician/Specialist/Integrator (D-028) — **done** |
 | Step 8 | High-fidelity narrative results | The real next product work (`REALIGNMENT.md` step 8), on kit-aligned tokens |
 
 Work proceeds when acceptance criteria are met, not on a fixed schedule. The realignment sweep (`REALIGNMENT.md` §9) re-centers the docs and harness before step 8.
@@ -401,7 +402,7 @@ In priority order, from least important to most important. Drop from the top of 
 
 Do not cut, in any scenario:
 
-- The scoring engine producing weighted recommendations across all four categories (never a single prescriptive verdict).
+- The scoring engine producing weighted recommendations across all three roles (never a single prescriptive verdict).
 - The results screen showing all the matches, not one.
 - The compare interaction (the narrative node-map swap): it can degrade visually but must work. _(The cut exam dashboard's ranked roles were the other presentation the study compared.)_
 - The result explaining itself: the match read, the "why you scored that way" interpretation, and the education/pay fit line.

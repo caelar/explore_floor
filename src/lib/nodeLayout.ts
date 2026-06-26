@@ -10,13 +10,13 @@ export interface Point {
   y: number;
 }
 
-/** Fixed axis per category, shared by the node map and the radar so the two reads
- *  orient the same way: operate up, plan right, program down, repair left. */
+/** Fixed axis per role, shared by the node map and the radar so the two reads orient the
+ *  same way. An upward-pointing equilateral triangle: technician at the top, specialist
+ *  lower-right, integrator lower-left. */
 export const CATEGORY_ANGLES: Record<CategoryId, number> = {
-  operate: -90,
-  plan: 0,
-  program: 90,
-  repair: 180,
+  technician: -90,
+  specialist: 30,
+  integrator: 150,
 };
 
 /** Polar → SVG cartesian around (0,0). SVG y grows downward, so -90° is straight up. */

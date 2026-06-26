@@ -1,13 +1,13 @@
 import { deriveScreenerProfile, screenerFitLines } from '@/lib/screenerFit';
 
 // Screener fit (DATA_MODEL §17, D-020). Derivation reads the real screener answers; the
-// fit comparison runs against the live roleDetails ladders. Education levels: Operator 0,
-// Technician 1, Specialist 2, Integrator 2. Pay levels mirror them.
+// fit comparison runs against the live roleDetails ladders. Education/pay levels: Technician
+// 0, Specialist 2, Integrator 2.
 
 describe('deriveScreenerProfile', () => {
   it('caps narrative education at 0 when the user is not going to college', () => {
     // n-q1 No branches over n-q2 — appetite is 0 regardless of any stale n-q2.
-    expect(deriveScreenerProfile('narrative', { 'n-q1': 'n-q1-no', 'n-q3': 'n-q3-60' })).toEqual({
+    expect(deriveScreenerProfile('narrative', { 'n-q1': 'n-q1-no', 'n-q3': 'n-q3-85' })).toEqual({
       education: 0,
       pay: 1,
     });
@@ -26,9 +26,9 @@ describe('deriveScreenerProfile', () => {
   });
 
   it('reads narrative pay from the salary question (0/1/2)', () => {
-    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-40' }).pay).toBe(0);
-    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-60' }).pay).toBe(1);
-    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-80' }).pay).toBe(2);
+    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-45' }).pay).toBe(0);
+    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-85' }).pay).toBe(1);
+    expect(deriveScreenerProfile('narrative', { 'n-q3': 'n-q3-105' }).pay).toBe(2);
   });
 
   it('returns nulls for unanswered narrative screeners', () => {
@@ -38,8 +38,8 @@ describe('deriveScreenerProfile', () => {
 
 describe('screenerFitLines', () => {
   it('flags a heads-up when the role needs more school than the user wants', () => {
-    // Integrator (plan) needs level 2; appetite 0 → heads-up.
-    const lines = screenerFitLines('plan', { education: 0, pay: null });
+    // Integrator needs level 2; appetite 0 → heads-up.
+    const lines = screenerFitLines('integrator', { education: 0, pay: null });
     const edu = lines.find((l) => l.axis === 'education')!;
     expect(edu.fits).toBe(false);
     expect(edu.text).toContain('Integrator');
@@ -47,24 +47,24 @@ describe('screenerFitLines', () => {
   });
 
   it('lines up when the user is up for at least as much school as the role needs', () => {
-    // Operator (operate) needs level 0; any appetite fits.
-    expect(screenerFitLines('operate', { education: 2, pay: null })[0].fits).toBe(true);
-    // Specialist (program) needs level 2; appetite 2 fits.
-    expect(screenerFitLines('program', { education: 2, pay: null })[0].fits).toBe(true);
+    // Technician needs level 0; any appetite fits.
+    expect(screenerFitLines('technician', { education: 2, pay: null })[0].fits).toBe(true);
+    // Specialist needs level 2; appetite 2 fits.
+    expect(screenerFitLines('specialist', { education: 2, pay: null })[0].fits).toBe(true);
   });
 
   it('flags pay when the role pays below the user’s target, fits otherwise', () => {
-    // Operator pay level 0; target 2 → heads-up.
-    const low = screenerFitLines('operate', { education: null, pay: 2 });
+    // Technician pay level 0; target 2 → heads-up.
+    const low = screenerFitLines('technician', { education: null, pay: 2 });
     expect(low[0].axis).toBe('pay');
     expect(low[0].fits).toBe(false);
     // Integrator pay level 2; target 1 → fits.
-    expect(screenerFitLines('plan', { education: null, pay: 1 })[0].fits).toBe(true);
+    expect(screenerFitLines('integrator', { education: null, pay: 1 })[0].fits).toBe(true);
   });
 
   it('returns one line per axis the flow asked about', () => {
-    expect(screenerFitLines('program', { education: 1, pay: 2 })).toHaveLength(2);
-    expect(screenerFitLines('program', { education: 1, pay: null })).toHaveLength(1);
-    expect(screenerFitLines('program', { education: null, pay: null })).toHaveLength(0);
+    expect(screenerFitLines('specialist', { education: 1, pay: 2 })).toHaveLength(2);
+    expect(screenerFitLines('specialist', { education: 1, pay: null })).toHaveLength(1);
+    expect(screenerFitLines('specialist', { education: null, pay: null })).toHaveLength(0);
   });
 });

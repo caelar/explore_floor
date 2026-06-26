@@ -50,9 +50,9 @@ sections:
     order: 4
     title: Honest, encouraging framing
     criteria:
-      - id: operator-is-a-rung
+      - id: technician-is-a-rung
         severity: p1
-        check: An entry-level (Operator) result reads as a starting rung with a visible path up, not a deflating verdict
+        check: An entry-level (Technician) result reads as a starting rung with a visible path up to Specialist/Integrator, not a deflating verdict
       - id: low-signal-graceful
         severity: p3
         check: An all-low result is framed lightly, not as a broken or empty screen
@@ -75,34 +75,34 @@ Judges the high-fidelity results screen, the single most important and currently
 - *ARM client reviewer* — checks the result is a real recommendation with a path to a program, the conversion ARM cares about.
 
 **Realistic scenarios**
-- A user lands on a 31% Program match; the screen says in one line what 31% means, interprets which of their answers drove it, and offers programs that build toward it.
-- A user who scores Operator sees it framed as an entry point with a visible path up to Technician/Specialist, plus links, not "you're an Operator, the end."
+- A user lands on a 31% Specialist match; the screen says in one line what 31% means, interprets which of their answers drove it, and offers programs that build toward it.
+- A user who scores Technician sees it framed as an entry point with a visible path up to Specialist/Integrator, plus links, not "you're a Technician, the end."
 - A user taps a behind-node on the narrative map; it swaps to center, the heading updates ("You're exploring …"), and the fit line follows the centered role.
 
 **Anti-scenarios (should fail)**
 - The match percentage appears with no definition ("11% match to … what?").
 - The "why" section just lists the answers the user already gave, adding no interpretation.
-- The compare interaction is invisible: a user never realizes they can see the other categories.
-- An Operator result reads as a flat verdict with no upward path.
+- The compare interaction is invisible: a user never realizes they can see the other roles.
+- A Technician (entry) result reads as a flat verdict with no upward path.
 - The result has nowhere to go: no programs, no outbound link.
 
 ## 1. Match clarity
-The number-one content gap from testing is that users can't tell what the percentage means ("I guess 11 percent match means 11 percent match to the career?"). One plain sentence settles it. The screen must read as a recommendation across the categories with a clear top match, never a single prescriptive verdict.
+The number-one content gap from testing is that users can't tell what the percentage means ("I guess 11 percent match means 11 percent match to the career?"). One plain sentence settles it. The screen must read as a recommendation across the roles with a clear top match, never a single prescriptive verdict.
 
 ## 2. Trust through explanation
-Trust came from the exam's "why you scored that way" breakdown. The live `categoryBreakdown` walks the same path the scorer did. The bar here is *interpretation*, not an echo: "you leaned toward hands-on troubleshooting" beats "you said yes to 6 of 9 repair statements." Detail sits behind progressive disclosure (the breakdown, the role sheet, the fit radar), and the always-on education/pay fit line (`FitNote`, D-020) is present and legible.
+Trust came from the exam's "why you scored that way" breakdown. The live `categoryBreakdown` walks the same path the scorer did. The bar here is *interpretation*, not an echo: "you leaned toward hands-on, keep-it-running work" beats "you bucketed 5 of 7 Technician scenes 'That's me'." Detail sits behind progressive disclosure (the breakdown, the role sheet, the fit radar), and the always-on education/pay fit line (`FitNote`, D-020) is present and legible.
 
 ## 3. Discoverability of the compare
-The compare is the specificity payload (PRD §5.4), and the V1 finding was that the node map's discoverability needs work. A user must be able to find the other categories without being told. The result must also give somewhere to go: training programs (a category-keyed set, reintroduced at step 8) and, eventually, real listings.
+The compare is the specificity payload (PRD §5.4), and the V1 finding was that the node map's discoverability needs work. A user must be able to find the other roles without being told. The result must also give somewhere to go: training programs (a role-keyed set, reintroduced at step 8) and, eventually, real listings.
 
 ## 4. Honest, encouraging framing
-Both participants who landed on Operator felt deflated. An entry-level result must read as a starting rung with a visible path up, paired with outbound links, not a deflating verdict (`REALIGNMENT.md` §11). An all-low result gets a light frame, not a broken-looking empty screen.
+Both participants who landed on the entry-level result felt deflated. A Technician (entry) result must read as a starting rung with a visible path up to Specialist/Integrator, paired with outbound links, not a deflating verdict (`REALIGNMENT.md` §11). An all-low result gets a light frame, not a broken-looking empty screen.
 
 ## 5. On-system
 Accents come from `categoryAccent.ts`, type and spacing from the kit tokens. Defer to `design-system-compliance.md` for the token specifics; flag here only when an off-system choice hurts the result's clarity or credibility.
 
 ## Application
-Run via `/design-review` against the narrative node-map results, mid-compare. Because clarity and trust are subjective, the reviewer should describe *what* a real teen would misread or distrust and *why*, cite the screenshot, and propose a concrete fix (e.g. "add a one-line definition under the percentage", "rewrite the breakdown to interpret rather than list", "add an upward-path chip to the Operator result").
+Run via `/design-review` against the narrative node-map results, mid-compare. Because clarity and trust are subjective, the reviewer should describe *what* a real teen would misread or distrust and *why*, cite the screenshot, and propose a concrete fix (e.g. "add a one-line definition under the percentage", "rewrite the breakdown to interpret rather than list", "add an upward-path chip to the Technician result").
 
 ## Cross-references
 `design-system-compliance.md` (tokens/color/motion), `PRD.md` §5.0/§5.4 (the conversion moment), `DATA_MODEL.md` §17 (the node map, dashboard, role sheet, fit line), `REALIGNMENT.md` §4/§11 (the research asks and the watch-items).

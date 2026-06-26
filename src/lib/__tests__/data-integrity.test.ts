@@ -29,19 +29,16 @@ describe.each(categoryFlows)('§17 flow invariants — $name', (flow) => {
     });
   });
 
-  it('gives every scene exactly four choices covering all four categories', () => {
+  it('gives every scene exactly three choices covering all three roles', () => {
     for (const step of steps) {
       if (step.type !== 'scene') continue;
-      expect(step.choices, step.id).toHaveLength(4);
+      expect(step.choices, step.id).toHaveLength(3);
       expect(new Set(step.choices.map((c) => c.category)), step.id).toEqual(new Set(CATEGORIES));
     }
   });
 
-  it('keeps choice and statement ids unique within the flow', () => {
-    const ids = steps.flatMap((step) => {
-      if (step.type === 'statementSort') return step.statements.map((s) => s.id);
-      return step.choices.map((c) => c.id);
-    });
+  it('keeps choice ids unique within the flow', () => {
+    const ids = steps.flatMap((step) => step.choices.map((c) => c.id));
     expect(new Set(ids).size).toBe(ids.length);
   });
 
@@ -109,8 +106,8 @@ describe('§17 cross-flow invariants', () => {
     }
   });
 
-  it('maps the four role names onto four distinct roles', () => {
+  it('maps the three role names onto three distinct roles', () => {
     const names = CATEGORIES.map((c) => roleDetails[c].roleName);
-    expect(new Set(names).size).toBe(4);
+    expect(new Set(names).size).toBe(3);
   });
 });

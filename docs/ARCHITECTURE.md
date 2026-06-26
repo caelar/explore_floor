@@ -31,7 +31,7 @@ The build is a design showcase, so motion gets two complementary engines with a 
 
 ### Scene rendering
 
-- **Plain SVG as React components.** The live SVG is the results geometry (the node map and the four-axis fit radar, driven by `lib/nodeLayout.ts`) plus the two `/src/scene/` placeholders. No canvas, no WebGL: a deliberate choice for debuggability and Claude Code's success rate.
+- **Plain SVG as React components.** The live SVG is the results geometry (the node map and the three-axis fit radar — a triangle, driven by `lib/nodeLayout.ts`) plus the two `/src/scene/` placeholders. No canvas, no WebGL: a deliberate choice for debuggability and Claude Code's success rate.
 - _(Documented cut: the full assembly-line scene, conveyor, robotic arms, bins, and the composed-SVG robot in `/src/scene/` were the original plan, never built. §5 and the §9 3D path are parked with them.)_
 
 ### State
@@ -66,7 +66,7 @@ The build is a design showcase, so motion gets two complementary engines with a 
 
 ## 2. Data flow at a glance
 
-> The diagram below shows the **classic** (documented-cut) path. The **live** narrative flow follows the same shape with different actors: `sessionStore` actions `recordAnswer` / `advanceStep` / `completeFlow` feed `lib/categoryScoring` (the four-category engine), `lib/screenerFit` (the fit line), and `lib/categoryBreakdown` (the score provenance, kept but unwired until step 8); the `Flow` and `roleDetails` data come from `/src/data/flows` and `roleDetails.ts`. The principle is identical: data down, actions up, logic in pure `/src/lib` functions. _(The `recordStatement` action served the cut exam flow.)_
+> The diagram below shows the **classic** (documented-cut) path. The **live** narrative flow follows the same shape with different actors: `sessionStore` actions `recordAnswer` / `advanceStep` / `completeFlow` feed `lib/categoryScoring` (the three-role engine), `lib/screenerFit` (the fit line), and `lib/categoryBreakdown` (the score provenance, kept but unwired until step 8); the `Flow` and `roleDetails` data come from `/src/data/flows` and `roleDetails.ts`. The principle is identical: data down, actions up, logic in pure `/src/lib` functions. _(The `recordStatement` action served the cut exam flow.)_
 
 ```
                   ┌──────────────────────┐
@@ -150,7 +150,7 @@ The principle: **data flows down, actions flow up, logic lives in pure functions
 │   │
 │   ├── data/                      See DATA_MODEL.md §17 (live) + §1–§14 (documented cut)
 │   │   ├── flows/                 LIVE — narrativeFlow, screeners, buckets, index (registry)
-│   │   ├── roleDetails.ts         LIVE — the four category roles
+│   │   ├── roleDetails.ts         LIVE — the three RC.org roles
 │   │   ├── roleSelect.ts          /select copy
 │   │   ├── types.ts               §17 flow/category types (the classic types live in the
 │   │   │                          deleted-flow record)
@@ -280,7 +280,7 @@ The capture works on *rendered* UI, so the value is uneven by surface, and that'
 Design **variables** that Figma Variables can represent (color, typography, spacing, radii) stay synced by name between the Figma file and the `@theme` block in `src/styles/globals.css`. Motion durations, easings, and springs are **not** in this set; they live in `/src/lib/motion.ts` in code only, because Figma can't model them. Keep the naming aligned so captures and variable reads stay clean:
 
 - Figma `color/brand/gold` ↔ Tailwind `arm-gold` (kit-aligned; renamed from `arm-yellow`, D-024)
-- Figma `color/category/operate` ↔ Tailwind `arm-gold` (category accents map to kit brand tokens, `categoryAccent.ts`)
+- Figma `color/role/technician` ↔ Tailwind `arm-gold` (role accents map to kit brand tokens, `categoryAccent.ts`)
 - Figma `space/4` ↔ Tailwind `space-4`
 
 Sync a related set as one operation (all colors at once, the full type scale at once) so there's no half-synced in-between state. Naming alignment is a soft convention that makes the round-trip cleaner; it is not enforced by tooling.

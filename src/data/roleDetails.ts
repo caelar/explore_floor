@@ -1,14 +1,16 @@
 import type { CategoryId, RoleDetail } from './types';
 
-// Layer-2 role-sheet content for the category results screen (DATA_MODEL §17).
-// Transcribed verbatim from the RC.org role cards on the team's board (see
-// docs/reference/Narrative Quiz Structure Content Spec.md). Read by the narrative
-// results screen and the /select comparator.
+// Layer-2 role-sheet content for the narrative results screen (DATA_MODEL §17). Transcribed
+// from RC.org's live three-role structure (docs/reference/ARM Updated Role Structure -
+// Source Content.md): Technician (entry), Specialist (mid), Integrator (planning). The entry
+// Technician folds the old Operate + Repair categories into one card, built from the
+// Operate/Operator content per ARM's card. Read by the narrative results screen and the
+// /select comparator.
 
 export const roleDetails: Record<CategoryId, RoleDetail> = {
-  operate: {
-    categoryId: 'operate',
-    roleName: 'Operator',
+  technician: {
+    categoryId: 'technician',
+    roleName: 'Technician',
     description:
       "In entry-level robot operating roles, you'll be responsible for the set-up, operation, and maintenance of robots and other automation equipment.",
     jobActivities: [
@@ -21,33 +23,18 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     ],
     education: 'High school diploma or GED certificate required',
     educationLevel: 0,
-    commonJobTitles: ['Robot Operator', 'Entry Level Robotics', 'Assembly Operator'],
-    salary: 'National median $40,300/yr',
-    payLevel: 0,
-  },
-  repair: {
-    categoryId: 'repair',
-    roleName: 'Technician',
-    description:
-      "In entry-level repair roles, you'll focus on the day-to-day maintenance of robots on the manufacturing floor and collaborate with those operating the robots.",
-    jobActivities: [
-      'Install, service, maintain, troubleshoot, and repair robots and automated production systems.',
-      'Maximize the efficiency of robotic systems and minimize downtime.',
-      'Understand computers, electrical and electronic systems, sensor and feedback principles, and how robots work as machines.',
-    ],
-    education: "Associate's degree or a post-secondary certificate required",
-    educationLevel: 1,
     commonJobTitles: [
+      'Robot Operator',
+      'Entry Level Robotics',
+      'Assembly Operator',
       'Automation Technician',
       'Robotics Maintenance Technician',
-      'Mechatronics & Robotics Technician',
-      'Robotics Process Controls Technician',
     ],
-    salary: '$54,000 to $78,000/yr; national median $66,000/yr',
-    payLevel: 1,
+    salary: 'National median $45,936/yr',
+    payLevel: 0,
   },
-  program: {
-    categoryId: 'program',
+  specialist: {
+    categoryId: 'specialist',
     roleName: 'Specialist',
     description:
       "In mid-level robotics roles, you'll design, develop, program, and implement robotic systems and technologies to enhance the efficiency, productivity, and functionality of a manufacturer.",
@@ -58,7 +45,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
       'Design software to control robotic systems for applications.',
       'Evaluate robotic systems or prototypes.',
     ],
-    education: "Bachelor's Degree (preferred), Associate's Degree (required)",
+    education: "Bachelor's Degree (required) or Master's Degree (sometimes preferred)",
     educationLevel: 2,
     commonJobTitles: [
       'Robotics Specialist',
@@ -67,11 +54,11 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
       'Automation Engineer',
       'Robotic Systems Engineer',
     ],
-    salary: '$86,000 to $124,000/yr; national median $105,000/yr',
+    salary: '$85,000 to $147,700/yr; national median $105,000/yr',
     payLevel: 2,
   },
-  plan: {
-    categoryId: 'plan',
+  integrator: {
+    categoryId: 'integrator',
     roleName: 'Integrator',
     description:
       "Planning roles require experts who understand robotics at the highest level. You'll create automation plans and recommend the most efficient, effective, and profitable automation work centers for your company.",
@@ -89,7 +76,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
       'Robotics Application Development Engineer',
       'Advanced Industrial Integrator',
     ],
-    salary: '$87,000 to $153,000/yr; national median $127,000/yr',
+    salary: '$87,000 to $153,000/yr; national median $99,250/yr',
     payLevel: 2,
   },
 };
