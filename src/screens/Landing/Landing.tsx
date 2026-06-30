@@ -1,23 +1,22 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, SegmentedControl } from '@/components';
-import { flowList, roleSelectLanding } from '@/data';
-import type { LandingConditionId } from '@/data/types';
+import { Button } from '@/components';
+import { roleSelectLanding } from '@/data';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
 
 // Landing: a type-led dark hero (D-029, Phase A — the line-art scene hint was retired with the
 // conveyor concept). Motion owns the content entrance; there's no scene engine here anymore.
-// The flow switcher is a researcher control for the study (DATA_MODEL §17): flipped here before the
-// laptop is handed over; the choice survives "Start over". The CTA routes by condition — the
-// narrative flow enters the step runner, 'select' goes to the /select comparator without a session.
+// For the virtual test round the on-screen controls are stripped to a single Start CTA, so a tester
+// has no option but to begin the narrative quiz. The condition-switcher and the dev skip-to-results
+// UI were removed, but their capabilities stay intact (the `selectFlow` store action, the `/select`
+// route, and `devSeedResults` still exist) — the CTA still routes by condition, so restoring the
+// switcher later re-enables the 'select' arm with no other change.
 export function Landing() {
   const navigate = useNavigate();
   const startSession = useSessionStore((s) => s.startSession);
   const flowId = useSessionStore((s) => s.flowId);
-  const selectFlow = useSessionStore((s) => s.selectFlow);
-  const devSeedResults = useSessionStore((s) => s.devSeedResults);
   const flow = useFlow();
   const landingCopy = flowId === 'select' ? roleSelectLanding : flow.landingCopy;
   const reduce = !!useReducedMotion();
@@ -45,36 +44,6 @@ export function Landing() {
         <Button onClick={begin} data-testid="start-cta">
           {landingCopy.cta}
         </Button>
-
-        {/* The condition switcher: the narrative flow plus the role-select comparator, which arms
-            like the flow does (tap, then start with the CTA) — but the CTA routes to /select
-            instead of starting a session. */}
-        <SegmentedControl<LandingConditionId>
-          label="Quiz flow"
-          options={[
-            ...flowList.map((f) => ({ id: f.id, label: f.name })),
-            { id: 'select', label: roleSelectLanding.switcherLabel },
-          ]}
-          value={flowId}
-          onChange={selectFlow}
-          data-testid="flow"
-        />
-
-        {/* DEV ONLY: jump straight to results with mock data (skips the quiz) for fast iteration on
-            the results screens. Stripped from production builds; remove at Phase G. */}
-        {import.meta.env.DEV && (
-          <button
-            type="button"
-            data-testid="dev-skip-to-results"
-            onClick={() => {
-              devSeedResults();
-              navigate('/results');
-            }}
-            className="rounded-full border border-dashed border-glass-border px-space-3 py-space-1 font-body text-small text-text-on-dark-faint transition-colors hover:bg-glass-fill hover:text-text-on-dark"
-          >
-            Dev: skip to results
-          </button>
-        )}
       </motion.div>
     </main>
   );

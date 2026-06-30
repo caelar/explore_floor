@@ -59,9 +59,8 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  await page.getByTestId('flow-narrative').click();
-  await expect(page.getByTestId('flow-narrative')).toHaveAttribute('aria-pressed', 'true');
-
+  // The Landing is narrative-only now (the flow switcher UI was removed for the virtual test round);
+  // the Start CTA goes straight into the narrative flow.
   await page.getByTestId('start-cta').click();
   await expect(page).toHaveURL(/\/flow$/);
 
@@ -199,10 +198,10 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await expect(page.getByTestId('role-name')).toHaveText(topRole);
   await expect(page.getByTestId('explore-role')).toBeVisible();
 
-  // "Start over" returns to Landing with the condition still selected (reset-survival).
+  // "Retake quiz" returns to Landing, ready to start over (the only control is the Start CTA).
   await page.getByTestId('retake').click();
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByTestId('flow-narrative')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('start-cta')).toBeVisible();
 
   expect(consoleErrors, `console errors:\n${consoleErrors.join('\n')}`).toEqual([]);
 });

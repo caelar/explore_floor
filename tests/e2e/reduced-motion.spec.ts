@@ -52,7 +52,7 @@ test('narrative flow works under prefers-reduced-motion', async ({ page }) => {
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  await page.getByTestId('flow-narrative').click();
+  // Landing is narrative-only now (switcher UI removed) — Start goes straight into the flow.
   await page.getByTestId('start-cta').click();
   await expect(page).toHaveURL(/\/flow$/);
 

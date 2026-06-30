@@ -14,13 +14,10 @@ test('role select: land, open a detail, select, confirm, return to Landing', asy
   });
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
-  await page.goto('/');
-  // The comparator rides the condition switcher (third tab, where Classic used to be — D-021).
-  // It arms like the study flows: tap the segment, then the CTA (relabeled) routes to /select.
-  await page.getByTestId('flow-select').click();
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByTestId('start-cta')).toHaveText('Select the role');
-  await page.getByTestId('start-cta').click();
+  // The Landing switcher UI was removed for the virtual test round (narrative-only), but the
+  // /select comparator route stays live. Navigate to it directly (HashRouter → /#/select) — that's
+  // the capability that's kept.
+  await page.goto('/#/select');
   await expect(page).toHaveURL(/\/select$/);
 
   // All three cards, in ladder order (Technician → Specialist → Integrator), named from roleDetails.

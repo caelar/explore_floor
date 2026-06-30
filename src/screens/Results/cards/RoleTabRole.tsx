@@ -1,7 +1,6 @@
 import { Icon } from '@/components/Icon';
 import type { ResultsCardsCopy, RoleDetail } from '@/data/types';
 
-import { EducationList } from './EducationList';
 import { StatBox } from './StatBox';
 
 // Tab 1 "The role": the role description, an optional upward-path callout (entry Technician),
@@ -28,8 +27,10 @@ export function RoleTabRole({ copy, detail }: { copy: ResultsCardsCopy; detail: 
         <StatBox label={copy.salaryLabel}>
           <p className="font-heading text-h4 text-text-on-dark">{detail.salaryMedian}</p>
         </StatBox>
+        {/* Education matches the salary box: one bold line (educationShort, e.g. "Bachelor's"),
+            not the multi-line bulleted list — same compact treatment as the constellation side rail. */}
         <StatBox label={copy.educationLabel}>
-          <EducationList education={detail.education} />
+          <p className="font-heading text-h4 text-text-on-dark">{detail.educationShort}</p>
         </StatBox>
       </div>
 

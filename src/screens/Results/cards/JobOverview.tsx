@@ -7,7 +7,6 @@ import type { Job, ResultsCardsCopy, RoleDetail } from '@/data/types';
 import { BridgeProgramRow } from './BridgeProgramRow';
 import { Chip } from './Chip';
 import { fill } from './copy';
-import { EducationList } from './EducationList';
 import { ResultsPanel } from './ResultsPanel';
 import { StatBox } from './StatBox';
 import { TrajectoryViz } from './TrajectoryViz';
@@ -109,8 +108,10 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
                   {job.salaryMedian ?? detail.salaryMedian}
                 </p>
               </StatBox>
+              {/* Education matches the salary box: one bold line (role-level educationShort, since
+                  jobs in a path share a tier) rather than the multi-line bulleted list. */}
               <StatBox label={copy.educationLabel}>
-                <EducationList education={job.education ?? detail.education} />
+                <p className="font-heading text-h4 text-text-on-dark">{detail.educationShort}</p>
               </StatBox>
             </div>
             <section>
