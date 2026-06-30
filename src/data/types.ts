@@ -148,6 +148,11 @@ export interface MCStep {
   id: string;
   /** Optional lead-in line shown above the question ("Let's start with some basic questions..."). */
   prompt?: string;
+  /** Where the prompt sits relative to the question. 'above' (default) frames a scenario/transition.
+   *  'below' renders it as a quiet reference detail under the question — for factual qualifiers like
+   *  the salary range, which support the answer rather than set a scene. Keeps the prominent "above"
+   *  slot for real scenarios (research: people skip the top line, so don't strand a needed fact there). */
+  promptPlacement?: 'above' | 'below';
   question: string;
   choices: MCChoice[];
 }

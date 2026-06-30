@@ -46,7 +46,9 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
     <div className="flex w-full flex-col">
       {/* Shrinking spacer (the mockup's qSpacer): tall in intro, near-zero in rating. Because the
           runner top-anchors, pressing Continue collapses this so the card rises as the choices grow —
-          the liked "slide upward", without the flex-centering that caused the scene→scene lurch. */}
+          the liked "slide upward", without the flex-centering that caused the scene→scene lurch. The
+          56px resting height is a deliberate layout-tuning constant (off the space scale on purpose —
+          this is an animated spacer height, not a token-able spacing utility). */}
       <motion.div
         aria-hidden
         initial={false}
@@ -55,8 +57,8 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
       />
 
       <div className="flex w-full flex-col gap-space-5">
-      {/* The scene-context card. Padding (32→24) and the question size (h3→h4) animate as the card
-          morphs intro→rating; these mirror the mockup's qSceneCard/qQuestion morph. A motion
+      {/* The scene-context card. Padding (32→24) plus the scenario + question font sizes animate as
+          the card morphs intro→rating; these mirror the mockup's qSceneCard morph. A motion
           element with no `initial` snaps to the right phase on mount (Back re-entry) and only
           animates when scenePhase changes (the Continue press). */}
       <motion.div
@@ -69,15 +71,25 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
           Scene {sceneNumber} of {sceneTotal}
         </p>
         <div className="border-t border-glass-border-soft" />
-        <p className="text-body text-text-on-dark-muted">{step.prompt}</p>
-        <motion.h2
-          className="font-heading font-bold text-text-on-dark"
-          // px strings, not bare numbers — Motion only auto-appends px to a known set of values
-          // (x, width, padding…); fontSize isn't one, so a unitless number is dropped. `initial`
-          // pins the mount value (no animating up from the inherited body size). Sizes mirror the
-          // h3→h4 token scale (DESIGN_SYSTEM §4): 32/38 intro → 24/32 rating.
+        {/* Inverted hierarchy (research: the scenario above a bold question kept getting skipped).
+            The SCENARIO now leads at a heading size + weight; the QUESTION drops below it, smaller and
+            lighter, so the eye reads the setup first. Both morph smaller as the card compresses into
+            the rating beat. px strings, not bare numbers — Motion only auto-appends px to a known set
+            of values (x, width, padding…); fontSize isn't one. `initial={false}` pins the mount value
+            so a Back re-entry snaps to the right phase. Sizes are design-system tokens only
+            (DESIGN_SYSTEM §4): scenario h4(24)→body(16), question h5(20)→body(16). */}
+        <motion.p
+          className="font-heading font-semibold text-text-on-dark"
           initial={false}
-          animate={{ fontSize: rating ? '24px' : '32px', lineHeight: rating ? '32px' : '38px' }}
+          animate={{ fontSize: rating ? '16px' : '24px', lineHeight: rating ? '22px' : '32px' }}
+          transition={morph}
+        >
+          {step.prompt}
+        </motion.p>
+        <motion.h2
+          className="font-body font-normal text-text-on-dark"
+          initial={false}
+          animate={{ fontSize: rating ? '16px' : '20px', lineHeight: rating ? '22px' : '28px' }}
           transition={morph}
         >
           {step.question}

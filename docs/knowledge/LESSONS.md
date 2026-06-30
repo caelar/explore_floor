@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-06-30
+
+### L-008 — When the user cites a design reference, read the actual source via the design MCP, not screenshots
+- **Context:** Asked to rework the quiz against "the Claude Design reference," I first reasoned from `docs/reference/dark/*.png` and built a mockup from inferred tokens. Those screenshots were the wrong artifact (ARM's live My-Match flow), and even the right ones are lossy. Caelan pointed me at the real source: the Claude Design `Quiz to Results.dc.html` in a claude.ai/design project. Pulling it via the **DesignSync MCP** (`get_project` → `list_files` → `get_file`) gave exact, authoritative values — scenario 17px/`#c4c8cc`, question 34px, choice card 20px/600, "introNum = index+1" — that no screenshot could yield, and confirmed our build already matched the reference (so the fix had to go *beyond* it).
+- **Do:** When a reference lives in claude.ai/design (or the user says "the Claude Design mockup/file"), read the actual `.dc.html` through the DesignSync MCP before designing — don't infer tokens from screenshots, and don't assume the screenshots on disk are the right reference. Save a local copy under `docs/reference/` as ground truth (the harness already cites a `.dc.html` that wasn't physically in the repo). Corollary, from the same pass: measure real geometry live before reserving space — a min-height reserve added for wrapping became dead space once the font shrank enough that nothing wrapped (verified all 21 labels were one line, then dropped the reserve).
+
 ## 2026-06-08
 
 ### L-007 — AnimatePresence `mode="wait"`: the exiting screen's buttons still absorb clicks

@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #1a1a1a; }
+    .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+    .qr-scroll::-webkit-scrollbar { width: 10px; }
+    .qr-scroll::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 9999px; }
+    .qr-scroll::-webkit-scrollbar-track { background: transparent; }
+    .qr-arrow { transition: background .15s ease, transform .15s ease; }
+    .qr-arrow.on:hover { background: #8a8a8a !important; transform: scale(1.06); }
+    .qr-bubble { transition: transform .25s cubic-bezier(.25,.46,.45,.94); cursor: pointer; }
+    .qr-bubble:hover { transform: translateY(-6px) scale(1.03); }
+    .qr-node { transition: transform .2s ease; cursor: pointer; }
+    .qr-node:hover { transform: scale(1.07); }
+    .qr-link { transition: opacity .15s ease; cursor: pointer; }
+    .qr-link:hover { opacity: .7; }
+    .qr-barpick { transition: background .15s ease; }
+    .qr-barpick:hover { background: rgba(255,255,255,0.06) !important; }
+    .qr-gap-row { transition: background .15s ease; }
+    .qr-gap-row:hover { background: rgba(255,255,255,0.04); }
+    .qr-explore { transition: filter .15s ease; cursor:pointer; }
+    .qr-explore:hover { filter: brightness(1.08); }
+    .qr-compare-btn { transition: filter .15s ease; cursor: pointer; }
+    .qr-compare-btn:hover { filter: brightness(1.25); }
+    .qr-tab { cursor:pointer; transition: color .15s ease; }
+    .qr-star { transform-origin: center; }
+    @keyframes qrFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes qrPulse { 0%,100% { opacity: .12; } 50% { opacity: .26; } }
+    @keyframes qrTwinkle { 0%,100% { opacity:.5; transform:scale(.85); } 50% { opacity:1; transform:scale(1.12); } }
+    @keyframes qrFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes qrPop { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
+    .qf-rate { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); transition: background .15s ease, border-color .15s ease; }
+    .qf-rate .qf-label { color:#c8ccd0; transition: color .15s ease; }
+    .qf-rate:hover { background:#ffb81c; border-color:#ffb81c; }
+    .qf-rate:hover .qf-label { color:#262626; }
+    .qf-btn:hover { background: #e0a313 !important; }
+    .qf-back:hover { color: #fafafa !important; }
+  </style>
+</helmet>
+
+<main style="width:1400px; height:900px; background:radial-gradient(58% 48% at 100% 100%, rgba(122,72,176,0.20), transparent 70%), radial-gradient(52% 44% at 0% 100%, rgba(38,92,160,0.18), transparent 72%), #1a1a1c; font-family:'Roboto', system-ui, sans-serif; color:#fff; position:relative; overflow:hidden;">
+
+  <!-- ============================ ONBOARDING QUIZ ============================ -->
+  <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute; inset:0; background:#181818; display:flex; flex-direction:column; overflow:hidden;">
+      <!-- global header -->
+      <div style="height:60px; flex:none; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px; z-index:20;">
+        <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+          <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+          <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+          <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+          <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+        </div>
+      </div>
+
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; padding:0 40px 36px; overflow:hidden;">
+
+        <!-- INTRO QUESTIONS (single-select screeners) -->
+        <sc-if value="{{ qIsIntroSeg }}" hint-placeholder-val="{{ true }}">
+          <div style="width:100%; flex:none; height:96px;"></div>
+          <div ref="{{ introPaneRef }}" style="width:100%; max-width:660px; display:flex; flex-direction:column;">
+            <div style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:34px 36px 36px; text-align:left;">
+              <div style="font-family:'Roboto',sans-serif; font-weight:400; font-size:13px; color:#9aa0a5;">Question {{ introNum }} of {{ introTotal }}</div>
+              <div style="height:1px; background:rgba(255,255,255,0.08); margin:16px 0;"></div>
+              <sc-if value="{{ introHasPrompt }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 14px; font-size:17px; font-weight:400; line-height:1.55; color:#c4c8cc; text-wrap:pretty;">{{ introPrompt }}</p>
+              </sc-if>
+              <h2 style="margin:0; font-family:'Montserrat',sans-serif; font-weight:700; font-size:34px; line-height:1.14; color:#f2f4f5; text-wrap:pretty;">{{ introQuestion }}</h2>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px; margin-top:28px;">
+              <sc-for list="{{ introRows }}" as="row" hint-placeholder-count="3">
+                <div class="{{ row.className }}" role="button" onClick="{{ row.onClick }}" style="{{ row.rowStyle }}">
+                  <span class="qf-label" style="{{ row.labelStyle }}">{{ row.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <p style="text-align:center; font-size:13px; color:#6f6f6f; margin:18px 0 0;">Select an answer to continue</p>
+          </div>
+        </sc-if>
+
+        <!-- DAY-IN-THE-LIFE SCENES -->
+        <sc-if value="{{ qIsSceneSeg }}" hint-placeholder-val="">
+        <div style="{{ qSpacerStyle }}"></div>
+        <div style="width:100%; max-width:660px; display:flex; flex-direction:column;">
+
+          <!-- scene context card -->
+          <div style="{{ qSceneCardStyle }}">
+            <div style="font-family:'Roboto',sans-serif; font-weight:400; font-size:13px; color:#9aa0a5;">Scene {{ qSceneNum }} of 7</div>
+            <div style="{{ qDividerStyle }}"></div>
+            <p style="{{ qScenarioStyle }}">{{ qScenario }}</p>
+            <h2 style="{{ qQuestionStyle }}">{{ qQuestion }}</h2>
+            <sc-if value="{{ qIsIntro }}" hint-placeholder-val="{{ true }}">
+              <div class="qf-btn" role="button" onClick="{{ qStart }}" style="margin-top:30px; display:inline-flex; align-items:center; gap:8px; background:#ffb81c; color:#262626; border-radius:9px; padding:14px 28px; font-weight:700; font-size:16px; cursor:pointer; transition:background .2s ease;">
+                Continue <span class="material-icons" style="font-size:20px;">arrow_forward</span>
+              </div>
+            </sc-if>
+          </div>
+
+          <!-- choices block -->
+          <div style="{{ qChoicesStyle }}">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+              <span style="font-size:13px; font-weight:400; color:#9aa0a5;">Choice {{ qChoiceNum }} of 4</span>
+            </div>
+            <div style="overflow:hidden; border-radius:14px; margin-bottom:28px;">
+              <div ref="{{ qChoiceCardRef }}" style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:22px 22px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:20px; line-height:1.3; color:#f2f4f5; transform-origin:center;">{{ qChoiceLabel }}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <sc-for list="{{ qRatingRows }}" as="row" hint-placeholder-count="3">
+                <div class="{{ row.className }}" role="button" onClick="{{ row.onClick }}" style="{{ row.rowStyle }}">
+                  <span class="qf-label" style="{{ row.labelStyle }}">{{ row.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <p style="text-align:center; font-size:13px; color:#6f6f6f; margin:18px 0 0;">Select the response that fits. Your pick advances to the next choice</p>
+          </div>
+
+        </div>
+        </sc-if>
+      </div>
+
+      <!-- back button -->
+      <sc-if value="{{ qCanGoBack }}">
+        <div class="qf-back" role="button" onClick="{{ qGoBack }}" style="position:absolute; left:50%; bottom:22px; transform:translateX(-50%); display:flex; align-items:center; gap:6px; color:#8a8a8a; cursor:pointer; user-select:none; transition:color .2s ease;">
+          <span class="material-icons" style="font-size:20px;">arrow_back</span>
+          <span style="font-size:14px; font-weight:500;">Back</span>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============================ ROLE OVERVIEW CARDS ============================ -->
+  <sc-if value="{{ isCards }}" hint-placeholder-val="{{ false }}">
+    <header style="position:absolute; top:0; left:0; width:1400px; height:60px; z-index:20; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px;">
+      <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+      <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+        <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+        <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+        <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+        <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+      </div>
+    </header>
+    <div role="button" onClick="{{ toMap }}" title="Close" style="position:absolute; top:60px; left:0; right:0; bottom:0; cursor:pointer; z-index:1;"></div>
+    <div style="position:absolute; top:84px; left:90px; right:90px; bottom:0; background:#1e1e20; border:1px solid rgba(255,255,255,0.07); border-radius:20px 20px 0 0; box-shadow:0 20px 70px rgba(0,0,0,0.35); overflow:hidden; z-index:2;">
+
+      <!-- sticky control bar -->
+      <div style="position:absolute; top:0; left:0; right:0; height:64px; display:flex; align-items:center; padding:0 26px; border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(30,30,32,0.85); backdrop-filter:blur(8px); z-index:6;">
+        <sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+            <div class="qr-compare-btn" role="button" onClick="{{ openComparePick }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:15px;"><span class="material-icons" style="font-size:19px; color:#ffffff;">compare_arrows</span>Compare roles</div>
+            <sc-if value="{{ showSkip }}" hint-placeholder-val="{{ true }}">
+              <div class="qr-compare-btn" role="button" onClick="{{ toMap }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:15px;">Skip to map<span class="material-icons" style="font-size:19px; color:#ffffff;">arrow_forward</span></div>
+            </sc-if>
+            <sc-if value="{{ showExplore }}">
+              <div class="qr-explore" role="button" onClick="{{ toMap }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; background:#ffb81c; color:#262626; font-weight:700; font-size:15px;">Explore careers<span class="material-icons" style="font-size:19px; color:#262626;">arrow_forward</span></div>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isFromMap }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+            <div class="qr-compare-btn" role="button" onClick="{{ openComparePick }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:15px;"><span class="material-icons" style="font-size:19px; color:#ffffff;">compare_arrows</span>Compare roles</div>
+            <div class="qr-compare-btn" role="button" onClick="{{ cardsExplore }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:15px;">{{ exploreLabel }}<span class="material-icons" style="font-size:19px; color:#ffffff;">arrow_forward</span></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- reader body -->
+      <div class="qr-scroll" style="position:absolute; top:64px; left:0; right:0; bottom:0; overflow-y:auto;">
+        <div style="display:flex; justify-content:center; padding:38px 40px 90px;">
+          <div style="width:760px; max-width:100%;">
+
+            <!-- one-surface hero (direction B) -->
+            <div style="{{ heroPanelStyle }}">
+              <div class="qr-compare-btn" role="button" onClick="{{ prev }}" style="{{ heroPrevArrowStyle }}"><span class="material-icons" style="font-size:24px; color:inherit;">chevron_left</span></div>
+              <div class="qr-compare-btn" role="button" onClick="{{ next }}" style="{{ heroNextArrowStyle }}"><span class="material-icons" style="font-size:24px; color:inherit;">chevron_right</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                <div style="{{ heroEyebrowStyle }}">{{ matchLabel }}</div>
+                <span style="font-size:13px; color:#cfd6da;">{{ stepLabel }}</span>
+              </div>
+              <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-top:2px;">
+                <div style="{{ heroNameStyle }}">{{ name }}</div>
+                <div style="{{ heroPctStyle }}">{{ pct }}</div>
+              </div>
+              <div style="margin-top:18px; display:flex; flex-direction:column; gap:9px;">
+                <sc-for list="{{ heroBars }}" as="row" hint-placeholder-count="4">
+                  <div class="{{ row.cls }}" role="button" onClick="{{ row.onClick }}" style="{{ row.rowStyle }}">
+                    <span style="{{ row.labelStyle }}">{{ row.label }}</span>
+                    <div style="{{ row.trackStyle }}"><div style="{{ row.fillStyle }}"></div></div>
+                    <div style="{{ row.valWrapStyle }}">
+                      <sc-if value="{{ row.tag }}" hint-placeholder-val=""><span style="{{ row.tagStyle }}">{{ row.tag }}</span></sc-if>
+                      <span style="{{ row.valStyle }}">{{ row.pct }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ inlineCollapsed }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ heroWhyWrapStyle }}">
+                  <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#f2f4f5;">{{ whyHeading }}</div>
+                  <p style="margin:9px 0 0; font-size:15px; line-height:1.55; color:#c4c8cc;">{{ whyV3Line }}</p>
+                  <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:7px; align-items:center;">
+                    <sc-for list="{{ whyChipsCollapsed }}" as="c" hint-placeholder-count="3"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                  </div>
+                  <div style="margin-top:16px; display:flex; align-items:center; justify-content:flex-end;">
+                    <div class="qr-link" role="button" onClick="{{ openBreakdown }}" style="display:inline-flex; align-items:center; gap:5px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#f2f4f5;">See full breakdown<span class="material-icons" style="font-size:18px;">expand_more</span></div>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ inlineExpanded }}">
+                <div style="{{ heroWhyWrapStyle }}">
+                  <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:19px; color:#fff;">{{ whyHeading }}</div>
+                  <div style="margin-top:18px; display:flex; flex-direction:column; gap:18px;">
+                    <div style="display:flex; gap:14px;">
+                      <span style="flex:none; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#fff; width:26px;">01</span>
+                      <div style="flex:1;">
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">What you chose</div>
+                        <div style="margin-top:9px; display:flex; flex-wrap:wrap; gap:7px; align-items:center;">
+                          <sc-for list="{{ whyChipsFull }}" as="c" hint-placeholder-count="4"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex; gap:14px;">
+                      <span style="flex:none; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#fff; width:26px;">02</span>
+                      <div style="flex:1;">
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">How they connect</div>
+                        <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px;">
+                          <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <span style="{{ openersPillStyle }}">{{ openersLabel }}</span>
+                            <p style="margin:0; font-size:14px; line-height:1.5; color:#e6eef1;">{{ openersText }}</p>
+                          </div>
+                          <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <span style="{{ momentsPillStyle }}">{{ momentsLabel }}</span>
+                            <p style="margin:0; font-size:14px; line-height:1.5; color:#e6eef1;">{{ momentsText }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex; gap:14px;">
+                      <span style="flex:none; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#fff; width:26px;">03</span>
+                      <div style="flex:1;">
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">What this all means</div>
+                        <p style="margin:7px 0 0; font-size:14px; line-height:1.5; color:#d4d7da;">{{ meaningText }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="margin-top:18px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.08);">
+                    <div style="font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9aa3a8; display:flex; align-items:center; gap:6px;"><span class="material-icons" style="font-size:15px;">call_split</span>What you passed on ({{ passedCountLabel }})</div>
+                    <p style="margin:11px 0 0; font-size:14px; line-height:1.5; color:#d4d7da;">{{ passedText }}</p>
+                  </div>
+                  <div class="qr-link" role="button" onClick="{{ closeInline }}" style="margin-top:18px; display:inline-flex; align-items:center; gap:6px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; color:#9aa3a8;">Hide breakdown<span class="material-icons" style="font-size:18px;">expand_less</span></div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- tabs -->
+            <div style="margin-top:26px; display:flex; gap:30px; border-bottom:1px solid rgba(255,255,255,0.14);">
+              <sc-for list="{{ cardTabs }}" as="t" hint-placeholder-count="2">
+                <span class="qr-tab" role="button" onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</span>
+              </sc-for>
+            </div>
+
+            <!-- TAB 1: THE ROLE -->
+            <sc-if value="{{ cardTabRole }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:26px;">
+                <h2 style="margin:0 0 9px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Role description</h2>
+                <p style="margin:0; font-size:15.5px; line-height:1.6; color:#dcdcdc; text-wrap:pretty;">{{ desc }}</p>
+              </div>
+              <div style="margin-top:24px; display:flex; gap:16px;">
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 20px;">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#9aa3a8; text-transform:uppercase;">Salary</div>
+                  <div style="margin-top:6px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:24px; color:#fff;">{{ salary }}<span style="font-size:14px; color:#aab2b6; font-weight:500;"> {{ salaryPer }}</span></div>
+                </div>
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 20px;">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#9aa3a8; text-transform:uppercase;">Education</div>
+                  <div style="margin-top:10px; display:flex; flex-direction:column; gap:7px;">
+                    <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
+                      <div style="display:flex; gap:9px; font-size:14.5px; line-height:1.4; color:#ededed;"><span style="color:#8a9095; flex:none;">•</span><span>{{ e }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:28px;">
+                <h2 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">What you'll do</h2>
+                <div style="display:flex; flex-direction:column; gap:11px;">
+                  <sc-for list="{{ duties }}" as="d" hint-placeholder-count="5">
+                    <div style="display:flex; gap:11px; font-size:15px; line-height:1.5; color:#dcdcdc;"><span style="color:#8a9095; flex:none;">•</span><span><strong style="font-weight:700; color:#fff;">{{ d.h }}</strong> — {{ d.t }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- TAB 2: SKILLS, PATH & NEXT STEPS -->
+            <sc-if value="{{ cardTabSkills }}">
+              <div style="margin-top:26px;">
+                <h2 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Skills you'll build</h2>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                  <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="8">
+                    <div style="display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.05); border-radius:6px; padding:7px 12px; font-size:13.5px; color:#cdd1d4;"><span class="material-icons" style="font-size:16px; color:#8a9095;">check</span>{{ sk }}</div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="margin-top:30px;">
+                <h2 style="margin:0 0 4px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">How to bridge the gap</h2>
+                <p style="margin:0 0 14px; font-size:13.5px; line-height:1.5; color:#9aa3a8;">Training programs that get you the skills and credentials for this path.</p>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <sc-for list="{{ bridge }}" as="g" hint-placeholder-count="3">
+                    <div class="qr-gap-row" style="display:flex; align-items:center; gap:18px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                      <div style="width:50px; height:50px; flex:none; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;"><span class="material-icons" style="font-size:26px; color:#cdd1d4;">{{ g.icon }}</span></div>
+                      <div style="flex:1; display:flex; flex-direction:column; gap:3px; min-width:0;">
+                        <span style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.title }}</span>
+                        <span style="font-size:12px; font-weight:500; color:#aab2b6;">{{ g.school }}</span>
+                      </div>
+                      <span class="material-icons qr-link" style="font-size:23px; color:#9aa3a8; flex:none;">bookmark_border</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- the breakdown now expands inline inside the hero card (see isCards hero) -->
+
+  </sc-if>
+
+  <!-- ============================ COMPARE — C1r ============================ -->
+  <sc-if value="{{ isCompare }}">
+    <header style="position:absolute; top:0; left:0; width:1400px; height:60px; z-index:20; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px;">
+      <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+      <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+        <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+        <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+        <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+        <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+      </div>
+    </header>
+    <div style="position:absolute; top:84px; left:90px; right:90px; bottom:0; background:#1e1e20; border:1px solid rgba(255,255,255,0.07); border-radius:20px 20px 0 0; box-shadow:0 20px 70px rgba(0,0,0,0.35); overflow:hidden;">
+      <!-- control bar -->
+      <div style="position:absolute; top:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(30,30,32,0.85); backdrop-filter:blur(8px); z-index:6;">
+        <div class="qr-compare-btn" role="button" onClick="{{ backFromCompare }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 18px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:15px;"><span class="material-icons" style="font-size:19px; color:#ffffff;">arrow_back</span>{{ cmpBackLabel }}</div>
+        <div style="position:relative;">
+          <div class="qr-compare-btn" role="button" onClick="{{ toggleCmpMenu }}" style="display:inline-flex; align-items:center; gap:10px; height:38px; padding:0 9px 0 15px; border-radius:9px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.16);"><span style="font-size:13px; color:#9aa3a8;">Compare with</span><span style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:14px; color:#f2f4f5;">{{ tgtName }}</span><span class="material-icons" style="font-size:20px; color:#9aa3a8;">expand_more</span></div>
+          <sc-if value="{{ cmpMenuOpen }}">
+            <div style="position:absolute; top:46px; right:0; min-width:212px; background:#2a2a2d; border:1px solid rgba(255,255,255,0.14); border-radius:11px; box-shadow:0 14px 40px rgba(0,0,0,0.45); padding:6px; z-index:30;">
+              <sc-for list="{{ cmpMenuRoles }}" as="m" hint-placeholder-count="3">
+                <div class="qr-link" role="button" onClick="{{ m.onClick }}" style="{{ m.style }}"><span style="{{ m.dotStyle }}"></span><span style="flex:1;">{{ m.name }}</span><span style="font-size:12.5px; font-weight:500; color:#9aa3a8;">{{ m.pct }}</span><sc-if value="{{ m.current }}"><span class="material-icons" style="font-size:17px; color:#7fe0f2;">check</span></sc-if></div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <div class="qr-scroll" style="position:absolute; top:64px; left:0; right:0; bottom:0; overflow-y:auto;">
+        <!-- columns -->
+        <div style="display:flex; min-height:520px;">
+          <sc-for list="{{ cmpCols }}" as="col" hint-placeholder-count="2">
+            <div style="{{ col.wrapStyle }}">
+              <!-- hero panel (matches the role overview first page) -->
+              <div style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:22px 24px;">
+                <div style="font-family:'Roboto',sans-serif; font-weight:400; font-size:13px; color:#9aa0a5;">{{ col.matchLabel }}</div>
+                <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-top:2px;">
+                  <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:36px; line-height:1.05; color:#f2f4f5;">{{ col.name }}</div>
+                  <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:30px; line-height:1; color:#f2f4f5;">{{ col.pct }}</div>
+                </div>
+                <div style="margin-top:18px; display:flex; flex-direction:column; gap:9px;">
+                  <sc-for list="{{ col.bars }}" as="row" hint-placeholder-count="4">
+                    <div style="{{ row.rowStyle }}">
+                      <span style="{{ row.labelStyle }}">{{ row.label }}</span>
+                      <div style="{{ row.trackStyle }}"><div style="{{ row.fillStyle }}"></div></div>
+                      <div style="{{ row.valWrapStyle }}"><span style="{{ row.valStyle }}">{{ row.pct }}</span></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+                  <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#f2f4f5;">{{ col.whyHeading }}</div>
+                  <sc-if value="{{ col.collapsed }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin:9px 0 0; font-size:14.5px; line-height:1.55; color:#c4c8cc;">{{ col.whyLine }}</p>
+                    <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:7px; align-items:center;">
+                      <sc-for list="{{ col.whyChips }}" as="c" hint-placeholder-count="3"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                    </div>
+                    <div style="margin-top:16px; display:flex; align-items:center; justify-content:flex-end;">
+                      <div class="qr-link" role="button" onClick="{{ col.toggleBreakdown }}" style="display:inline-flex; align-items:center; gap:5px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#f2f4f5; cursor:pointer;">See full breakdown<span class="material-icons" style="font-size:18px;">expand_more</span></div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ col.expanded }}">
+                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
+                      <div>
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:13px; color:#fff; margin-bottom:9px;">What you chose</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center;">
+                          <sc-for list="{{ col.whyChipsFull }}" as="c" hint-placeholder-count="4"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+                        </div>
+                      </div>
+                      <div>
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:13px; color:#fff; margin-bottom:11px;">How they connect</div>
+                        <div style="display:flex; flex-direction:column; gap:11px;">
+                          <div style="display:flex; gap:11px; align-items:flex-start;"><span style="{{ col.pillStyle }}">{{ col.openersLabel }}</span><p style="margin:0; font-size:13px; line-height:1.5; color:#e6eef1;">{{ col.openersText }}</p></div>
+                          <div style="display:flex; gap:11px; align-items:flex-start;"><span style="{{ col.pillStyle }}">{{ col.momentsLabel }}</span><p style="margin:0; font-size:13px; line-height:1.5; color:#e6eef1;">{{ col.momentsText }}</p></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:13px; color:#fff; margin-bottom:7px;">What this all means</div>
+                        <p style="margin:0; font-size:13px; line-height:1.5; color:#d4d7da;">{{ col.meaningText }}</p>
+                      </div>
+                      <div style="padding-top:13px; border-top:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:11px; font-weight:600; color:#9aa3a8; display:flex; align-items:center; gap:6px;"><span class="material-icons" style="font-size:15px;">call_split</span>What you passed on ({{ col.passedCountLabel }})</div>
+                        <p style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#d4d7da;">{{ col.passedText }}</p>
+                      </div>
+                      <div class="qr-link" role="button" onClick="{{ col.toggleBreakdown }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; color:#9aa3a8; cursor:pointer;">Hide breakdown<span class="material-icons" style="font-size:18px;">expand_less</span></div>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+              <!-- role description -->
+              <div style="margin-top:26px;">
+                <h2 style="margin:0 0 9px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:17px;">Role description</h2>
+                <p style="margin:0; font-size:14.5px; line-height:1.6; color:#dcdcdc; text-wrap:pretty;">{{ col.desc }}</p>
+              </div>
+              <!-- salary + education -->
+              <div style="margin-top:22px; display:flex; gap:14px;">
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px 18px;">
+                  <div style="font-size:12px; font-weight:600; color:#9aa3a8;">Salary</div>
+                  <div style="margin-top:6px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:22px; color:#fff;">{{ col.salary }}<span style="font-size:13px; color:#aab2b6; font-weight:500;"> {{ col.salaryPer }}</span></div>
+                </div>
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px 18px;">
+                  <div style="font-size:12px; font-weight:600; color:#9aa3a8;">Education</div>
+                  <div style="margin-top:9px; display:flex; flex-direction:column; gap:7px;">
+                    <sc-for list="{{ col.education }}" as="e" hint-placeholder-count="2">
+                      <div style="display:flex; gap:9px; font-size:13.5px; line-height:1.4; color:#ededed;"><span style="color:#8a9095; flex:none;">•</span><span>{{ e }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <!-- what you'll do -->
+              <div style="margin-top:26px;">
+                <h2 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:17px;">What you'll do</h2>
+                <div style="display:flex; flex-direction:column; gap:11px;">
+                  <sc-for list="{{ col.duties }}" as="d" hint-placeholder-count="5">
+                    <div style="display:flex; gap:11px; font-size:14px; line-height:1.5; color:#dcdcdc;"><span style="color:#8a9095; flex:none;">•</span><span><strong style="font-weight:700; color:#fff;">{{ d.h }}</strong> — {{ d.t }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============================ MAP — YOUR RESULTS ============================ -->
+  <sc-if value="{{ isMap }}">
+    <div style="position:absolute; inset:0; overflow:hidden;">
+      <sc-for list="{{ ambient }}" as="a" hint-placeholder-count="6"><div style="{{ a.style }}"></div></sc-for>
+      <header style="position:absolute; top:0; left:0; width:1400px; height:60px; z-index:20; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px;">
+        <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+          <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+          <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+          <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+          <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+        </div>
+      </header>
+      <div style="position:absolute; top:96px; left:50%; transform:translateX(-50%); width:648px; max-width:calc(100% - 80px); background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.28); backdrop-filter:blur(14px); padding:24px 30px; text-align:center;">
+        <h1 style="margin:0; font-family:'Montserrat',sans-serif; font-weight:700; font-size:34px; line-height:1; letter-spacing:-0.02em;">Your Results</h1>
+        <div style="height:1px; background:rgba(255,255,255,0.16); margin:15px 0;"></div>
+        <p style="margin:0 0 8px; font-size:15px; line-height:1.55; color:#cfd6da;">Each path's score is determined by how often your answers leaned toward it.</p><p style="margin:0; font-size:15px; line-height:1.55; color:#9aa3a8;">Tap any circle to explore the path and the jobs inside it.</p>
+      </div>
+      <div style="position:absolute; top:236px; left:50%; transform:translateX(-50%); width:1040px; height:600px;">
+        <sc-for list="{{ bubbles }}" as="b" hint-placeholder-count="4">
+          <div class="qr-bubble" role="button" onClick="{{ b.onClick }}" style="{{ b.style }}">
+            <span style="{{ b.nameStyle }}">{{ b.name }}</span>
+            <span style="{{ b.pctStyle }}">{{ b.pct }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============================ CONSTELLATION + JOB OVERLAY ============================ -->
+  <sc-if value="{{ showConstellation }}">
+    <div style="position:absolute; inset:0; overflow:hidden;">
+      <sc-for list="{{ ambient }}" as="a" hint-placeholder-count="6"><div style="{{ a.style }}"></div></sc-for>
+      <header style="position:absolute; top:0; left:0; width:1400px; height:60px; z-index:20; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px;">
+        <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+          <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+          <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+          <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+          <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+          <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+        </div>
+      </header>
+      <div style="position:absolute; top:96px; left:40px; width:404px; bottom:48px; background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18); border-radius:18px; box-shadow:0 10px 40px rgba(0,0,0,0.32); backdrop-filter:blur(14px); display:flex; flex-direction:column; overflow:hidden; z-index:12;">
+        <div style="border-bottom:1px solid rgba(255,255,255,0.12); padding:14px 24px; display:flex; align-items:center;">
+          <sc-if value="{{ isSelectedScreen }}" hint-placeholder-val="{{ true }}">
+            <div class="qr-link" role="button" onClick="{{ toMap }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-icons" style="font-size:20px; color:#cfd6da;">chevron_left</span><span style="font-size:13px; font-weight:600; color:#cfd6da;">All paths</span></div>
+          </sc-if>
+          <sc-if value="{{ isJob }}">
+            <div class="qr-link" role="button" onClick="{{ closeJob }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-icons" style="font-size:20px; color:#cfd6da;">chevron_left</span><span style="font-size:13px; font-weight:600; color:#cfd6da;">{{ roleBackLabel }}</span></div>
+          </sc-if>
+        </div>
+        <div class="qr-scroll" style="flex:1; padding:22px 24px; display:flex; flex-direction:column; overflow-y:auto;">
+          <sc-if value="{{ isSelectedScreen }}" hint-placeholder-val="{{ true }}">
+            <div style="font-family:'Roboto',sans-serif; font-weight:400; font-size:13px; color:#9aa0a5; margin-bottom:2px;">{{ matchLabel }}</div>
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px;"><div style="{{ panelNameStyle }}">{{ name }}</div><div style="{{ panelPctStyle }}">{{ pct }}</div></div>
+            <div style="margin-top:16px; display:flex; flex-direction:column; gap:9px;">
+              <sc-for list="{{ panelBars }}" as="row" hint-placeholder-count="4">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="{{ row.labelStyle }}">{{ row.label }}</span>
+                  <div style="{{ row.trackStyle }}"><div style="{{ row.fillStyle }}"></div></div>
+                  <span style="{{ row.valStyle }}">{{ row.pct }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">Role description</div>
+              <p style="margin:8px 0 0; font-size:13.5px; line-height:1.5; color:#cfd2d5;">{{ roleSummary }}</p>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:16px;">
+              <div style="flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:12px 14px;"><div style="font-size:11px; font-weight:500; color:#9aa3a8;">Salary</div><div style="margin-top:5px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#fff; white-space:nowrap;">{{ panelSalary }}<span style="font-size:11px; color:#aab2b6; font-weight:500;"> {{ salaryPer }}</span></div></div>
+              <div style="flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:12px 14px;"><div style="font-size:11px; font-weight:500; color:#9aa3a8;">Education</div><div style="margin-top:5px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#fff; white-space:nowrap;">{{ panelEdu }}</div></div>
+            </div>
+            <div style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+                <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">Jobs in this path</div>
+                <div style="font-size:12px; color:#9aa3a8;">4 roles</div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:7px;">
+                <sc-for list="{{ jobNodes }}" as="j" hint-placeholder-count="4">
+                  <div class="qr-link" role="button" onClick="{{ j.onClick }}" style="display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);">
+                    <div style="flex:1; min-width:0; font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; color:#f2f4f5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ j.label }}</div>
+                    <span class="material-icons" style="font-size:18px; color:#7e848a; flex:none;">chevron_right</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isJob }}">
+            <div style="font-size:12.5px; color:#9aa0a5;">{{ jobEyebrow }}</div>
+            <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:23px; line-height:1.1; color:#f2f4f5; margin-top:2px;">{{ jobTitle }}</div>
+            <div style="margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff;">Job description</div>
+              <p style="margin:8px 0 0; font-size:13.5px; line-height:1.5; color:#cfd2d5;">{{ jobDesc }}</p>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:16px;">
+              <div style="flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:12px 14px;"><div style="font-size:11px; font-weight:500; color:#9aa3a8;">Salary</div><div style="margin-top:5px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#fff; white-space:nowrap;">{{ panelSalary }}<span style="font-size:11px; color:#aab2b6; font-weight:500;"> {{ salaryPer }}</span></div></div>
+              <div style="flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:12px 14px;"><div style="font-size:11px; font-weight:500; color:#9aa3a8;">Education</div><div style="margin-top:5px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#fff; white-space:nowrap;">{{ panelEdu }}</div></div>
+            </div>
+            <div style="margin-top:18px;">
+              <div style="font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; color:#fff; margin-bottom:8px;">What you'll do</div>
+              <div style="display:flex; flex-direction:column; gap:7px;">
+                <sc-for list="{{ jobDutiesShort }}" as="r" hint-placeholder-count="4">
+                  <div style="display:flex; gap:10px; font-size:13.5px; line-height:1.45; color:#cfd2d5;"><span style="color:#fff; flex:none;">•</span><span>{{ r }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+        <div style="padding:16px 24px; border-top:1px solid rgba(255,255,255,0.12);">
+          <sc-if value="{{ isSelectedScreen }}" hint-placeholder-val="{{ true }}">
+            <div class="qr-link" role="button" onClick="{{ toFullOverview }}" style="display:flex; align-items:center; justify-content:center; gap:8px; height:46px; background:#117289; color:#fff; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:16px;">Role overview<span class="material-icons" style="font-size:19px;">arrow_forward</span></div>
+          </sc-if>
+          <sc-if value="{{ isJob }}">
+            <div class="qr-link" role="button" onClick="{{ toJobOverview }}" style="display:flex; align-items:center; justify-content:center; gap:8px; height:46px; background:#117289; color:#fff; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:16px;">Job overview<span class="material-icons" style="font-size:19px;">arrow_forward</span></div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="position:absolute; top:170px; left:470px; width:900px; height:600px;">
+        <svg width="900" height="600" style="position:absolute; inset:0; pointer-events:none;">
+          <sc-for list="{{ nodeLines }}" as="l" hint-placeholder-count="4">
+            <line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="rgba(224,224,224,0.5)" stroke-width="1.5" stroke-dasharray="7 7"></line>
+          </sc-for>
+        </svg>
+        <div style="{{ centerStyle }}">
+          <span style="{{ centerNameStyle }}">{{ name }}</span>
+          <span style="{{ centerPctStyle }}">{{ pct }}</span>
+        </div>
+        <sc-for list="{{ jobNodes }}" as="n" hint-placeholder-count="4">
+          <div class="qr-node" role="button" onClick="{{ n.onClick }}" style="{{ n.circleStyle }}">
+            <svg class="qr-star" viewBox="0 0 58.914 58.877" width="46" height="46" style="{{ n.starStyle }}"><path d="M 29.457 58.877 C 30.43 58.877 31.142 58.166 31.329 57.155 C 33.986 36.644 36.868 33.537 57.155 31.291 C 58.203 31.179 58.914 30.393 58.914 29.42 C 58.914 28.447 58.203 27.698 57.155 27.548 C 36.868 25.302 33.986 22.196 31.329 1.684 C 31.142 0.674 30.43 0 29.457 0 C 28.484 0 27.773 0.674 27.623 1.684 C 24.966 22.196 22.046 25.302 1.796 27.548 C 0.711 27.698 0 28.447 0 29.42 C 0 30.393 0.711 31.179 1.796 31.291 C 22.009 33.949 24.816 36.681 27.623 57.155 C 27.773 58.166 28.484 58.877 29.457 58.877 Z"></path></svg>
+          </div>
+          <div style="{{ n.labelStyle }}">{{ n.label }}</div>
+        </sc-for>
+      </div>
+
+      <!-- job card overlay (replaced by the in-rail job summary + full Job overview screen) -->
+      <sc-if value="{{ false }}">
+        <div style="position:absolute; inset:0; background:rgba(14,14,16,0.62); display:flex; align-items:center; justify-content:center; z-index:30; animation:qrFade .2s ease;" onClick="{{ closeJob }}">
+          <div class="qr-scroll" style="width:724px; max-height:840px; overflow-y:auto; background:#1e1e20; border:1px solid rgba(255,255,255,0.09); border-radius:20px; box-shadow:0 36px 100px rgba(0,0,0,0.55); padding:30px 32px; animation:qrPop .2s ease;" onClick="{{ stop }}">
+            <div style="display:flex; align-items:center; gap:18px;">
+              <div style="{{ jobTileStyle }}">
+                <svg class="qr-star" viewBox="0 0 58.914 58.877" width="30" height="30" style="color:{{ accentSoft }}; fill:currentColor;"><path d="M 29.457 58.877 C 30.43 58.877 31.142 58.166 31.329 57.155 C 33.986 36.644 36.868 33.537 57.155 31.291 C 58.203 31.179 58.914 30.393 58.914 29.42 C 58.914 28.447 58.203 27.698 57.155 27.548 C 36.868 25.302 33.986 22.196 31.329 1.684 C 31.142 0.674 30.43 0 29.457 0 C 28.484 0 27.773 0.674 27.623 1.684 C 24.966 22.196 22.046 25.302 1.796 27.548 C 0.711 27.698 0 28.447 0 29.42 C 0 30.393 0.711 31.179 1.796 31.291 C 22.009 33.949 24.816 36.681 27.623 57.155 C 27.773 58.166 28.484 58.877 29.457 58.877 Z"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="{{ eyebrowStyle }}">Related to {{ name }}</div>
+                <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:24px; line-height:1.15; color:#f2f4f5; margin-top:3px;">{{ jobTitle }}</div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                  <span style="background:rgba(255,255,255,0.06); border-radius:9999px; padding:4px 12px; font-size:12.5px; color:#cdd1d4;">Entry-level</span>
+                  <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.06); border-radius:9999px; padding:4px 12px 4px 10px; font-size:12.5px; color:#cdd1d4;"><span style="width:7px; height:7px; border-radius:50%; background:{{ accentRaw }};"></span>{{ name }}</span>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:14px; flex:none;">
+                <span class="material-icons qr-link" role="button" onClick="{{ closeJob }}" style="font-size:24px; color:#9aa3a8;">close</span>
+                <div class="qr-link" role="button" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 18px; background:#ffb81c; color:#262626; border-radius:9999px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:14px; white-space:nowrap;"><span class="material-icons" style="font-size:19px;">star</span>Set as target role</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:30px; align-items:center; margin-top:28px; border-bottom:1px solid rgba(255,255,255,0.14);">
+              <sc-for list="{{ jobTabs }}" as="t" hint-placeholder-count="3">
+                <span class="qr-tab" role="button" onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</span>
+              </sc-for>
+            </div>
+
+            <!-- TAB 0: Job Overview -->
+            <sc-if value="{{ tabOverview }}">
+              <div style="margin-top:26px;">
+                <h3 style="margin:0 0 9px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">Job description</h3>
+                <p style="margin:0; font-size:15px; line-height:1.6; color:#dcdcdc; text-wrap:pretty;">{{ jobDesc }}</p>
+                <div style="margin-top:22px; display:flex; gap:16px;">
+                  <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 20px;">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#9aa3a8; text-transform:uppercase;">Salary</div>
+                    <div style="margin-top:6px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:24px; color:#fff;">{{ salary }}<span style="font-size:14px; color:#aab2b6; font-weight:500;"> {{ salaryPer }}</span></div>
+                  </div>
+                  <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 20px;">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#9aa3a8; text-transform:uppercase;">Education</div>
+                    <div style="margin-top:10px; display:flex; flex-direction:column; gap:7px;">
+                      <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
+                        <div style="display:flex; gap:9px; font-size:14.5px; line-height:1.4; color:#ededed;"><span style="color:#8a9095; flex:none;">•</span><span>{{ e }}</span></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top:26px;">
+                  <h3 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">Responsibilities</h3>
+                  <div style="display:flex; flex-direction:column; gap:11px;">
+                    <sc-for list="{{ responsibilities }}" as="r" hint-placeholder-count="4">
+                      <div style="display:flex; gap:11px; font-size:15px; line-height:1.5; color:#dcdcdc;"><span style="color:#8a9095; flex:none;">•</span><span>{{ r }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- TAB 1: Skills & Competencies -->
+            <sc-if value="{{ tabSkills }}">
+              <div style="margin-top:26px;">
+                <h3 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">Competencies</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 50px;">
+                  <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="8">
+                    <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:#e0e0e0;"><span class="material-icons" style="font-size:18px; color:{{ accentSoft }};">check</span>{{ sk }}</div>
+                  </sc-for>
+                </div>
+                <h3 style="margin:26px 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">Essential Skills</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 50px;">
+                  <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="8">
+                    <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:#e0e0e0;"><span class="material-icons" style="font-size:18px; color:{{ accentSoft }};">check</span>{{ sk }}</div>
+                  </sc-for>
+                </div>
+                <h3 style="margin:26px 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">How to close the gap</h3>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <sc-for list="{{ bridge }}" as="g" hint-placeholder-count="3">
+                    <div class="qr-gap-row" style="display:flex; align-items:center; gap:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:13px;">
+                      <div style="{{ g.iconWrapSm }}"><span class="material-icons" style="font-size:26px; color:{{ g.iconInk }};">{{ g.icon }}</span></div>
+                      <div style="flex:1; min-width:0;">
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:500; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.title }}</div>
+                        <div style="font-size:12px; font-weight:500; color:#aab2b6;">{{ g.school }}</div>
+                      </div>
+                      <span class="material-icons qr-link" style="font-size:22px; color:#9aa3a8; flex:none;">bookmark_border</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- TAB 2: How you fit -->
+            <sc-if value="{{ tabFit }}">
+              <div style="margin-top:26px;">
+                <h3 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">You as a {{ roleNoun }}</h3>
+                <p style="margin:0; font-size:14px; font-weight:700; line-height:1.45; color:#e0e0e0;">{{ desc }}</p>
+                <h3 style="margin:26px 0 14px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px; color:#fff;">Your possible career trajectory</h3>
+                <div style="position:relative; height:450px; border-radius:10px; overflow:hidden; background:radial-gradient(120% 90% at 50% 100%, #3a3140 0%, #2e3340 45%, #2a2a2a 100%);">
+                  <svg width="636" height="450" style="position:absolute; inset:0;">
+                    <line x1="318" y1="350" x2="232" y2="232" stroke="{{ accentSoft }}" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.85"></line>
+                    <line x1="318" y1="350" x2="404" y2="232" stroke="{{ accentSoft }}" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.85"></line>
+                    <line x1="232" y1="208" x2="318" y2="118" stroke="rgba(224,224,224,0.4)" stroke-width="1.5" stroke-dasharray="6 6"></line>
+                    <line x1="404" y1="208" x2="318" y2="118" stroke="rgba(224,224,224,0.4)" stroke-width="1.5" stroke-dasharray="6 6"></line>
+                  </svg>
+                  <sc-for list="{{ trajectory }}" as="t" hint-placeholder-count="4">
+                    <div style="{{ t.nodeStyle }}">
+                      <svg class="qr-star" viewBox="0 0 58.914 58.877" width="30" height="30" style="{{ t.iconStyle }}"><path d="M 29.457 58.877 C 30.43 58.877 31.142 58.166 31.329 57.155 C 33.986 36.644 36.868 33.537 57.155 31.291 C 58.203 31.179 58.914 30.393 58.914 29.42 C 58.914 28.447 58.203 27.698 57.155 27.548 C 36.868 25.302 33.986 22.196 31.329 1.684 C 31.142 0.674 30.43 0 29.457 0 C 28.484 0 27.773 0.674 27.623 1.684 C 24.966 22.196 22.046 25.302 1.796 27.548 C 0.711 27.698 0 28.447 0 29.42 C 0 30.393 0.711 31.179 1.796 31.291 C 22.009 33.949 24.816 36.681 27.623 57.155 C 27.773 58.166 28.484 58.877 29.457 58.877 Z"></path></svg>
+                    </div>
+                    <div style="{{ t.labelStyle }}">{{ t.label }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============================ FULL JOB OVERVIEW ============================ -->
+  <sc-if value="{{ isJobOverview }}">
+    <header style="position:absolute; top:0; left:0; width:1400px; height:60px; z-index:20; background:#262626; display:grid; grid-template-columns:1fr minmax(0,440px) 1fr; align-items:center; gap:24px; padding:0 16px;">
+      <img src="assets/rc_logo_white_text.png" alt="RoboticsCareer.org" style="height:40px; width:auto; flex:none;">
+      <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:440px; height:40px; border-radius:8px; border:1px solid rgba(255,255,255,0.11); background:rgba(255,255,255,0.07); padding:0 12px;">
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">search</span>
+        <span style="flex:1; font-size:14px; color:#b5b5b5;">Search jobs, trainings, companies…</span>
+        <span class="material-icons" style="font-size:18px; color:#b5b5b5; flex:none;">tune</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.07); border-radius:9999px; padding:4px 12px 4px 4px; flex:none; justify-self:end;">
+        <span style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ffb81c,#8a6500); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; color:#262626;">J</span>
+        <span style="font-size:14px; font-weight:500; color:#fafafa;">Jordan</span>
+        <span class="material-icons" style="font-size:16px; color:#b5b5b5;">keyboard_arrow_down</span>
+      </div>
+    </header>
+    <div style="position:absolute; top:84px; left:90px; right:90px; bottom:0; background:#1e1e20; border:1px solid rgba(255,255,255,0.07); border-radius:20px 20px 0 0; box-shadow:0 20px 70px rgba(0,0,0,0.35); overflow:hidden;">
+      <div style="position:absolute; top:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(30,30,32,0.85); z-index:6;">
+        <div class="qr-link" role="button" onClick="{{ toJobSummary }}" style="display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 16px 0 12px; border-radius:9999px; border:1px solid rgba(255,255,255,0.22); color:#fff; font-size:14.5px;"><span class="material-icons" style="font-size:19px;">chevron_left</span>Back</div>
+        <div class="qr-link" role="button" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 18px; border-radius:9999px; background:#ffb81c; color:#262626; font-family:'Montserrat',sans-serif; font-weight:700; font-size:14px;"><span class="material-icons" style="font-size:18px;">star</span>Set as target role</div>
+      </div>
+      <div class="qr-scroll" style="position:absolute; top:64px; left:0; right:0; bottom:0; overflow-y:auto;">
+        <div style="display:flex; justify-content:center; padding:36px 40px 80px;">
+          <div style="width:760px; max-width:100%;">
+            <div style="font-size:13px; color:#9aa0a5;">{{ jobEyebrow }}</div>
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-top:3px;">
+              <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:42px; line-height:1.05; color:#f2f4f5;">{{ jobTitle }}</div>
+              <div style="display:flex; gap:8px; padding-bottom:8px;"><span style="background:rgba(255,255,255,0.06); border-radius:9999px; padding:5px 13px; font-size:13px; color:#cdd1d4;">{{ jobLevel }}</span></div>
+            </div>
+            <div style="margin-top:24px; display:flex; gap:30px; border-bottom:1px solid rgba(255,255,255,0.14);">
+              <sc-for list="{{ jobTabs }}" as="t" hint-placeholder-count="3">
+                <span class="qr-tab" role="button" onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</span>
+              </sc-for>
+            </div>
+
+            <!-- TAB: Job Overview -->
+            <sc-if value="{{ tabOverview }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:22px;">
+                <h2 style="margin:0 0 9px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Job description</h2>
+                <p style="margin:0; font-size:15.5px; line-height:1.6; color:#dcdcdc; text-wrap:pretty;">{{ jobDesc }}</p>
+              </div>
+              <div style="margin-top:22px; display:flex; gap:16px;">
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px 20px;"><div style="font-size:12px; font-weight:500; color:#9aa3a8;">Salary</div><div style="margin-top:5px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:22px; color:#fff;">{{ salary }}<span style="font-size:13px; color:#aab2b6; font-weight:500;"> {{ salaryPer }}</span></div></div>
+                <div style="flex:1; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px 20px;"><div style="font-size:12px; font-weight:500; color:#9aa3a8;">Education</div><div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"><sc-for list="{{ education }}" as="e" hint-placeholder-count="2"><div style="display:flex; gap:9px; font-size:14px; line-height:1.4; color:#ededed;"><span style="color:#fff; flex:none;">•</span><span>{{ e }}</span></div></sc-for></div></div>
+              </div>
+              <div style="margin-top:24px;">
+                <h2 style="margin:0 0 12px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">What you'll do</h2>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                  <sc-for list="{{ responsibilities }}" as="r" hint-placeholder-count="4"><div style="display:flex; gap:11px; font-size:15px; line-height:1.5; color:#dcdcdc;"><span style="color:#fff; flex:none;">•</span><span>{{ r }}</span></div></sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- TAB: Skills & Competencies -->
+            <sc-if value="{{ tabSkills }}">
+              <div style="margin-top:24px;">
+                <h2 style="margin:0 0 14px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Competencies</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px 40px;">
+                  <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="8"><div style="display:flex; align-items:center; gap:10px; font-size:14.5px; color:#e0e0e0;"><span class="material-icons" style="font-size:18px; color:#8a9095; flex:none;">check</span>{{ sk }}</div></sc-for>
+                </div>
+                <h2 style="margin:28px 0 14px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Essential skills</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px 40px;">
+                  <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="8"><div style="display:flex; align-items:center; gap:10px; font-size:14.5px; color:#e0e0e0;"><span class="material-icons" style="font-size:18px; color:#8a9095; flex:none;">check</span>{{ sk }}</div></sc-for>
+                </div>
+                <h2 style="margin:28px 0 14px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">How to close the gap</h2>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <sc-for list="{{ bridge }}" as="g" hint-placeholder-count="3">
+                    <div class="qr-gap-row" style="display:flex; align-items:center; gap:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:13px;">
+                      <div style="width:50px; height:50px; flex:none; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;"><span class="material-icons" style="font-size:26px; color:#cdd1d4;">{{ g.icon }}</span></div>
+                      <div style="flex:1; min-width:0;">
+                        <div style="font-family:'Montserrat',sans-serif; font-weight:500; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.title }}</div>
+                        <div style="font-size:12px; font-weight:500; color:#aab2b6;">{{ g.school }}</div>
+                      </div>
+                      <span class="material-icons qr-link" style="font-size:22px; color:#9aa3a8; flex:none;">bookmark_border</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- TAB: How you fit -->
+            <sc-if value="{{ tabFit }}">
+              <div style="margin-top:24px;">
+                <h2 style="margin:0 0 9px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">You as a {{ roleNoun }}</h2>
+                <p style="margin:0; font-size:15.5px; line-height:1.6; color:#dcdcdc; text-wrap:pretty;">{{ desc }}</p>
+                <h2 style="margin:28px 0 14px; font-family:'Montserrat',sans-serif; font-weight:600; font-size:18px;">Your possible career trajectory</h2>
+                <div style="position:relative; width:636px; max-width:100%; height:450px; margin:0 auto; border-radius:12px; overflow:hidden; background:radial-gradient(120% 90% at 50% 100%, #3a3140 0%, #2e3340 45%, #2a2a2a 100%);">
+                  <svg width="636" height="450" style="position:absolute; inset:0;">
+                    <line x1="318" y1="350" x2="232" y2="232" stroke="{{ accentSoft }}" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.85"></line>
+                    <line x1="318" y1="350" x2="404" y2="232" stroke="{{ accentSoft }}" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.85"></line>
+                    <line x1="232" y1="208" x2="318" y2="118" stroke="rgba(224,224,224,0.4)" stroke-width="1.5" stroke-dasharray="6 6"></line>
+                    <line x1="404" y1="208" x2="318" y2="118" stroke="rgba(224,224,224,0.4)" stroke-width="1.5" stroke-dasharray="6 6"></line>
+                  </svg>
+                  <sc-for list="{{ trajectory }}" as="t" hint-placeholder-count="4">
+                    <div style="{{ t.nodeStyle }}">
+                      <svg class="qr-star" viewBox="0 0 58.914 58.877" width="30" height="30" style="{{ t.iconStyle }}"><path d="M 29.457 58.877 C 30.43 58.877 31.142 58.166 31.329 57.155 C 33.986 36.644 36.868 33.537 57.155 31.291 C 58.203 31.179 58.914 30.393 58.914 29.42 C 58.914 28.447 58.203 27.698 57.155 27.548 C 36.868 25.302 33.986 22.196 31.329 1.684 C 31.142 0.674 30.43 0 29.457 0 C 28.484 0 27.773 0.674 27.623 1.684 C 24.966 22.196 22.046 25.302 1.796 27.548 C 0.711 27.698 0 28.447 0 29.42 C 0 30.393 0.711 31.179 1.796 31.291 C 22.009 33.949 24.816 36.681 27.623 57.155 C 27.773 58.166 28.484 58.877 29.457 58.877 Z"></path></svg>
+                    </div>
+                    <div style="{{ t.labelStyle }}">{{ t.label }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============================ FULL JOB OVERVIEW END ============================ -->
+
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:900},&quot;resetSignal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;resultsResetSignal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  BRIDGE = [
+    { icon: 'storage', title: 'Automation Engineering Technologies Systems Specialist', school: 'Lorain County Community College' },
+    { icon: 'precision_manufacturing', title: 'Mechatronics Technology A.S. and Certificate', school: 'Community College of Allegheny County' },
+    { icon: 'account_balance', title: 'NC3 Festo Fundamentals', school: 'NC3 - National Coalition of Certification Centers' },
+  ];
+
+  JOB_DESC = "A Senior Robotics Engineer designs, develops, and deploys complex autonomous systems. They bridge the gap between algorithmic research and production-ready hardware, leading cross-functional teams, integrating perception and control stacks, and mentoring junior engineers to transition robotic concepts into reliable, real-world solutions.";
+  RESPONSIBILITIES = [
+    "Work with the customer to learn about the manufacturing process and requirements, including observing the current process, taking measurements, collecting existing process data, CAD, and machine documentation",
+    "Configure GMR-AI to generate tool paths and trajectories for robotic paint operations",
+    "Develop OLP/coverage models (e.g., RobotStudio Paint, Tecnomatix), including film-build/thickness simulation and coverage & cycle-time optimization",
+    "Work with mechanical and robotics engineers to design and develop the work cell for a specific task, keeping in mind the robot's reachability, coverage on part, and cycle time",
+  ];
+  SKILLS = ['Advanced Robot Programming', 'Mechanical Systems Design', 'Computer Programming', 'Project Management', 'Electronics & Controls', 'Robot Programming', 'Installation Concepts', 'Safety-Risk Assessment'];
+
+  // compare-flow helpers: salary ceiling, education barrier (lower = easier), quiz-answer signals
+  SAL = { Program: 124000, Operate: 40300, Repair: 50000, Plan: 80000 };
+  EDU = { Program: 2, Operate: 0, Repair: 0, Plan: 2 };
+  SIGNAL = { Program: 'choosing to code a game and play puzzle games', Operate: 'your shop-class and building-game picks', Repair: 'helping with chores and re-checking your work', Plan: 'planning your day and playing strategy games' };
+  SIGNAL_RESULT = { Program: 'programming interest and problem-solving', Operate: 'hands-on building and maintaining', Repair: 'careful, hands-on fixing', Plan: 'organization and strategy' };
+  WHY_LINE = {
+    Program: 'More of your answers pointed to Program than any other path \u2014 you kept choosing to code and solve problems.',
+    Operate: 'Your answers leaned hands-on \u2014 you were drawn to building things and working directly with machines.',
+    Repair: 'Your answers showed a knack for fixing things and getting them right \u2014 the heart of the Repair path.',
+    Plan: 'Your answers showed you think ahead and stay organized \u2014 the core of the Plan path.',
+  };
+
+  // v3 why-you-matched copy (option A collapsed + option C expanded). topTier = the two
+  // openers (4-yr college + $80k) point toward this role; otherwise they point away.
+  WHYV3 = {
+    Program: { topTier: true, momentsText: 'You kept choosing to build things and solve hard problems, that\u2019s the heart of Program.' },
+    Operate: { topTier: false, momentsText: 'You reached for hands-on work again and again, building and running the machines, that\u2019s the heart of Operate.' },
+    Repair: { topTier: false, momentsText: 'You leaned toward fixing things and getting them right, that\u2019s the heart of Repair.' },
+    Plan: { topTier: true, momentsText: 'You kept choosing to plan ahead and keep things organized, that\u2019s the heart of Plan.' },
+  };
+
+  // Per-path signals for the inline head-to-head breakdown: what coded TO a path (matched)
+  // and what you passed on that would have raised it (passed).
+  CONTRAST = {
+    Program: { matched: ['Coding a game in your free time', 'Picking puzzle games to play', 'Solving math & science problems'], passed: ['Wanting to know how & why things work'], shared: 'problem-solving' },
+    Operate: { matched: ['Checking out the shop class', 'Playing building games', 'Tinkering with how machines run'], passed: ['Building & fixing things', 'Fixing things when they break', 'Noticing when something needs fixing'], shared: 'hands-on work' },
+    Repair: { matched: ['Double-checking your homework', 'Helping with chores at home'], passed: ['Taking things apart to find the fault', 'Trying things until they work', 'Fixing things when they break'], shared: 'getting things right' },
+    Plan: { matched: ['Planning out your day', 'Playing strategy games'], passed: ['Turning ideas into real plans', 'Keeping a group on track', 'Seeing how all the steps connect'], shared: 'thinking ahead' },
+  };
+
+  ARCH = [
+    {
+      name: 'Program', noun: 'Programmer', accent: 'rgb(17,114,137)', glow: 'rgba(17,114,137,0.45)', onAccent: '#ffffff', accentSoft: 'rgb(127,224,242)', pct: 80, match: 'Your top match',
+      salary: '$86,000 - $124,000', salaryPer: '/yr',
+      education: ['Bachelor\u2019s degree (required)', 'Master\u2019s degree (sometimes preferred)'],
+      desc: "Love the idea of bringing machines to life? As a Programmer, you'll shape the future of manufacturing by designing and building smart robotic systems that make production faster, smarter, and more efficient. Whether you're writing the code that controls a robot arm or evaluating a brand-new prototype, your work directly drives innovation on the factory floor.",
+      duties: [
+        { h: 'Build & Test Robotic Systems', t: 'Get hands-on with robots and robotic applications, from initial configuration all the way through testing and deployment.' },
+        { h: 'Design Robotic Systems & Tooling', t: 'Create the mechanical systems and end-of-arm tooling that determine how robots interact with the physical world.' },
+        { h: 'Lead & Collaborate with a Team', t: 'Guide and support technologists, technicians, and fellow engineers as you bring projects to life together.' },
+        { h: 'Develop Control Software', t: 'Write the software that tells robotic systems exactly what to do, tailoring solutions to real-world manufacturing applications.' },
+        { h: 'Evaluate & Improve Prototypes', t: "Assess robotic systems and early-stage prototypes to ensure they're performing at their best before going live." },
+      ],
+      insights: [
+        { text: "You chose coding a game as something you\u2019d do at home, which means you have an interest in programming.", maps: 'MAPS TO PROGRAM' },
+        { text: "You chose puzzle-games as a video game you\u2019d play, which means you like problem solving.", maps: 'MAPS TO PROGRAM' },
+      ],
+      jobs: ['Software Engineer', 'AI/ML Engineer with Drone Imagery', 'Research Engineer', 'Data Scientist'],
+      pros: ['Skills in computer science', 'Problem-solving', '$80,000+ yearly salary'],
+      cons: ['4 year college requirement', 'Required technical skills'],
+    },
+    {
+      name: 'Operate', noun: 'Operator', accent: 'rgb(255,184,28)', glow: 'rgba(255,184,28,0.45)', onAccent: '#3d2e00', accentSoft: 'rgb(255,209,102)', pct: 65, match: 'Your second closest match',
+      salary: '$40,300', salaryPer: '/yr',
+      education: ['High school degree or GED certificate (required)'],
+      desc: "Ready to work alongside some seriously cool technology? As an Operator, you'll be the person who keeps robots and automation equipment running smoothly day-to-day \u2014 setting them up, operating them, and making sure everything stays in great shape. It's a hands-on role where your attention to detail directly impacts what gets built and how well it gets built.",
+      duties: [
+        { h: 'Supervise & Direct Robots', t: 'Oversee robots as they carry out their tasks, making sure everything runs as expected and stepping in when needed.' },
+        { h: 'Maintain Quality Standards', t: 'Keep a close eye on outputs to ensure every product coming off the line meets the mark.' },
+        { h: 'Teach Robots New Skills', t: 'Program and train robots to take on new tasks as production needs evolve.' },
+        { h: 'Support Machine Learning', t: 'Generate and collect data that helps the underlying algorithms get smarter over time.' },
+        { h: 'Load & Prep Parts', t: 'Keep the line moving by loading parts and materials so robots always have what they need to work.' },
+        { h: 'Solve Problems as a Team', t: 'Collaborate with your colleagues to spot issues early and work together on fixes.' },
+      ],
+      insights: [
+        { text: "You chose checking out the shop class, which means you might enjoy hands on activities.", maps: 'MAPS TO OPERATE' },
+        { text: "You chose building-games as a video game you\u2019d play, which means you might like building and maintaining robots.", maps: 'MAPS TO OPERATE' },
+      ],
+      jobs: ['Robotics Operator', 'Automation Technician', 'Production Specialist', 'Machine Tender'],
+      pros: ['Hands-on work', 'No 4 year college requirement'],
+      cons: ['4 year college requirement', '$40,300 yearly salary'],
+    },
+    {
+      name: 'Repair', noun: 'Repairer', accent: 'rgb(76,175,80)', glow: 'rgba(76,175,80,0.45)', onAccent: '#0c3318', accentSoft: 'rgb(123,216,138)', pct: 40, match: 'Your third closest match',
+      salary: '$45,000 - $50,000', salaryPer: '/yr',
+      education: ['High school degree or GED certificate (required)', 'Associates degree (sometimes preferred)'],
+      desc: "Ready to get your hands on the most advanced technology on the floor? As a Repairer, you'll be the person our robots depend on \u2014 diagnosing issues, performing repairs, and keeping our automated systems in peak condition. It's a deeply technical role where your problem-solving skills and mechanical know-how directly determine how well our operation runs.",
+      duties: [
+        { h: 'Diagnose & Troubleshoot', t: 'Investigate mechanical, electrical, and software faults to quickly identify the root cause of any issue before it impacts production.' },
+        { h: 'Repair & Replace Components', t: 'Swap out damaged parts, rebuild assemblies, and restore robots to full working order with precision and care.' },
+        { h: 'Perform Preventive Maintenance', t: 'Run scheduled inspections and tune-ups to catch problems early and keep breakdowns from happening in the first place.' },
+        { h: 'Read & Interpret Technical Documentation', t: 'Navigate schematics, wiring diagrams, and repair manuals to guide your work and ensure every fix is done right.' },
+        { h: 'Calibrate & Test Systems', t: 'After every repair, verify that robots are operating within spec and performing exactly as they should.' },
+        { h: 'Collaborate with Operators & Engineers', t: 'Work closely with the people who run and design these machines to share insights, flag recurring issues, and improve overall reliability.' },
+      ],
+      insights: [
+        { text: "You chose to help your parents make breakfast and help with chores, which means you\u2019re good at caretaking and hands-on fixing.", maps: 'MAPS TO REPAIR' },
+        { text: "You'd double-check your homework and re-do a past assignment, which means you\u2019re making sure things work right.", maps: 'MAPS TO REPAIR' },
+      ],
+      jobs: ['Maintenance Technician', 'Field Service Engineer', 'Mechatronics Technician', 'Controls Technician'],
+      pros: ['Hands-on technical work', 'No 4 year college requirement'],
+      cons: ['Lower salary range', 'Requires troubleshooting skills'],
+    },
+    {
+      name: 'Plan', noun: 'Planner', accent: 'rgb(191,83,9)', glow: 'rgba(191,83,9,0.5)', onAccent: '#ffffff', accentSoft: 'rgb(255,159,90)', pct: 30, match: 'Your fourth closest match',
+      salary: '$80,000+', salaryPer: '/yr',
+      education: ['Bachelor\u2019s degree (required)', 'Master\u2019s degree (sometimes preferred)'],
+      desc: "Ready to lead the team that keeps cutting-edge technology moving? As a Planner, you'll be the driving force behind our manufacturing operation \u2014 coordinating people, processes, and automated systems to hit targets, maintain quality, and continuously push performance forward. It's a leadership role where your decisions shape what gets built, how efficiently it gets built, and how well your team thrives doing it.",
+      duties: [
+        { h: 'Lead & Develop Your Team', t: 'Supervise operators, technicians, and support staff, fostering a culture of accountability, safety, and continuous improvement.' },
+        { h: 'Oversee Daily Production', t: 'Monitor output targets, schedules, and workflows to ensure the floor is running at full efficiency every shift.' },
+        { h: 'Drive Process Improvement', t: 'Identify bottlenecks and inefficiencies, and lead initiatives to streamline operations using lean manufacturing principles.' },
+        { h: 'Ensure Quality & Compliance', t: 'Maintain strict quality standards and make sure all processes meet regulatory and safety requirements.' },
+        { h: 'Coordinate with Engineering & Maintenance', t: 'Partner with technical teams to prioritize repairs, upgrades, and new robot deployments with minimal disruption to production.' },
+        { h: 'Analyze Performance Data', t: 'Use production metrics and reporting tools to make informed decisions and present results to senior leadership.' },
+      ],
+      insights: [
+        { text: "You chose to plan out your day in the morning, meaning you\u2019re very organized.", maps: 'MAPS TO PLAN' },
+        { text: "You chose to play strategy-games, meaning you like figuring out the best way to get something done.", maps: 'MAPS TO PLAN' },
+      ],
+      jobs: ['Production Manager', 'Operations Lead', 'Manufacturing Planner', 'Process Engineer'],
+      pros: ['Leadership role', '$80,000+ yearly salary'],
+      cons: ['4 year college requirement', 'High-pressure environment'],
+    },
+  ];
+
+  BUBBLE_POS = [
+    { left: 402, top: 60, size: 286 }, { left: 145, top: 300, size: 250 },
+    { left: 695, top: 320, size: 200 }, { left: 455, top: 410, size: 182 },
+  ];
+  NODE_POS = [{ x: 150, y: 120 }, { x: 750, y: 120 }, { x: 750, y: 480 }, { x: 150, y: 480 }];
+  CENTER = { x: 450, y: 300, r: 120 };
+  NR = 78;
+  TRAJ = [{ cx: 318, cy: 90, label: 'Senior Robotics Engineer', side: 'right' }, { cx: 197, cy: 232, midIdx: 1, side: 'left' }, { cx: 439, cy: 232, midIdx: 2, side: 'right' }, { cx: 318, cy: 374, current: true, side: 'right' }];
+
+  // ---- full-breakdown answer journey ----
+  ROLE_TINT = { Program: 'rgb(127,224,242)', Operate: 'rgb(255,209,102)', Repair: 'rgb(123,216,138)', Plan: 'rgb(255,159,90)' };
+  ROLE_GLOW = { Program: 'rgba(127,224,242,0.5)', Operate: 'rgba(255,209,102,0.5)', Repair: 'rgba(123,216,138,0.5)', Plan: 'rgba(255,159,90,0.5)' };
+  SCENES = [
+    { label: 'SCENE 1', prompt: 'Your alarm goes off — how do you start the morning?', nodes: [
+      { role: 'Plan', answer: 'plan out your day', meaning: 'you like to stay organized', maps: 'MAPS TO PLAN' } ] },
+    { label: 'SCENE 2', prompt: 'Your family needs a hand before school.', nodes: [
+      { role: 'Repair', answer: 'help make breakfast and with chores', meaning: 'you’re good at hands-on caretaking and fixing', maps: 'MAPS TO REPAIR' } ] },
+    { label: 'SCENE 3', prompt: 'You can check out one elective today.', nodes: [
+      { role: 'Operate', answer: 'check out the shop class', meaning: 'you might like hands-on work', maps: 'MAPS TO OPERATE' },
+      { role: 'Program', answer: 'check out the computer lab', meaning: 'you might like coding', maps: 'MAPS TO PROGRAM' } ] },
+    { label: 'SCENE 4', prompt: 'You’ve got an hour of free time at home.', nodes: [
+      { role: 'Program', answer: 'code a game', meaning: 'you have an interest in programming', maps: 'MAPS TO PROGRAM' } ] },
+    { label: 'SCENE 5', prompt: 'Pick a video game to play.', nodes: [
+      { role: 'Program', answer: 'play puzzle-games', meaning: 'you like problem-solving', maps: 'MAPS TO PROGRAM' },
+      { role: 'Operate', answer: 'play building-games', meaning: 'you might like building and maintaining robots', maps: 'MAPS TO OPERATE' } ] },
+    { label: 'SCENE 6', prompt: 'You finished your homework early.', nodes: [
+      { role: 'Repair', answer: 'double-check your homework', meaning: 'you make sure things work right', maps: 'MAPS TO REPAIR' },
+      { role: 'Plan', answer: 're-plan the rest of your week', meaning: 'you think a few steps ahead', maps: 'MAPS TO PLAN' } ] },
+    { label: 'SCENE 7', prompt: 'How do you wind down for the night?', nodes: [
+      { role: 'Plan', answer: 'play a strategy-game', meaning: 'you like figuring out the best approach', maps: 'MAPS TO PLAN' } ] },
+  ];
+  BD = { frameW: 1080, frameH: 320, left: 160, top: 340, pathL: 58, topRow: 95, botRow: 185, single: 140, r: 24, sepTop: 28, sepBot: 250, labelY: 270 };
+
+  state = { screen: 'quiz', segment: 'intro', introIndex: 0, introTrail: [0], introAnswers: {}, quizPhase: 'intro', sceneIndex: 0, choiceIndex: 0, answers: {}, roleIndex: 0, compareWith: 1, jobIndex: 0, tab: 0, cardTab: 0, breakdownOpen: false, quickOpen: false, fromMap: false, bdSel: { s: 3, n: 0 }, expanded: false, cmp: null };
+
+  QINTRO = [
+    { id: 'n-q1', prompt: "Let's start with some basic questions\u2026", question: 'Are you planning on going to college?', choices: [
+      { id: 'n-q1-yes', label: 'Yes' },
+      { id: 'n-q1-no', label: 'No' },
+    ] },
+    { id: 'n-q2', prompt: '', question: 'How long?', choices: [
+      { id: 'n-q2-short', label: 'Little as possible (1\u20132 years)' },
+      { id: 'n-q2-typical', label: 'Typical (4 years)' },
+      { id: 'n-q2-long', label: 'Long as possible (4+ years)' },
+      { id: 'n-q2-whatever', label: 'Whatever' },
+    ] },
+    { id: 'n-q3', prompt: 'Keep in mind, the median is $60,000 in the US.', question: 'What is the lowest salary you would feel satisfied with?', choices: [
+      { id: 'n-q3-40', label: '$40,000' },
+      { id: 'n-q3-60', label: '$60,000' },
+      { id: 'n-q3-80', label: '$80,000+' },
+    ] },
+    { id: 'n-q4', prompt: 'Workers in robotics do many different things throughout the day\u2026', question: 'What would you be happy spending your day doing?', choices: [
+      { id: 'n-q4-hands', label: 'Doing hands-on work' },
+      { id: 'n-q4-typing', label: 'Typing on a computer' },
+      { id: 'n-q4-leading', label: 'Leading others' },
+    ] },
+    { id: 'n-q5', prompt: 'Okay, one last thing. What will bring you fulfillment?', question: 'What do you think will bring you the most happiness?', choices: [
+      { id: 'n-q5-inspiring', label: 'Inspiring others' },
+      { id: 'n-q5-money', label: 'Earning a lot of money' },
+      { id: 'n-q5-helping', label: "Feeling like I'm helping people" },
+      { id: 'n-q5-solving', label: 'Solving difficult problems' },
+    ] },
+  ];
+
+  QSCENES = [
+    { prompt: "Your alarm goes off in the morning. You're getting ready for your first day of school.", question: 'How do you start the day?', choices: [
+      { id: 'n-s1-plan', label: 'Get dressed in the outfit I planned the night before' },
+      { id: 'n-s1-repair', label: 'Help my parents make breakfast' },
+      { id: 'n-s1-program', label: 'Write down a step-by-step to-do list' },
+      { id: 'n-s1-operate', label: 'Walk my dog' },
+    ] },
+    { prompt: 'You arrive at school, but have some time to kill.', question: 'What do you want to check out in that time?', choices: [
+      { id: 'n-s2-operate', label: 'Take a look at the shop class' },
+      { id: 'n-s2-program', label: 'Explore the computer lab' },
+      { id: 'n-s2-plan', label: 'Meet with my friends to make some afterschool plans' },
+      { id: 'n-s2-repair', label: 'Double-check my homework' },
+    ] },
+    { prompt: 'The bell rings so you head to class. Your teacher hands you a handout of all the assignments for that year.', question: 'What are you most excited for?', choices: [
+      { id: 'n-s3-plan', label: 'Taking the lead on a group project' },
+      { id: 'n-s3-operate', label: 'Building a diorama' },
+      { id: 'n-s3-repair', label: 'Being a tutor to a younger student' },
+      { id: 'n-s3-program', label: 'Solving some difficult math problems' },
+    ] },
+    { prompt: 'It\u2019s lunch time! You usually spend this time with the club you are a part of.', question: 'Where will you be?', choices: [
+      { id: 'n-s4-operate', label: 'Shop club' },
+      { id: 'n-s4-program', label: 'Computer science club' },
+      { id: 'n-s4-plan', label: 'Debate club' },
+      { id: 'n-s4-repair', label: 'IT club' },
+    ] },
+    { prompt: "You're back home after a long day of school.", question: 'What are you doing around the house?', choices: [
+      { id: 'n-s5-program', label: 'Coding a game' },
+      { id: 'n-s5-repair', label: 'Helping my parents with some chores' },
+      { id: 'n-s5-operate', label: 'Playing with Legos' },
+      { id: 'n-s5-plan', label: 'Planning the rest of my week' },
+    ] },
+    { prompt: 'You have to do some homework.', question: 'Which assignment would you want to complete the most?', choices: [
+      { id: 'n-s6-plan', label: 'Working on my presentation' },
+      { id: 'n-s6-repair', label: 'Re-do a previous assignment' },
+      { id: 'n-s6-program', label: 'Writing code' },
+      { id: 'n-s6-operate', label: 'Make 10 posters for a club event' },
+    ] },
+    { prompt: 'You finally have some time to relax. You decide to play a video game.', question: 'What are you playing?', choices: [
+      { id: 'n-s7-program', label: 'Puzzle-solving game like Portal or Outer Wilds' },
+      { id: 'n-s7-plan', label: 'Strategy game like Civ or TFT' },
+      { id: 'n-s7-operate', label: 'Building game like Minecraft or Animal Crossing' },
+      { id: 'n-s7-repair', label: 'Simulation game like Sims or Cities Skylines' },
+    ] },
+  ];
+  QEASE = 'cubic-bezier(0.25,0.46,0.45,0.94)';
+  QEASE_IN = 'cubic-bezier(0.4,0,1,1)';
+
+  qPlaySlideIn() {
+    const el = this.choiceCard; if (!el) return;
+    el.style.transform = ''; el.style.opacity = ''; el.style.filter = '';
+    el.animate([{ transform: 'translateX(130px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { duration: 460, easing: this.QEASE });
+  }
+  qSwapChoice(patch) {
+    const el = this.choiceCard;
+    if (el) { try { el.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(-90px)', opacity: 0 }], { duration: 200, easing: this.QEASE_IN }); } catch (e) {} }
+    this.sliding = true;
+    setTimeout(() => { this.setState(patch, () => { this.persist(); this.qPlaySlideIn(); this.sliding = false; }); }, el ? 170 : 0);
+  }
+  qStart = () => this.qSwapChoice({ quizPhase: 'rating', choiceIndex: 0 });
+  qRate = (bucket) => {
+    if (this.sliding) return;
+    const si = this.state.sceneIndex, ci = this.state.choiceIndex;
+    const scene = this.QSCENES[si];
+    if (!scene || this.state.quizPhase !== 'rating') return;
+    const choice = scene.choices[ci];
+    const answers = { ...this.state.answers, [choice.id]: bucket };
+    this.setState({ answers }, () => {
+      this.persist();
+      if (ci < 3) {
+        this.qSwapChoice({ choiceIndex: ci + 1 });
+      } else if (si < this.QSCENES.length - 1) {
+        this.sliding = true;
+        setTimeout(() => { this.set({ sceneIndex: si + 1, choiceIndex: 0, quizPhase: 'intro' }); this.sliding = false; }, 260);
+      } else {
+        this.sliding = true;
+        setTimeout(() => this.set({ screen: 'cards' }), 320);
+      }
+    });
+  };
+  introPlayIn() {
+    const el = this.introPane; if (!el) return;
+    try { el.animate([{ transform: 'translateX(40px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { duration: 360, easing: this.QEASE }); } catch (e) {}
+  }
+  introPick = (choice) => {
+    if (this.introBusy) return;
+    const q = this.QINTRO[this.state.introIndex];
+    const introAnswers = { ...(this.state.introAnswers || {}), [q.id]: choice.id };
+    let next = this.state.introIndex + 1;
+    if (q.id === 'n-q1' && choice.id === 'n-q1-no') next = 2; // "No college" skips the "How long?" follow-up
+    this.introBusy = true;
+    this.setState({ introAnswers }, () => {
+      this.persist();
+      setTimeout(() => {
+        if (next >= this.QINTRO.length) {
+          this.set({ segment: 'scenes', quizPhase: 'intro', sceneIndex: 0, choiceIndex: 0 });
+        } else {
+          const trail = [...(this.state.introTrail || [0]), next];
+          this.set({ introIndex: next, introTrail: trail });
+          this.introPlayIn();
+        }
+        this.introBusy = false;
+      }, 200);
+    });
+  };
+  introBack = () => {
+    const trail = (this.state.introTrail || [0]).slice();
+    if (trail.length > 1) { trail.pop(); this.set({ introIndex: trail[trail.length - 1], introTrail: trail }); this.introPlayIn(); }
+  };
+  qGoBack = () => {
+    if ((this.state.segment || 'intro') === 'intro') { this.introBack(); return; }
+    const { quizPhase, sceneIndex, choiceIndex } = this.state;
+    if (quizPhase === 'rating') {
+      if (choiceIndex > 0) this.qSwapChoice({ choiceIndex: choiceIndex - 1 });
+      else this.set({ quizPhase: 'intro' });
+    } else {
+      if (sceneIndex > 0) this.qSwapChoice({ quizPhase: 'rating', sceneIndex: sceneIndex - 1, choiceIndex: 3 });
+      else this.set({ segment: 'intro' });
+    }
+  };
+
+  componentDidMount() {
+    try { const raw = localStorage.getItem('etf_combined_nav'); if (raw) { const s = JSON.parse(raw); if (s && s.screen) { if (typeof s.sceneIndex === 'number' && s.sceneIndex > this.QSCENES.length - 1) { s.screen = 'cards'; s.segment = 'scenes'; s.sceneIndex = this.QSCENES.length - 1; s.choiceIndex = 0; } this.setState(s); } } } catch (e) {}
+    this._lastReset = this.props.resetSignal;
+    this._lastResultsReset = this.props.resultsResetSignal;
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.resetSignal !== this._lastReset) { this._lastReset = this.props.resetSignal; this.restartQuiz(); }
+    if (this.props.resultsResetSignal !== this._lastResultsReset) { this._lastResultsReset = this.props.resultsResetSignal; this.resetResults(); }
+  }
+  restartQuiz = () => {
+    this.set({ screen: 'quiz', segment: 'intro', introIndex: 0, introTrail: [0], introAnswers: {}, quizPhase: 'intro', sceneIndex: 0, choiceIndex: 0, answers: {}, roleIndex: 0, compareWith: 1, jobIndex: 0, tab: 0, cardTab: 0, breakdownOpen: false, quickOpen: false, fromMap: false, expanded: false, cmp: null });
+  };
+  resetResults = () => {
+    this.set({ screen: 'cards', roleIndex: 0, compareWith: 1, jobIndex: 0, tab: 0, cardTab: 0, breakdownOpen: false, quickOpen: false, fromMap: false, expanded: false, cmp: null });
+    this.scrollTop();
+  };
+  persist() { try { localStorage.setItem('etf_combined_nav', JSON.stringify(this.state)); } catch (e) {} }
+  set(p) { this.setState(p, () => this.persist()); }
+  scrollTop() { setTimeout(() => { document.querySelectorAll('.qr-scroll').forEach((el) => { el.scrollTop = 0; }); }, 0); }
+
+  next = () => { if (this.state.roleIndex < 3) { this.set({ roleIndex: this.state.roleIndex + 1, cardTab: 0, expanded: false, cmp: null }); this.scrollTop(); } };
+  prev = () => { if (this.state.roleIndex > 0) { this.set({ roleIndex: this.state.roleIndex - 1, cardTab: 0, expanded: false, cmp: null }); this.scrollTop(); } };
+  setCardTab = (i) => { this.set({ cardTab: i }); this.scrollTop(); };
+  toCards = () => { this.set({ screen: 'cards', breakdownOpen: false, quickOpen: false, expanded: false, cmp: null }); this.scrollTop(); };
+  toFullOverview = () => { this.set({ screen: 'cards', fromMap: true, breakdownOpen: false, quickOpen: false, expanded: false, cmp: null }); this.scrollTop(); };
+  toMap = () => this.set({ screen: 'map' });
+  openComparePick = () => { let t = this.state.compareWith; if (t === this.state.roleIndex) t = this.ARCH.findIndex((_, i) => i !== this.state.roleIndex); this.set({ screen: 'compare', compareWith: t, cmpMenuOpen: false, cmpExp: {} }); this.scrollTop(); };
+  setCompareTarget = (i) => this.set({ compareWith: i });
+  confirmCompare = () => { this.set({ screen: 'compare' }); this.scrollTop(); };
+  pickCompare = (i) => { this.set({ screen: 'compare', compareWith: i }); this.scrollTop(); };
+  swapCompare = () => { this.set({ roleIndex: this.state.compareWith, compareWith: this.state.roleIndex }); this.scrollTop(); };
+  toggleCmpMenu = () => this.setState((s) => ({ cmpMenuOpen: !s.cmpMenuOpen }));
+  pickCompareRole = (i) => this.set({ compareWith: i, cmpMenuOpen: false });
+  backFromCompare = () => { this.set({ screen: 'cards', fromMap: true, breakdownOpen: false, quickOpen: false, expanded: false, cmp: null, cmpMenuOpen: false, cmpExp: {} }); this.scrollTop(); };
+  toggleCmpSide = (i) => this.setState((s) => { const e = { ...(s.cmpExp || {}) }; e[i] = !e[i]; return { cmpExp: e }; });
+  openConstellation = (i) => this.set({ screen: 'selected', roleIndex: i });
+  toSelected = () => this.set({ screen: 'selected' });
+  openJob = (i) => this.set({ screen: 'job', jobIndex: i, tab: 0 });
+  closeJob = () => this.set({ screen: 'selected' });
+  toJobOverview = () => { this.set({ screen: 'job-overview', tab: 0 }); this.scrollTop(); };
+  toJobSummary = () => { this.set({ screen: 'job' }); };
+  setTab = (i) => this.set({ tab: i });
+  defaultCmp() {
+    const i = this.state.roleIndex;
+    const above = i > 0 ? i - 1 : 1; // contrast against the next-higher rank (top role uses #2)
+    return this.ARCH[above].name;
+  }
+  cmpName() { return this.state.cmp || this.defaultCmp(); }
+  openBreakdown = () => this.set({ expanded: true, cmp: this.cmpName() });
+  pickCmp = (name) => this.set({ expanded: true, cmp: name });
+  closeInline = () => this.set({ expanded: false });
+  closeBreakdown = () => this.set({ breakdownOpen: false });
+  openQuick = () => this.set({ quickOpen: true });
+  closeQuick = () => this.set({ quickOpen: false });
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+
+  roleBars(activeName, size) {
+    const big = size !== 'sm';
+    const cur = this.ARCH.find((r) => r.name === activeName);
+    return this.ARCH.map((a) => {
+      const active = a.name === activeName;
+      return {
+        label: a.name, pct: a.pct + '%',
+        labelStyle: { width: big ? '96px' : '78px', flex: 'none', textAlign: 'right', fontFamily: "'Montserrat',sans-serif", fontWeight: 500, fontSize: big ? '20px' : '17px', color: active ? '#fff' : '#bdbdbd' },
+        trackStyle: { flex: 1, height: big ? '40px' : '32px', borderRadius: '10px', background: '#4d4d4d', position: 'relative', overflow: 'hidden' },
+        fillStyle: { position: 'absolute', left: 0, top: 0, bottom: 0, width: a.pct + '%', borderRadius: '10px', background: a.accent, boxShadow: active ? '0 0 24px ' + cur.glow : 'none', transition: 'width .5s cubic-bezier(.25,.46,.45,.94)' },
+        valStyle: { width: big ? '52px' : '46px', flex: 'none', fontFamily: "'Montserrat',sans-serif", fontWeight: 500, fontSize: big ? '20px' : '17px', color: active ? '#fff' : '#bdbdbd' },
+      };
+    });
+  }
+
+  heroBars(activeName) {
+    return this.ARCH.map((a) => {
+      const active = a.name === activeName;
+      return {
+        label: a.name, pct: a.pct + '%',
+        cls: 'qr-bar',
+        onClick: () => {},
+        rowStyle: { display: 'flex', alignItems: 'center', gap: '10px' },
+        labelStyle: { width: '70px', flex: 'none', textAlign: 'right', fontFamily: "'Roboto',sans-serif", fontWeight: 500, fontSize: '13.5px', color: active ? '#e6e9eb' : '#9aa0a5' },
+        trackStyle: { flex: 1, height: '14px', borderRadius: '5px', background: 'rgba(0,0,0,0.3)', overflow: 'hidden' },
+        fillStyle: { height: '100%', width: a.pct + '%', borderRadius: '5px', background: active ? a.accent : '#43474b' },
+        valWrapStyle: { width: '34px', flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' },
+        valStyle: { fontVariantNumeric: 'tabular-nums', fontFamily: "'Roboto',sans-serif", fontWeight: active ? 600 : 500, fontSize: '13.5px', color: active ? '#e6e9eb' : '#9aa0a5' },
+        tag: '', tagStyle: {},
+      };
+    });
+  }
+
+  whyDotsFor(activeName) {
+    const dots = this.SCENES.map((sc) => {
+      const has = sc.nodes.some((n) => n.role === activeName);
+      const primary = sc.nodes.find((n) => n.role === activeName) || sc.nodes[0];
+      const tint = this.ROLE_TINT[primary.role];
+      const size = has ? 18 : 15;
+      return { has, style: { width: size + 'px', height: size + 'px', borderRadius: '50%', background: tint, opacity: has ? 1 : 0.6, boxShadow: has ? '0 0 8px ' + this.ROLE_GLOW[primary.role] : 'none', flex: 'none' } };
+    });
+    return { dots, count: dots.filter((d) => d.has).length };
+  }
+
+  ambientData() {
+    return [
+      { x: 140, y: 760, s: 90, c: 'rgb(17,114,137)' }, { x: 1280, y: 250, s: 70, c: 'rgb(255,184,28)' },
+      { x: 1180, y: 820, s: 110, c: 'rgb(76,175,80)' }, { x: 90, y: 320, s: 60, c: 'rgb(191,83,9)' },
+      { x: 720, y: 880, s: 80, c: 'rgb(17,114,137)' }, { x: 1340, y: 540, s: 50, c: 'rgb(76,175,80)' },
+    ].map((d, i) => ({ style: { position: 'absolute', left: d.x + 'px', top: d.y + 'px', width: d.s + 'px', height: d.s + 'px', borderRadius: '50%', background: d.c, filter: 'blur(36px)', opacity: 0.16, animation: 'qrPulse ' + (6 + i) + 's ease-in-out ' + (i * 0.5) + 's infinite' } }));
+  }
+
+  breakdown() {
+    const B = this.BD, S = this.SCENES, cur = this.ARCH[this.state.roleIndex];
+    const colW = (B.frameW - B.pathL * 2) / 7;
+    const cx = (i) => B.pathL + colW * (i + 0.5);
+    const yFor = (count, n) => count === 1 ? B.single : (n === 0 ? B.topRow : B.botRow);
+    const pos = S.map((sc, i) => sc.nodes.map((nd, n) => ({ x: cx(i), y: yFor(sc.nodes.length, n) })));
+    const sel = this.state.bdSel || { s: 0, n: 0 };
+
+    const bdNodes = [];
+    S.forEach((sc, i) => sc.nodes.forEach((nd, n) => {
+      const p = pos[i][n], tint = this.ROLE_TINT[nd.role], glow = this.ROLE_GLOW[nd.role];
+      const isCur = nd.role === cur.name, isSel = sel.s === i && sel.n === n;
+      let bs = 'none';
+      if (isSel) bs = '0 0 0 3px #1d1d20, 0 0 0 6px #ffffff, 0 0 14px ' + glow;
+      else if (isCur) bs = '0 0 11px ' + glow;
+      bdNodes.push({ onClick: () => this.openScene(i, n),
+        style: { position: 'absolute', left: (p.x - B.r) + 'px', top: (p.y - B.r) + 'px', width: (B.r * 2) + 'px', height: (B.r * 2) + 'px', borderRadius: '50%', background: tint, boxShadow: bs, opacity: (isCur || isSel) ? 1 : 0.62, cursor: 'pointer' } });
+    }));
+
+    const bdLines = [];
+    for (let i = 0; i < S.length - 1; i++) pos[i].forEach((a) => pos[i + 1].forEach((b) => bdLines.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y })));
+
+    const bdSeps = [];
+    for (let k = 1; k < 7; k++) bdSeps.push({ style: { position: 'absolute', left: (B.pathL + colW * k) + 'px', top: B.sepTop + 'px', width: '0', height: (B.sepBot - B.sepTop) + 'px', borderLeft: '1px dashed rgba(224,224,224,0.26)' } });
+
+    const bdLabels = S.map((sc, i) => ({ label: sc.label, style: { position: 'absolute', left: (cx(i) - 70) + 'px', top: B.labelY + 'px', width: '140px', textAlign: 'center', fontFamily: "'Roboto',sans-serif", fontWeight: 500, fontSize: '12px', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.72)' } }));
+
+    const selScene = S[sel.s], selPos = pos[sel.s][sel.n];
+    const absX = B.left + selPos.x, absY = B.top + selPos.y, popW = 350;
+    const popLeft = Math.max(20, Math.min(absX - popW / 2, 1400 - popW - 20));
+    const bdPopStyle = { position: 'absolute', left: popLeft + 'px', top: (absY - 44) + 'px', transform: 'translateY(-100%)', width: popW + 'px', zIndex: 40 };
+    const bdTailStyle = { position: 'absolute', bottom: '-8px', left: (absX - popLeft - 8) + 'px', width: '16px', height: '16px', background: 'rgba(40,40,45,0.97)', borderRight: '1px solid rgba(255,255,255,0.13)', borderBottom: '1px solid rgba(255,255,255,0.13)', transform: 'rotate(45deg)' };
+    const bdInsights = selScene.nodes.map((nd, idx) => ({
+      label: 'INSIGHT ' + (idx + 1), answer: nd.answer, meaning: nd.meaning, maps: nd.maps, mapColor: this.ROLE_TINT[nd.role],
+      dotStyle: { width: '13px', height: '13px', borderRadius: '50%', background: this.ROLE_TINT[nd.role], flex: 'none' },
+    }));
+
+    return {
+      bdFrameStyle: { position: 'absolute', left: B.left + 'px', top: B.top + 'px', width: B.frameW + 'px', height: B.frameH + 'px', background: '#242427', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '26px', boxShadow: '0 30px 90px rgba(0,0,0,0.55)' },
+      bdViewBox: '0 0 ' + B.frameW + ' ' + B.frameH,
+      bdNodes, bdLines, bdSeps, bdLabels, bdPopStyle, bdTailStyle, bdInsights, bdPopIntro: selScene.prompt,
+    };
+  }
+
+  renderVals() {
+    const { screen, roleIndex, compareWith, jobIndex, tab, breakdownOpen, quickOpen, expanded } = this.state;
+
+    // ---- onboarding quiz vals ----
+    const qEase = 'cubic-bezier(0.25,0.46,0.45,0.94)';
+    const qScene = this.QSCENES[this.state.sceneIndex];
+    const qIsIntro = this.state.quizPhase === 'intro';
+    const qIsRating = this.state.quizPhase === 'rating';
+    const qChoice = qScene && qScene.choices[this.state.choiceIndex];
+    const qCurrentAnswer = qChoice ? this.state.answers[qChoice.id] : undefined;
+    const qCanGoBack = !(qIsIntro && this.state.sceneIndex === 0);
+
+    // ---- intro screener segment ----
+    const segment = this.state.segment || 'intro';
+    const qIsIntroSeg = segment === 'intro';
+    const qIsSceneSeg = segment === 'scenes';
+    const introQ = this.QINTRO[this.state.introIndex] || this.QINTRO[0];
+    const introTrail = this.state.introTrail || [0];
+    const introCanBack = introTrail.length > 1;
+    const introAns = this.state.introAnswers || {};
+    const introRows = (introQ ? introQ.choices : []).map((c) => {
+      const selected = introAns[introQ.id] === c.id;
+      const rowStyle = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minHeight: '60px', padding: '15px 20px', borderRadius: '12px', cursor: 'pointer' };
+      if (selected) { rowStyle.background = '#ffb81c'; rowStyle.borderColor = '#ffb81c'; }
+      const labelStyle = { flex: 1, fontSize: '17px', fontWeight: selected ? 700 : 500, lineHeight: 1.35 };
+      if (selected) labelStyle.color = '#262626';
+      return { key: c.id, label: c.label, selected, className: 'qf-rate', onClick: () => this.introPick(c), rowStyle, labelStyle };
+    });
+    const qSpacerStyle = { width: '100%', flex: 'none', transition: 'height .5s ' + qEase, height: qIsRating ? '40px' : '120px' };
+    const qSceneCardStyle = { background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: qIsRating ? '22px 26px' : '34px 36px 36px', textAlign: 'left', transition: 'padding .45s ' + qEase };
+    const qDividerStyle = { height: '1px', background: 'rgba(255,255,255,0.08)', margin: qIsRating ? '12px 0' : '16px 0', transition: 'margin .45s ' + qEase };
+    const qScenarioStyle = { margin: qIsRating ? '0 0 10px' : '0 0 14px', fontSize: qIsRating ? '18px' : '17px', fontWeight: 400, lineHeight: 1.55, color: '#c4c8cc', textWrap: 'pretty', transition: 'font-size .45s ' + qEase };
+    const qQuestionStyle = { margin: 0, fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: qIsRating ? '22px' : '34px', lineHeight: 1.14, color: '#f2f4f5', textWrap: 'pretty', transition: 'font-size .45s ' + qEase };
+    const qChoicesStyle = qIsRating
+      ? { opacity: 1, maxHeight: '560px', marginTop: '48px', overflow: 'hidden', transition: 'opacity .4s .12s ease, max-height .55s ' + qEase + ', margin-top .55s ' + qEase }
+      : { opacity: 0, maxHeight: '0px', marginTop: '0px', overflow: 'hidden', pointerEvents: 'none', transition: 'opacity .2s ease, max-height .45s ' + qEase + ', margin-top .45s ' + qEase };
+    const qDefs = [ { key: 'thats-me', label: "That's me", cls: 'thats' }, { key: 'maybe', label: 'Kinda me', cls: 'kinda' }, { key: 'not-me', label: 'Not me', cls: 'not' } ];
+    const qRatingRows = qDefs.map((d) => {
+      const selected = qCurrentAnswer === d.key;
+      const rowStyle = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px', padding: '0 20px', borderRadius: '12px', cursor: 'pointer' };
+      if (selected) { rowStyle.background = '#ffb81c'; rowStyle.borderColor = '#ffb81c'; }
+      const labelStyle = { flex: 1, fontSize: '17px', fontWeight: selected ? 700 : 500 };
+      if (selected) labelStyle.color = '#262626';
+      return { key: d.key, label: d.label, className: 'qf-rate ' + d.cls, onClick: () => this.qRate(d.key), rowStyle, labelStyle };
+    });
+
+    const cur = this.ARCH[roleIndex];
+    const atStart = roleIndex === 0, atEnd = roleIndex === 3;
+    const isFromMap = this.state.fromMap;
+    const isOnboarding = !isFromMap;
+    const circ = (disabled) => ({ width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: disabled ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.10)', color: disabled ? '#5a5a5a' : '#e6e9eb', cursor: disabled ? 'default' : 'pointer' });
+
+    const arrowBase = { width: '60px', height: '60px', flex: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+    const mkArrow = (disabled, fn) => ({
+      cls: disabled ? 'qr-arrow' : 'qr-arrow on',
+      onClick: disabled ? (() => {}) : fn,
+      style: Object.assign({}, arrowBase, { background: disabled ? 'rgba(117,117,117,0.25)' : '#757575', cursor: disabled ? 'default' : 'pointer' }),
+      iconStyle: 'font-size:34px; color:' + (disabled ? 'rgba(255,255,255,0.35)' : '#fff') + ';',
+    });
+
+    const insights = cur.insights.map((ins, i) => ({
+      label: 'INSIGHT ' + (i + 1), text: ins.text, maps: ins.maps,
+      dotStyle: { width: '14px', height: '14px', borderRadius: '50%', background: cur.accent, flex: 'none' },
+      textStyle: { margin: 0, fontSize: '16px', lineHeight: 1.5, color: '#fff', fontWeight: i === 0 ? 500 : 400 },
+    }));
+    const bridge = this.BRIDGE.map((g) => ({ icon: g.icon, title: g.title, school: g.school, iconInk: cur.onAccent,
+      iconWrap: { width: '50px', height: '50px', flex: 'none', borderRadius: '12px', background: cur.accent, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      iconWrapSm: { width: '46px', height: '46px', flex: 'none', borderRadius: '50%', background: cur.accent, display: 'flex', alignItems: 'center', justifyContent: 'center' } }));
+
+    const comparePickRoles = this.ARCH.filter((_, i) => i !== roleIndex).map((a) => {
+      const idx = this.ARCH.indexOf(a);
+      return { name: a.name, onClick: () => this.pickCompare(idx),
+        btnStyle: { width: '100%', height: '116px', borderRadius: '16px', border: '2px solid ' + a.accent, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+        labelStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '48px', color: '#fff' } };
+    });
+
+    const buildCol = (a, isLeft) => ({
+      wrapStyle: { flex: 1, padding: '120px 56px 60px', borderRight: isLeft ? '2px dashed rgba(224,224,224,0.4)' : 'none' },
+      matchLabel: a.match, name: a.name,
+      nameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '48px', lineHeight: 1.1, color: a.accentSoft, marginTop: '4px' },
+      bars: this.roleBars(a.name, 'sm'), desc: a.desc, salary: a.salary, salaryPer: a.salaryPer, duties: a.duties,
+    });
+    const compareCols = [buildCol(cur, true), buildCol(this.ARCH[compareWith], false)];
+
+    // ---- compare flow: B3r pick + C1r comparison ----
+    let tIdx = compareWith; if (tIdx === roleIndex) tIdx = this.ARCH.findIndex((_, i) => i !== roleIndex);
+    const tgt = this.ARCH[tIdx];
+    const eduShortOf = (r) => (r.education[0] || '').replace(/\s*\(.*?\)/, '');
+    const payCurHigher = this.SAL[cur.name] >= this.SAL[tgt.name];
+    const entryCurEasier = this.EDU[cur.name] <= this.EDU[tgt.name];
+    const eduDiffers = this.EDU[cur.name] !== this.EDU[tgt.name];
+    const recIsCur = cur.pct >= tgt.pct;
+    const recName = recIsCur ? cur.name : tgt.name;
+    const otherName = recIsCur ? tgt.name : cur.name;
+    const recPaysMore = (recName === cur.name) ? payCurHigher : !payCurHigher;
+    const otherEasier = this.EDU[otherName] < this.EDU[recName];
+
+    const segSel = (r) => ({ background: r.accent, color: r.onAccent, borderRadius: '9999px', padding: '7px 18px', fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '14px', cursor: 'pointer' });
+    const segIdle = { color: '#cfcfcf', padding: '7px 18px', fontFamily: "'Montserrat',sans-serif", fontWeight: 600, fontSize: '14px', cursor: 'pointer' };
+    const pickPills = this.ARCH.map((a, i) => ({ a, i })).filter((x) => x.i !== roleIndex).map(({ a, i }) => ({
+      name: a.name, onClick: () => this.setCompareTarget(i), style: i === tIdx ? segSel(a) : segIdle,
+    }));
+
+    const qcItems = (r) => {
+      const items = r.pros.map((p) => ({ icon: 'check_circle', text: p, iconStyle: 'font-size:17px; color:rgb(126,242,131); flex:none;', textStyle: { fontSize: '13px', lineHeight: 1.35, color: 'rgb(205,238,222)' } }));
+      r.cons.forEach((c) => items.push({ icon: 'remove_circle_outline', text: c, iconStyle: 'font-size:17px; color:#9aa3a8; flex:none;', textStyle: { fontSize: '13px', lineHeight: 1.35, color: '#cfcfcf' } }));
+      return items;
+    };
+    const qcName = (r) => ({ fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '16px', color: r.accentSoft });
+    const qcLeft = { name: cur.name, soft: cur.accentSoft, pct: cur.pct + '%', items: qcItems(cur), nameStyle: qcName(cur), dotStyle: { width: '11px', height: '11px', borderRadius: '50%', background: cur.accent, flex: 'none' } };
+    const qcRight = { name: tgt.name, soft: tgt.accentSoft, pct: tgt.pct + '%', items: qcItems(tgt), nameStyle: qcName(tgt), dotStyle: { width: '11px', height: '11px', borderRadius: '50%', background: tgt.accent, flex: 'none' } };
+    const qcRec = "We\u2019d lean " + recName + " \u2014 it fits your answers more" + (recPaysMore ? ' and pays more' : '') + ". " + otherName + " is worth a look" + (otherEasier ? " if you\u2019d rather start without a degree." : ' too.');
+    const pickDutyHeads = cur.duties.slice(0, 3).map((d) => d.h);
+    const pickName = cur.name, pickPct = cur.pct + '%';
+
+    // each compare column mirrors a role's overview "first page" (hero + The role tab)
+    const colOverview = (role, isLeft, idx) => {
+      const isTop = this.ARCH.indexOf(role) === 0;
+      const v3 = this.WHYV3[role.name] || {};
+      const pointed = Math.round((role.pct / 100) * 11);
+      const openersHere = v3.topTier ? 2 : 0;
+      const moments = Math.max(0, pointed - openersHere);
+      const matched = (this.CONTRAST[role.name] || {}).matched || [];
+      const passedList = (this.CONTRAST[role.name] || {}).passed || [];
+      const passed = 11 - pointed;
+      const chipStyle = { fontSize: '12px', color: '#cdd1d4', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', padding: '5px 10px' };
+      const moreStyle = { fontSize: '12px', color: '#7e848a', padding: '5px 3px' };
+      const mkChips = (n) => {
+        const sh = matched.slice(0, n);
+        const arr = sh.map((l) => ({ label: l, style: chipStyle }));
+        const more = moments - sh.length;
+        if (more > 0) arr.push({ label: '+' + more + ' more', style: moreStyle });
+        return arr;
+      };
+      const pillStyle = { flex: 'none', minWidth: '88px', boxSizing: 'border-box', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minHeight: '21px', fontSize: '12px', color: '#cdd1d4', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', padding: '0 10px', whiteSpace: 'nowrap' };
+      const openersText = v3.topTier
+        ? 'You want four years of college and $80k+ a year, and ' + role.name + '\u2019s pay and schooling both fit.'
+        : 'You want four years of college and $80k+ a year \u2014 heads up, ' + role.name + ' usually pays less and needs less school than that.';
+      const meaningText = 'Across the 11 moments the quiz could read you, ' + pointed + ' pointed toward ' + role.name + (isTop ? ', more than any other role' : '') + ' \u2014 that\u2019s your ' + role.pct + '%. But your match is a tally, not a verdict; it\u2019s simply there to help you see yourself in these roles.';
+      const passedEx = passedList.slice(0, 2).map((p) => p.charAt(0).toLowerCase() + p.slice(1)).join(' and ');
+      const passedText = 'On the moments that didn\u2019t point here you leaned the other way' + (passedEx ? ' \u2014 ' + passedEx : '') + '. Those are the ' + passed + ' you didn\u2019t give to ' + role.name + ', which is why it landed at ' + role.pct + '% and not higher.';
+      return {
+        wrapStyle: { flex: '0 0 50%', maxWidth: '50%', boxSizing: 'border-box', padding: '30px 32px 70px', borderRight: isLeft ? '1px solid rgba(255,255,255,0.06)' : 'none' },
+        matchLabel: role.match, name: role.name, pct: role.pct + '%',
+        bars: this.heroBars(role.name),
+        whyHeading: 'Why ' + role.name + '?',
+        whyLine: 'Across the 11 moments of the quiz, ' + pointed + ' of your answers pointed towards ' + role.name.toLowerCase() + (isTop ? ', more than any other role' : '') + '.',
+        whyChips: mkChips(2), whyChipsFull: mkChips(matched.length),
+        openersLabel: '2 openers', momentsLabel: moments === 1 ? '1 moment' : moments + ' moments',
+        openersText, momentsText: v3.momentsText || ('Your answers kept pointing to ' + role.name + '.'),
+        meaningText, passedText, passedCountLabel: passed + ' of 11', pillStyle,
+        collapsed: !(this.state.cmpExp || {})[idx], expanded: !!(this.state.cmpExp || {})[idx],
+        toggleBreakdown: () => this.toggleCmpSide(idx),
+        desc: role.desc, salary: role.salary, salaryPer: role.salaryPer,
+        education: role.education, duties: role.duties,
+      };
+    };
+    const cmpCols = [colOverview(cur, true, 0), colOverview(tgt, false, 1)];
+
+    const rankBars = this.ARCH.map((a) => {
+      const isCur = a.name === cur.name, isTgt = a.name === tgt.name, on = isCur || isTgt;
+      const soft = isCur ? cur.accentSoft : isTgt ? tgt.accentSoft : '#9aa3a8';
+      return { name: a.name, pct: a.pct + '%',
+        labelStyle: { width: '58px', flex: 'none', fontFamily: "'Montserrat',sans-serif", fontWeight: 600, fontSize: '12px', color: soft },
+        trackStyle: { flex: 1, height: '13px', borderRadius: '5px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' },
+        fillStyle: { height: '100%', width: a.pct + '%', borderRadius: '5px', background: a.accent, boxShadow: on ? '0 0 12px ' + a.glow : 'none' },
+        valStyle: { width: '30px', flex: 'none', textAlign: 'right', fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '12px', color: on ? '#fff' : '#9aa3a8' } };
+    });
+    const cmpExplain = "Your answers ranked " + cur.name + (recIsCur ? ' highest' : ' high') + " at " + cur.pct + "% \u2014 " + this.SIGNAL[cur.name] + " point to " + this.SIGNAL_RESULT[cur.name] + ". " + tgt.name + " scored " + tgt.pct + "% from " + this.SIGNAL[tgt.name] + ".";
+    const cmpTitle = cur.name + ' vs ' + tgt.name;
+
+    // quick overview
+    const left = cur, right = this.ARCH[compareWith];
+    const mkItems = (role) => {
+      const items = role.pros.map((p) => ({ icon: 'check', text: p, iconStyle: 'font-size:20px; color:rgb(126,242,131);', textStyle: { fontSize: '14px', color: 'rgb(126,242,131)' } }));
+      role.cons.forEach((c) => items.push({ icon: 'close', text: c, iconStyle: 'font-size:18px; color:#bdbdbd;', textStyle: { fontSize: '14px', color: '#e0e0e0' } }));
+      return items;
+    };
+    const quickSections = [{ role: left.name, items: mkItems(left) }, { role: right.name, items: mkItems(right) }];
+
+    const bubbles = this.ARCH.map((a, i) => {
+      const p = this.BUBBLE_POS[i];
+      return { name: a.name, pct: a.pct + '%', onClick: () => this.openConstellation(i),
+        style: { position: 'absolute', left: p.left + 'px', top: p.top + 'px', width: p.size + 'px', height: p.size + 'px', borderRadius: '50%', background: a.accent, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', animation: 'qrFloat ' + (5 + i * 0.6) + 's ease-in-out ' + (i * 0.4) + 's infinite' },
+        nameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: (p.size * 0.125) + 'px', lineHeight: 1.1, color: a.onAccent, textAlign: 'center' },
+        pctStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: (p.size * 0.22) + 'px', lineHeight: 1.05, color: a.onAccent, textAlign: 'center' } };
+    });
+
+    // constellation: lines from center edge to node edge
+    const C = this.CENTER, NR = this.NR;
+    const jobNodes = cur.jobs.map((label, i) => {
+      const p = this.NODE_POS[i];
+      const active = screen === 'job' && i === jobIndex;
+      const dim = screen === 'job' && i !== jobIndex;
+      const softDim = cur.accentSoft.replace('rgb', 'rgba').replace(')', ',0.5)');
+      return { label, onClick: () => this.openJob(i),
+        circleStyle: { position: 'absolute', left: (p.x - NR) + 'px', top: (p.y - NR) + 'px', width: (NR * 2) + 'px', height: (NR * 2) + 'px', borderRadius: '50%', border: active ? ('2.5px solid ' + cur.accentSoft) : ('2px solid rgba(255,255,255,' + (dim ? '0.4' : '0.85') + ')'), display: 'flex', alignItems: 'center', justifyContent: 'center', background: active ? cur.accent.replace('rgb', 'rgba').replace(')', ',0.30)') : 'rgba(38,38,38,0.35)', boxShadow: active ? '0 0 26px ' + cur.glow : 'none' },
+        starStyle: 'color:' + (dim ? softDim : cur.accentSoft) + '; fill:currentColor; animation: qrTwinkle ' + (2.6 + i * 0.5) + 's ease-in-out ' + (i * 0.45) + 's infinite;',
+        labelStyle: { position: 'absolute', left: (p.x - 140) + 'px', top: (p.y + NR + 12) + 'px', width: '280px', textAlign: 'center', fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '22px', lineHeight: 1.2, color: dim ? '#8a9095' : cur.accentSoft } };
+    });
+    const nodeLines = this.NODE_POS.map((p) => {
+      const dx = p.x - C.x, dy = p.y - C.y, len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len;
+      return { x1: Math.round(C.x + ux * C.r), y1: Math.round(C.y + uy * C.r), x2: Math.round(p.x - ux * NR), y2: Math.round(p.y - uy * NR) };
+    });
+    const centerStyle = { position: 'absolute', left: (C.x - C.r) + 'px', top: (C.y - C.r) + 'px', width: (C.r * 2) + 'px', height: (C.r * 2) + 'px', borderRadius: '50%', background: cur.accent, boxShadow: '0 0 50px ' + cur.glow, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' };
+
+    // trajectory
+    const trajectory = this.TRAJ.map((t) => {
+      const r = 35, isCur = !!t.current, onRight = t.side === 'right';
+      const label = isCur ? 'CURRENT ROLE' : (t.label || cur.jobs[t.midIdx]);
+      const labelStyle = { position: 'absolute', top: (t.cy - 14) + 'px', background: isCur ? cur.accent.replace('rgb', 'rgba').replace(')', ',0.25)') : 'rgba(255,255,255,0.12)', color: isCur ? cur.accentSoft : '#cfcfcf', borderRadius: '9999px', padding: '6px 14px', fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap' };
+      if (onRight) labelStyle.left = (t.cx + r + 12) + 'px'; else labelStyle.right = (636 - (t.cx - r - 12)) + 'px';
+      return {
+        nodeStyle: { position: 'absolute', left: (t.cx - r) + 'px', top: (t.cy - r) + 'px', width: (r * 2) + 'px', height: (r * 2) + 'px', borderRadius: '50%', border: '2px solid ' + (isCur ? cur.accent : 'rgba(255,255,255,0.8)'), display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(38,38,38,0.3)' },
+        iconStyle: 'color:' + (isCur ? cur.accentSoft : '#cfcfcf') + '; fill:currentColor; animation: qrTwinkle 3s ease-in-out infinite;',
+        label, labelStyle,
+      };
+    });
+
+    const jobTabs = ['Job Overview', 'Skills & Competencies', 'How you fit'].map((label, i) => ({
+      label, onClick: () => this.setTab(i),
+      style: { paddingBottom: '13px', fontFamily: "'Montserrat',sans-serif", fontWeight: tab === i ? 600 : 500, fontSize: '16px', color: tab === i ? '#fff' : '#8a8a8a', borderBottom: tab === i ? '2px solid #fff' : '2px solid transparent', marginBottom: '-1px', cursor: 'pointer' },
+    }));
+
+    // ---- direction-B reader: one-surface hero + tabs ----
+    const aFill = (al) => cur.accent.replace('rgb', 'rgba').replace(')', ',' + al + ')');
+    const sFill = (al) => cur.accentSoft.replace('rgb', 'rgba').replace(')', ',' + al + ')');
+    const heroPanelStyle = { position: 'relative', margin: '0 -26px', background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '24px 26px' };
+    const heroArrow = (disabled, side) => { const s = { position: 'absolute', top: '50px', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: disabled ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: disabled ? '#5a5a5a' : '#e6e9eb', cursor: disabled ? 'default' : 'pointer' }; s[side] = '-64px'; return s; };
+    const heroPrevArrowStyle = heroArrow(atStart, 'left');
+    const heroNextArrowStyle = heroArrow(atEnd, 'right');
+    const heroWhyWrapStyle = { marginTop: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' };
+    const heroPctStyle = { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '36px', lineHeight: 1, color: '#f2f4f5' };
+    const heroEyebrowStyle = { fontFamily: "'Roboto',sans-serif", fontWeight: 400, fontSize: '13px', color: '#9aa0a5' };
+    const heroNameStyle = { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '44px', lineHeight: 1.05, color: '#f2f4f5', marginTop: '2px' };
+    const heroBars = this.heroBars(cur.name);
+    const why = this.whyDotsFor(cur.name);
+    // ---- why-you-matched v3 (option A collapsed + option C expanded) ----
+    const v3 = this.WHYV3[cur.name] || {};
+    const v3Pointed = Math.round((cur.pct / 100) * 11);
+    const v3OpenersHere = v3.topTier ? 2 : 0;
+    const v3Moments = Math.max(0, v3Pointed - v3OpenersHere);
+    const v3Passed = 11 - v3Pointed;
+    const v3Matched = (this.CONTRAST[cur.name] || {}).matched || [];
+    const v3PassedList = (this.CONTRAST[cur.name] || {}).passed || [];
+    const v3ChipStyle = { fontSize: '12.5px', color: '#cdd1d4', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', padding: '6px 11px' };
+    const v3MoreStyle = { fontSize: '12.5px', color: '#7e848a', padding: '6px 4px' };
+    const v3MkChips = (n) => {
+      const shown = v3Matched.slice(0, n);
+      const arr = shown.map((l) => ({ label: l, style: v3ChipStyle }));
+      const more = v3Moments - shown.length;
+      if (more > 0) arr.push({ label: '+' + more + ' more', style: v3MoreStyle });
+      return arr;
+    };
+    const v3PillStyle = { flex: 'none', minWidth: '92px', boxSizing: 'border-box', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minHeight: '21px', fontSize: '12.5px', color: '#cdd1d4', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', padding: '0 10px', whiteSpace: 'nowrap' };
+    const v3OpenersText = v3.topTier
+      ? 'You want four years of college and $80k+ a year, and ' + cur.name + '\u2019s pay and schooling both fit.'
+      : 'You want four years of college and $80k+ a year \u2014 heads up, ' + cur.name + ' usually pays less and needs less school than that.';
+    const v3MeaningText = 'Across the 11 moments the quiz could read you, ' + v3Pointed + ' pointed toward ' + cur.name + (roleIndex === 0 ? ', more than any other role' : '') + ' \u2014 that\u2019s your ' + cur.pct + '%. But your match is a tally, not a verdict; it\u2019s simply there to help you see yourself in these roles. Keep exploring and decide what makes the most sense for you \u2014 whatever you choose, RoboticsCareer.org will help you get there.';
+    const v3PassedEx = v3PassedList.slice(0, 2).map((p) => p.charAt(0).toLowerCase() + p.slice(1)).join(' and ');
+    const v3PassedText = 'On the moments that didn\u2019t point here you leaned the other way' + (v3PassedEx ? ' \u2014 ' + v3PassedEx : '') + '. Those are the ' + v3Passed + ' you didn\u2019t give to ' + cur.name + ', which is why it landed at ' + cur.pct + '% and not higher.';
+    // ---- inline head-to-head breakdown ----
+    const cmpRole = this.ARCH.find((r) => r.name === this.cmpName()) || this.ARCH[1];
+    const winner = cur.pct >= cmpRole.pct ? cur : cmpRole;
+    const loser = cur.pct >= cmpRole.pct ? cmpRole : cur;
+    const gapN = Math.abs(cur.pct - cmpRole.pct);
+    const wC = this.CONTRAST[winner.name] || { matched: [] };
+    const lC = this.CONTRAST[loser.name] || { passed: [], shared: 'similar things' };
+    const aFillL = (c, al) => c.replace('rgb', 'rgba').replace(')', ',' + al + ')');
+    const cardTab = this.state.cardTab || 0;
+    const ctab = (i, label) => ({ label, onClick: () => this.setCardTab(i), style: { paddingBottom: '13px', fontFamily: "'Montserrat',sans-serif", fontWeight: cardTab === i ? 600 : 500, fontSize: '16px', color: cardTab === i ? '#fff' : '#8a8a8a', borderBottom: cardTab === i ? '2px solid #fff' : '2px solid transparent', marginBottom: '-1px', cursor: 'pointer' } });
+    const cardTabs = [ctab(0, 'The role'), ctab(1, 'Skills, path & next steps')];
+    const relatedJobs = cur.jobs.map((j) => ({ name: j, onClick: () => this.openConstellation(roleIndex) }));
+
+    return {
+      isQuiz: screen === 'quiz',
+      qIsIntroSeg, qIsSceneSeg,
+      introNum: this.state.introIndex + 1, introTotal: this.QINTRO.length,
+      introHasPrompt: !!(introQ && introQ.prompt), introPrompt: introQ ? introQ.prompt : '',
+      introQuestion: introQ ? introQ.question : '', introRows,
+      introPaneRef: (el) => { this.introPane = el; },
+      qIsIntro, qIsRating, qCanGoBack: qIsSceneSeg ? true : introCanBack,
+      qScenario: qScene ? qScene.prompt : '', qQuestion: qScene ? qScene.question : '',
+      qSceneNum: this.state.sceneIndex + 1, qChoiceNum: this.state.choiceIndex + 1,
+      qChoiceLabel: qChoice ? qChoice.label : '',
+      qSpacerStyle, qSceneCardStyle, qDividerStyle, qScenarioStyle, qQuestionStyle, qChoicesStyle, qRatingRows,
+      qStart: this.qStart, qGoBack: this.qGoBack,
+      qChoiceCardRef: (el) => { this.choiceCard = el; },
+      isCards: screen === 'cards', isCompare: screen === 'compare',
+      isMap: screen === 'map',
+      showConstellation: screen === 'selected' || screen === 'job', isJob: screen === 'job',
+      isSelectedScreen: screen === 'selected', isJobOverview: screen === 'job-overview',
+      toJobOverview: this.toJobOverview, toJobSummary: this.toJobSummary,
+      jobEyebrow: 'Job in ' + cur.name, jobLevel: 'Entry-level', roleBackLabel: cur.name,
+      jobDescShort: 'Designs, develops, and deploys the autonomous systems behind the factory floor — turning robotic concepts into reliable, real-world solutions.',
+      jobDutiesShort: ['Learn the customer’s manufacturing process', 'Generate tool paths and trajectories', 'Build and optimize coverage models', 'Design the robotic work cell'],
+      breakdownOpen, quickOpen,
+      showSkip: isOnboarding && !atEnd, showExplore: isOnboarding && atEnd,
+      isOnboarding, isFromMap,
+      exploreLabel: 'Explore ' + cur.name + ' careers',
+      cardsExplore: () => this.openConstellation(roleIndex),
+      eyebrowStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '11px', letterSpacing: '0.08em', color: cur.accentSoft, textTransform: 'uppercase' },
+      cardNameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '46px', lineHeight: 1.05, color: cur.accentSoft, marginTop: '2px' },
+      cardBars: this.roleBars(cur.name, 'sm'),
+      stepLabel: (roleIndex + 1) + ' of 4',
+      stepPrevStyle: circ(atStart), stepNextStyle: circ(atEnd),
+      heroPanelStyle, heroWhyWrapStyle, heroPctStyle, heroEyebrowStyle, heroNameStyle, heroBars,
+      heroPrevArrowStyle, heroNextArrowStyle,
+      whyDots: why.dots, whyCount: why.count + ' of 7 \u2192 ' + cur.name, whyHeading: 'Why ' + cur.name + '?', whyLine: this.WHY_LINE[cur.name],
+      whyV3Line: 'Across the 11 moments of the quiz, ' + v3Pointed + ' of your answers pointed towards ' + cur.name.toLowerCase() + (roleIndex === 0 ? ', more than any other role' : '') + '.',
+      whyChipsCollapsed: v3MkChips(2), whyChipsFull: v3MkChips(v3Matched.length),
+      openersLabel: '2 openers', momentsLabel: v3Moments === 1 ? '1 moment' : v3Moments + ' moments',
+      openersPillStyle: v3PillStyle, momentsPillStyle: v3PillStyle,
+      openersText: v3OpenersText, momentsText: v3.momentsText || ('Your answers kept pointing to ' + cur.name + '.'),
+      meaningText: v3MeaningText, passedText: v3PassedText, passedCountLabel: v3Passed + ' of 11',
+      inlineCollapsed: !expanded, inlineExpanded: expanded,
+      winnerName: winner.name, loserName: loser.name, winnerSoft: winner.accentSoft, loserSoft: loser.accentSoft,
+      winnerNameStyle: { color: winner.accentSoft }, loserNameStyle: { color: loser.accentSoft },
+      winnerPct: winner.pct + '%', loserPct: loser.pct + '%',
+      aheadItems: (wC.matched || []).map((x) => ({ label: x })),
+      flipItems: (lC.passed || []).map((x) => ({ label: x })),
+      aheadIconColor: winner.accentSoft,
+      aheadLabelStyle: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: winner.accentSoft, display: 'flex', alignItems: 'center', gap: '6px' },
+      flipPanelStyle: { flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: '12px', padding: '15px 16px' },
+      flipLabelStyle: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: loser.accentSoft, display: 'flex', alignItems: 'center', gap: '6px' },
+      calloutStyle: { marginTop: '13px', background: aFillL(loser.accent, 0.1), border: '1px solid ' + aFillL(loser.accent, 0.28), borderRadius: '9px', padding: '10px 12px', fontSize: '12.5px', lineHeight: 1.45, color: loser.accentSoft },
+      calloutText: 'Answer \u201Cthat\u2019s me\u201D to two of these and ' + loser.name + ' could overtake ' + winner.name + '.',
+      verdictText: winner.name + ' scored ' + gapN + ' points higher than ' + loser.name + '. You lean toward ' + lC.shared + ', but ' + winner.name + '\u2019s signals came through more often in your answers.',
+      pickCmp: this.pickCmp, closeInline: this.closeInline,
+      cardTabs, cardTabRole: cardTab === 0, cardTabSkills: cardTab === 1, relatedJobs, skills: this.SKILLS, setCardTab: this.setCardTab,
+      toFullOverview: this.toFullOverview,
+      matchLabel: cur.match, name: cur.name, pct: cur.pct + '%', roleNoun: cur.noun, accentRaw: cur.accent, accentSoft: cur.accentSoft,
+      nameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '56px', lineHeight: 1.1, color: cur.accentSoft, marginTop: '4px' },
+      desc: cur.desc,
+      roleSummary: ({ Program: 'Design and build the smart robotic systems that make production faster, smarter, and more efficient.', Operate: 'Keep robots and automation equipment running smoothly day to day — setting them up, running them, and keeping quality high.', Repair: 'Diagnose, repair, and maintain the automated systems on the floor, keeping everything in peak working condition.', Plan: 'Coordinate the people, processes, and systems that keep a manufacturing operation hitting its targets.' })[cur.name] || cur.desc,
+      salary: cur.salary, salaryPer: cur.salaryPer, education: cur.education, duties: cur.duties,
+      bars: this.roleBars(cur.name, 'lg'), insights, bridge,
+      panelBars: this.heroBars(cur.name),
+      panelNameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '26px', lineHeight: 1.05, color: '#f2f4f5' },
+      panelPctStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '22px', lineHeight: 1, color: '#f2f4f5' },
+      eduShort: (cur.education[0] || '').replace(/\s*\(.*?\)/, ''),
+      panelSalary: (cur.salary || '').replace(/\$(\d{1,3}),\d{3}/g, '$$$1K').replace(/\s*-\s*/, '\u2013'),
+      panelEdu: (function (e) { if (/bachelor/i.test(e)) return "Bachelor\u2019s"; if (/master/i.test(e)) return "Master\u2019s"; if (/associate/i.test(e)) return "Associate\u2019s"; if (/high school|ged/i.test(e)) return "High school / GED"; return (e || '').replace(/\s*\(.*?\)/, ''); })(cur.education[0] || ''),
+      prevArrow: mkArrow(atStart, this.prev), nextArrow: mkArrow(atEnd, this.next),
+      breakdownIntro: 'Here\u2019s how each of your quiz answers shaped your match with ' + cur.name + '.',
+      comparePickRoles, compareCols,
+      pickPills, qcRec, qcLeft, qcRight, pickDutyHeads, pickName, pickPct,
+      confirmCompare: this.confirmCompare, setCompareTarget: this.setCompareTarget,
+      cmpCols, rankBars, cmpExplain, cmpTitle, swapCompare: this.swapCompare,
+      tgtName: tgt.name, cmpBackLabel: 'Back to ' + cur.name, cmpMenuOpen: this.state.cmpMenuOpen,
+      toggleCmpMenu: this.toggleCmpMenu, backFromCompare: this.backFromCompare,
+      cmpMenuRoles: this.ARCH.map((a, i) => ({ a, i })).filter((x) => x.i !== roleIndex).map(({ a, i }) => ({
+        name: a.name, pct: a.pct + '%', current: i === tIdx, onClick: () => this.pickCompareRole(i),
+        dotStyle: { width: '9px', height: '9px', borderRadius: '50%', background: a.accent, flex: 'none' },
+        style: { display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', cursor: 'pointer', background: i === tIdx ? 'rgba(255,255,255,0.06)' : 'transparent', fontFamily: "'Montserrat',sans-serif", fontWeight: 600, fontSize: '14px', color: '#f2f4f5' } })),
+      quickSubtitle: 'While ' + left.name + ' fits your results more, the ' + right.name + ' role is still worth looking into.',
+      quickSections, quickSuggestion: 'The ' + left.name + ' role might be a better fit for you as it meets your salary requirements.',
+      bubbles, ambient: this.ambientData(),
+      constTitleStyle: { margin: 0, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: '56px', lineHeight: 1, color: cur.accentSoft },
+      constSubtitle: 'Explore career opportunities related to the ' + cur.name + ' role.',
+      jobNodes, nodeLines, centerStyle,
+      centerNameStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: (C.r * 2 * 0.115) + 'px', lineHeight: 1.1, color: cur.onAccent, textAlign: 'center' },
+      centerPctStyle: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: (C.r * 2 * 0.2) + 'px', lineHeight: 1.05, color: cur.onAccent, textAlign: 'center' },
+      jobTitle: cur.jobs[jobIndex],
+      jobTileStyle: { width: '64px', height: '64px', flex: 'none', borderRadius: '16px', background: cur.accentSoft.replace('rgb', 'rgba').replace(')', ',0.12)'), border: '1px solid ' + cur.accentSoft.replace('rgb', 'rgba').replace(')', ',0.34)'), display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      jobTabs, tabOverview: tab === 0, tabSkills: tab === 1, tabFit: tab === 2,
+      jobDesc: this.JOB_DESC, responsibilities: this.RESPONSIBILITIES, skills: this.SKILLS, trajectory,
+      next: this.next, prev: this.prev, toCards: this.toCards, toMap: this.toMap, toSelected: this.toSelected,
+      openComparePick: this.openComparePick, closeJob: this.closeJob, stop: this.stop,
+      openBreakdown: this.openBreakdown, closeBreakdown: this.closeBreakdown,
+      openQuick: this.openQuick, closeQuick: this.closeQuick,
+    };
+  }
+}
+</script>
+</body>
+</html>

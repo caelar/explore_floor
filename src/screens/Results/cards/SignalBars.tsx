@@ -15,11 +15,23 @@ interface SignalBarsProps {
   matchPercentages: CategoryWeights;
   activeCategory: CategoryId;
   reduce: boolean;
+  // `dense` tightens the row gap for the narrow constellation side rail (reference parity); the
+  // hero / compare bars keep the roomier default.
+  dense?: boolean;
 }
 
-export function SignalBars({ order, matchPercentages, activeCategory, reduce }: SignalBarsProps) {
+export function SignalBars({
+  order,
+  matchPercentages,
+  activeCategory,
+  reduce,
+  dense = false,
+}: SignalBarsProps) {
   return (
-    <div className="flex flex-col gap-space-2" data-testid="signal-bars">
+    <div
+      className={`flex flex-col ${dense ? 'gap-space-1' : 'gap-space-2'}`}
+      data-testid="signal-bars"
+    >
       {order.map((cat) => {
         const pct = matchPercentages[cat];
         const active = cat === activeCategory;

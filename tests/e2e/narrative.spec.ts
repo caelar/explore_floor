@@ -66,7 +66,8 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await expect(page).toHaveURL(/\/flow$/);
 
   // Intro questions. Q0 (experience) is a new unscored question shown first under the
-  // opening prompt; then Q1 = No branches straight to Q3 — Q2 ("How long?") must never appear.
+  // opening prompt; then Q1 = No branches straight to Q3 — Q2 (the college-duration question)
+  // must never appear.
   await expect(
     page.getByRole('heading', { name: 'Do you have any experience in this field?' }),
   ).toBeVisible();
@@ -75,7 +76,9 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
     page.getByRole('heading', { name: 'Are you planning on going to college?' }),
   ).toBeVisible();
   await page.getByRole('button', { name: mcLabel('n-q1'), exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'How long?' })).not.toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'How long would you want to attend college?' }),
+  ).not.toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'What is the lowest salary you would feel satisfied with?' }),
   ).toBeVisible();

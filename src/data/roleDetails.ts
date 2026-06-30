@@ -63,7 +63,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     pathUp:
       'Technician is the entry point, not the ceiling. As you build skills and earn credentials, you can grow into Specialist or Integrator. The programs under Skills, path & next steps are where that climb starts.',
     education: 'High school diploma or GED certificate required',
-    educationShort: 'High school / GED',
+    educationShort: 'High school',
     educationLevel: 0,
     commonJobTitles: [
       'Robot Operator',

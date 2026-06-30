@@ -49,7 +49,9 @@ export const narrativeFlow: CategoryFlow = {
     {
       type: 'mc',
       id: 'n-q2',
-      question: 'How long?',
+      // Self-contained on purpose: "How long?" alone leaned on the previous question for meaning,
+      // and the lead-in line is exactly what testers skip. The full question stands on its own.
+      question: 'How long would you want to attend college?',
       choices: [
         // "1-2 years" matches no role (above HS, below Bachelor's) — unscored on purpose.
         { id: 'n-q2-short', label: 'Little as possible (1-2 years)', categories: [] },
@@ -65,7 +67,10 @@ export const narrativeFlow: CategoryFlow = {
     {
       type: 'mc',
       id: 'n-q3',
-      prompt: 'Robotics roles run from about $46,000 to over $150,000.',
+      // A factual qualifier, not a scenario — shown BELOW the question as a quiet reference line so
+      // it reads as supporting detail and doesn't compete with the real scene scenarios up top.
+      prompt: 'For reference, robotics roles run from about $46,000 to over $150,000.',
+      promptPlacement: 'below',
       question: 'What is the lowest salary you would feel satisfied with?',
       choices: [
         { id: 'n-q3-45', label: '$45,000', categories: ['technician'] }, // Technician median $45,936
@@ -80,7 +85,6 @@ export const narrativeFlow: CategoryFlow = {
     {
       type: 'mc',
       id: 'n-q4',
-      prompt: 'Workers in robotics do many different things throughout the day...',
       question: 'What would you be happy spending your day doing?',
       choices: [
         {
@@ -96,7 +100,7 @@ export const narrativeFlow: CategoryFlow = {
     {
       type: 'mc',
       id: 'n-q5',
-      prompt: 'Okay, one last thing. What will bring you fulfillment?',
+      prompt: 'Okay, one last thing.',
       question: 'What do you think will bring you the most happiness?',
       choices: [
         { id: 'n-q5-inspiring', label: 'Inspiring others', categories: ['integrator'] },
@@ -299,9 +303,9 @@ export const narrativeFlow: CategoryFlow = {
       backToMap: 'Back to the map',
       exploreRoleCta: 'Explore {role} careers',
       map: {
-        title: 'Your results',
-        intro: 'Each role’s score comes from how often your answers leaned its way.',
-        hint: 'Tap any role to dive into your match.',
+        title: 'Your Results',
+        intro: 'Each path’s score is determined by how often your answers leaned toward it.',
+        hint: 'Tap any circle to explore the path and the jobs inside it.',
       },
       explore: {
         jobsInPathHeading: 'Jobs in this path',

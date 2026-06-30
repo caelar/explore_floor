@@ -92,11 +92,15 @@ export function FlowRunner() {
           {step.type === 'mc' && (
             <MCQuestion
               step={step}
-              // Running position among the MC steps actually answered on this path (+1 for the
-              // current, still-unanswered one), so a branch that skips a question — Q1 "No" jumps
-              // over Q2 — never leaves a gap in the count (D-029 Phase B; design-review p3).
+              // Position among the MC steps the user has reached on THIS path: count answered MC
+              // steps that sit BEFORE the current step (+1 for the current one). Index-based, not a
+              // global answered-count — counting every answered step inflated the number on a Back
+              // revisit (once all six were answered, every screener read "6 of 6"). A skipped branch
+              // step (Q2 on the No path) stays uncounted because it was never answered, so the count
+              // still has no gap (D-029 Phase B; design-review p3).
               questionNumber={
-                mcSteps.filter((s) => s.id !== step.id && answers[s.id] !== undefined).length + 1
+                steps.slice(0, stepIndex).filter((s) => s.type === 'mc' && answers[s.id] !== undefined)
+                  .length + 1
               }
               questionTotal={mcSteps.length}
               selectedId={answers[step.id]}

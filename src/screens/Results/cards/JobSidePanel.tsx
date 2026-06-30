@@ -43,6 +43,10 @@ interface JobSidePanelProps {
 const backRow =
   'inline-flex items-center gap-space-1 font-body text-small font-medium text-text-on-dark-muted transition-colors hover:text-text-on-dark';
 
+// Hairline section rule (reference parity): re-establishes hierarchy between the rail's groups now
+// that they sit closer together. Same hairline token as the header/footer borders.
+const sectionRule = 'border-t border-glass-border';
+
 export function JobSidePanel(props: JobSidePanelProps) {
   const { view, copy, explore, detail, reduce, selectedJob, jobs } = props;
   const job = selectedJob !== null ? jobs[selectedJob] : undefined;
@@ -138,7 +142,7 @@ function RoleSummaryBody({
 }: JobSidePanelProps) {
   const matchLabel = copy.matchLabels[rank] ?? copy.matchLabels[copy.matchLabels.length - 1];
   return (
-    <div className="flex flex-col gap-space-4">
+    <div className="flex flex-col gap-space-3">
       <div>
         <p className="font-body text-small text-text-on-dark-faint">{matchLabel}</p>
         <div className="mt-space-1 flex items-baseline justify-between gap-space-2">
@@ -152,7 +156,10 @@ function RoleSummaryBody({
         matchPercentages={matchPercentages}
         activeCategory={detail.categoryId}
         reduce={reduce}
+        dense
       />
+
+      <div className={sectionRule} aria-hidden="true" />
 
       <section>
         <h3 className="font-heading text-h5 text-text-on-dark">{copy.descriptionHeading}</h3>
@@ -163,12 +170,14 @@ function RoleSummaryBody({
           two small balanced chips, not the tall multi-line boxes the role/job tabs use. */}
       <div className="flex flex-row gap-space-2">
         <StatBox label={copy.salaryLabel} compact>
-          <p className="font-heading text-small font-bold text-text-on-dark">{detail.salaryShort}</p>
+          <p className="font-heading text-h5 font-bold text-text-on-dark">{detail.salaryShort}</p>
         </StatBox>
         <StatBox label={copy.educationLabel} compact>
-          <p className="font-heading text-small font-bold text-text-on-dark">{detail.educationShort}</p>
+          <p className="font-heading text-h5 font-bold text-text-on-dark">{detail.educationShort}</p>
         </StatBox>
       </div>
+
+      <div className={sectionRule} aria-hidden="true" />
 
       <section>
         <div className="flex items-baseline justify-between gap-space-2">
@@ -209,13 +218,15 @@ function JobSummaryBody({
   job: Job;
 }) {
   return (
-    <div className="flex flex-col gap-space-4">
+    <div className="flex flex-col gap-space-3">
       <div>
         <p className="font-body text-small text-text-on-dark-faint">
           {fill(explore.jobEyebrow, { role: detail.roleName })}
         </p>
         <h2 className="mt-space-1 font-heading text-h4 text-text-on-dark">{job.title}</h2>
       </div>
+
+      <div className={sectionRule} aria-hidden="true" />
 
       <section>
         <h3 className="font-heading text-h5 text-text-on-dark">{copy.descriptionHeading}</h3>
@@ -226,12 +237,14 @@ function JobSummaryBody({
           standalone job-overview page. Education is role-level (jobs in a path share a tier). */}
       <div className="flex flex-row gap-space-2">
         <StatBox label={copy.salaryLabel} compact>
-          <p className="font-heading text-small font-bold text-text-on-dark">{detail.salaryShort}</p>
+          <p className="font-heading text-h5 font-bold text-text-on-dark">{detail.salaryShort}</p>
         </StatBox>
         <StatBox label={copy.educationLabel} compact>
-          <p className="font-heading text-small font-bold text-text-on-dark">{detail.educationShort}</p>
+          <p className="font-heading text-h5 font-bold text-text-on-dark">{detail.educationShort}</p>
         </StatBox>
       </div>
+
+      <div className={sectionRule} aria-hidden="true" />
 
       <section>
         <h3 className="font-heading text-h5 text-text-on-dark">{explore.responsibilitiesHeading}</h3>

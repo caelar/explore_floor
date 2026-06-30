@@ -57,8 +57,14 @@ export function MCQuestion({
           Question {questionNumber} of {questionTotal}
         </p>
         <div className="border-t border-glass-border-soft" />
-        {step.prompt && <p className="text-body text-text-on-dark-muted">{step.prompt}</p>}
+        {step.prompt && step.promptPlacement !== 'below' && (
+          <p className="text-body text-text-on-dark-muted">{step.prompt}</p>
+        )}
         <h2 className="font-heading text-h3 text-text-on-dark">{step.question}</h2>
+        {step.prompt && step.promptPlacement === 'below' && (
+          // A factual qualifier shown under the question as a quiet reference line (D-029 polish).
+          <p className="text-small text-text-on-dark-faint">{step.prompt}</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-space-2" data-testid="mc-choices">
