@@ -1,9 +1,11 @@
 import type { CategoryId, Job } from './types';
 
 // Featured jobs per role for the Phase F results constellation + job-overview (DATA_MODEL §17).
-// The constellation rings these around the role center; tapping one opens its summary, then its
-// full overview. Counts mirror ARM's published common-title counts: Technician 3, Specialist 5,
-// Integrator 5 (the titles come straight from roleDetails[*].commonJobTitles / ARM's role pages).
+// The constellation places these at the four corners around the role center (reference layout);
+// tapping one opens its summary, then its full overview. **Exactly 4 featured jobs per role** (so the
+// corners stay balanced and every label clears the center): Specialist + Integrator feature 4 of ARM's 5 common titles;
+// Technician's 4th ("Robotics Maintenance Technician") is added from ARM's title list. The dropped /
+// added titles are recorded in docs/reference/Job_Program_Data_Request.md for ARM to confirm.
 //
 // ⚠️ PLACEHOLDER per-job copy. The titles are real (ARM's common job titles), but each job's
 // `summary`, `responsibilities`, `skills`, and `roleNoun` are plausible stand-ins authored in the
@@ -84,6 +86,32 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Steady pace',
       ],
       roleNoun: 'assembly operator',
+    },
+    {
+      // 4th featured Technician job (the constellation shows 4 per role). Added so Technician matches
+      // the 4-node ring; title from ARM's common Technician titles, content PLACEHOLDER for ARM.
+      id: 'technician-robotics-maintenance-technician',
+      categoryId: 'technician',
+      title: 'Robotics Maintenance Technician',
+      summary:
+        "You're the one who keeps the robots healthy so the line never stops for long. You run the routine checkups, swap worn parts before they fail, and chase down the cause when a cell goes down. When the floor needs a fix fast, they call you.",
+      responsibilities: [
+        'Run scheduled maintenance on robotic cells so small problems never become big ones.',
+        'Diagnose breakdowns and get the cell back up as fast as it is safe to.',
+        'Replace worn grippers, cables, and sensors before they fail mid-run.',
+        'Read fault codes and trace a problem to the part that actually caused it.',
+        'Keep spare parts stocked and the maintenance logs up to date.',
+        'Work with operators to catch the early signs of a cell going bad.',
+      ],
+      skills: [
+        'Preventive maintenance',
+        'Troubleshooting',
+        'Electrical and mechanical repair',
+        'Reading fault codes',
+        'Parts replacement',
+        'Shop safety',
+      ],
+      roleNoun: 'robotics maintenance technician',
     },
   ],
   specialist: [
@@ -184,30 +212,6 @@ export const jobs: Record<CategoryId, Job[]> = {
       ],
       roleNoun: 'automation engineer',
     },
-    {
-      id: 'specialist-robotic-systems-engineer',
-      categoryId: 'specialist',
-      title: 'Robotic Systems Engineer',
-      summary:
-        "You take the wide view of a robotic system and make sure every part plays nice with the next. You define how the cells, controls, and software fit together, then test the whole thing as one unit instead of piece by piece. When performance drops somewhere, you find which link is the weak one.",
-      responsibilities: [
-        'Define how the cells, controls, and software of a system fit together.',
-        'Set the requirements each part has to meet to play its role.',
-        'Run tests across the full system, not just one cell at a time.',
-        "Track performance gaps down to the part that's actually causing them.",
-        'Work with the other engineers to close those gaps and retest.',
-        'Keep the system documentation current as the build changes.',
-      ],
-      skills: [
-        'Systems integration',
-        'Requirements setting',
-        'Full-system testing',
-        'Robot programming',
-        'Performance tuning',
-        'Team collaboration',
-      ],
-      roleNoun: 'robotic systems engineer',
-    },
   ],
   integrator: [
     {
@@ -305,30 +309,6 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Post-launch support',
       ],
       roleNoun: 'robotics application developer',
-    },
-    {
-      id: 'integrator-advanced-industrial-integrator',
-      categoryId: 'integrator',
-      title: 'Advanced Industrial Integrator',
-      summary:
-        "You take on the biggest, hardest automation builds, the kind that change how a whole plant runs. You study whether a project even makes sense, plan the system at full plant scale, and lead the rollout once it's a go. These are the projects where a lot is on the line and the planning has to be airtight.",
-      responsibilities: [
-        'Run feasibility studies and crunch the data on big automation projects.',
-        'Plan advanced, plant-scale systems that tie many cells together.',
-        'Model the whole system to prove it works before the spend is approved.',
-        'Lead the rollout across teams, vendors, and shifts.',
-        'Track the results and prove the improvement actually landed.',
-        'Mentor the engineers working the pieces underneath the plan.',
-      ],
-      skills: [
-        'Feasibility analysis',
-        'Systems simulation',
-        'Plant-scale planning',
-        'Data analysis',
-        'Rollout leadership',
-        'Visualization',
-      ],
-      roleNoun: 'advanced industrial integrator',
     },
   ],
 };

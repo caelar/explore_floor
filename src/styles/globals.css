@@ -18,6 +18,7 @@
   --color-arm-gold-soft: #fdc547; /* CTA hover tint */
   --color-gold-deep: #8a6500; /* deep gold — nav avatar gradient end (matches dashboard TopNav) */
   --color-arm-teal: #117289; /* kit: Secondary Teal — the interactive voice: links, CTAs, match */
+  --color-arm-teal-soft: #178ba5; /* teal CTA hover tint (brightened, mirrors gold-soft) */
   --color-arm-orange: #bf5309; /* kit: Secondary Orange — rare attention, AA-safe (was #f56a00) */
 
   /* ---- Semantic (light-mode foundation — §3.2) ---- */

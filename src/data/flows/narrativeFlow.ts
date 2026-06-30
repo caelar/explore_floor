@@ -302,7 +302,6 @@ export const narrativeFlow: CategoryFlow = {
         title: 'Your results',
         intro: 'Each role’s score comes from how often your answers leaned its way.',
         hint: 'Tap any role to dive into your match.',
-        back: 'Back to your matches',
       },
       explore: {
         jobsInPathHeading: 'Jobs in this path',

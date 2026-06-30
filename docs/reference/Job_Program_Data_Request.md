@@ -9,13 +9,18 @@
 
 > **Status note (2026-06-29, Phase C):** the results role cards now render a **"How to bridge the gap"** list per role, built against **placeholder** bridge programs in `src/data/bridgePrograms.ts` (plausible stand-ins, not a vetted ARM list). The **bridge-training program** blocks below are the open ask that unblocks replacing that placeholder; per-job detail (job titles, summaries, responsibilities) is still only needed for Phase F. Everything else on the Phase C card (role description, duties, competencies, education, salary) is sourced from `ARM Updated Role Structure - Source Content.md` and needs nothing new.
 
+> **Status note (2026-06-30, constellation refinement):** the constellation now shows **exactly 4 featured jobs per role** (a balanced 4-node ring). So we need **4 featured titles for each role** (not 3–4). What we're running on as placeholder today, to **confirm or adjust**:
+> - **Technician:** ARM's role page lists only 3 common titles, so we **added a 4th — "Robotics Maintenance Technician"** (a sensible entry-level maintenance role). Please confirm it, or swap it for a better 4th.
+> - **Specialist:** we feature **4 of your 5** — Robotics Programmer (placeholder for "Robotics Specialist", renamed so the job doesn't read identical to the role), Robotics Engineer, Mechatronics Engineer, Automation Engineer. **Dropped from the ring:** Robotic Systems Engineer. Confirm the four (and which to drop) or tell us to feature a different set.
+> - **Integrator:** we feature **4 of your 5** — Robotics Integrator, Robotic Integration Design Engineer, Robotics Software Integrator, Robotics Application Development Engineer. **Dropped from the ring:** Advanced Industrial Integrator. Confirm or adjust.
+
 ---
 
 ## Role 1 — Robotics Technician (entry)
 
-**ARM's listed common job titles:** Robot Operator · Entry Level Robotics · Assembly Operator
+**ARM's listed common job titles:** Robot Operator · Entry Level Robotics · Assembly Operator _(only 3 — we added **Robotics Maintenance Technician** as the 4th; confirm or replace)_
 
-Pick the **3–4** titles you want featured on the constellation. For **each** featured job:
+We feature **exactly 4** titles on the constellation (see the 2026-06-30 status note). For **each** featured job:
 
 - **Job title:**
 - **One-line summary** (what this person actually does day to day):
@@ -37,7 +42,7 @@ Pick the **3–4** titles you want featured on the constellation. For **each** f
 
 **ARM's listed common job titles:** Robotics Specialist · Robotics Engineer · Mechatronics Engineer · Automation Engineer · Robotic Systems Engineer
 
-Pick the **3–4** featured titles. For **each**:
+We feature **exactly 4** titles (4 of these 5 — see the 2026-06-30 status note). For **each**:
 
 - **Job title:**
 - **One-line summary:**
@@ -59,7 +64,7 @@ Pick the **3–4** featured titles. For **each**:
 
 **ARM's listed common job titles:** Robotics Integrator · Robotic Integration Design Engineer · Robotics Software Integrator · Robotics Application Development Engineer · Advanced Industrial Integrator
 
-Pick the **3–4** featured titles. For **each**:
+We feature **exactly 4** titles (4 of these 5 — see the 2026-06-30 status note). For **each**:
 
 - **Job title:**
 - **One-line summary:**

@@ -1,5 +1,5 @@
 export { bridgePrograms } from './bridgePrograms';
-export { careerTrajectory, fitNarrative } from './exploreContent';
+export { fitNarrative } from './exploreContent';
 export { defaultFlowId, flowList, flows, narrativeFlow } from './flows';
 export { jobs } from './jobs';
 export { roleDetails } from './roleDetails';

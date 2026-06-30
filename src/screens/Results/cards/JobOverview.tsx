@@ -43,14 +43,16 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
         <Icon name="star" size={18} />
         {explore.setTargetCta}
       </span>
+      {/* Right-positioned, so the affordance points right (onward to the role's careers), matching
+          the other "Explore … →" controls rather than a left-back chevron on the right edge. */}
       <button
         type="button"
         onClick={onBack}
         data-testid="job-overview-back"
         className="inline-flex h-9 items-center gap-space-1 rounded-full border border-glass-border px-space-3 font-body text-body text-text-on-dark transition-colors hover:bg-glass-fill"
       >
-        <Icon name="chevron-l" size={18} />
         {fill(explore.overviewBack, { role: detail.roleName })}
+        <Icon name="arrow-r" size={18} />
       </button>
     </>
   );

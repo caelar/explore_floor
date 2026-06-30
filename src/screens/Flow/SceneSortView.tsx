@@ -18,12 +18,13 @@ interface SceneSortViewProps {
 
 // A narrative scene as a sort (D-018), re-skinned dark for step 8 (D-029 Phase B). The mockup's
 // two-beat is ONE morphing surface, not two swapped views: a glass scene-context card (the scenario
-// + the ask) sits centered with a gold Continue; pressing it (`startScene`) flips the store's
-// scenePhase to 'rating' and the card morphs in place — it compresses (padding + question shrink)
-// while the choices region expands open below it. Because the runner column is vertically centered,
-// that growth slides the whole card UP (issue 1, the "nice slide upwards"). The scene cursor lives
-// in the store (scenePhase / choiceIndex) so Back can step within the scene and re-enter a prior
-// scene at its last choice; this view just reads it and dispatches.
+// + the ask) with a gold Continue; pressing it (`startScene`) flips the store's scenePhase to
+// 'rating' and the card morphs in place — it compresses (padding + question shrink) while the
+// choices region expands open below it. The runner is top-anchored (no flex-centering, so scene→scene
+// doesn't lurch), so the liked "slide upward" comes from a shrinking spacer above the card (the
+// mockup's qSpacer): tall in intro, near-zero in rating, so the card rises as the choices grow. The
+// scene cursor lives in the store (scenePhase / choiceIndex) so Back can step within the scene and
+// re-enter a prior scene at its last choice; this view just reads it and dispatches.
 //
 // Choice buckets reuse the shared statementBuckets slice (keyed by choice id) via `rateChoice`, so
 // scoring reads them exactly like statement buckets. When the last choice lands, the store advances
@@ -42,7 +43,18 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
     : { duration: durations.glide, ease: easings.soft };
 
   return (
-    <div className="flex w-full flex-col gap-space-5">
+    <div className="flex w-full flex-col">
+      {/* Shrinking spacer (the mockup's qSpacer): tall in intro, near-zero in rating. Because the
+          runner top-anchors, pressing Continue collapses this so the card rises as the choices grow —
+          the liked "slide upward", without the flex-centering that caused the scene→scene lurch. */}
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{ height: rating ? 0 : 56 }}
+        transition={morph}
+      />
+
+      <div className="flex w-full flex-col gap-space-5">
       {/* The scene-context card. Padding (32→24) and the question size (h3→h4) animate as the card
           morphs intro→rating; these mirror the mockup's qSceneCard/qQuestion morph. A motion
           element with no `initial` snaps to the right phase on mount (Back re-entry) and only
@@ -108,6 +120,7 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

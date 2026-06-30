@@ -25,7 +25,7 @@ interface ConstellationFieldProps {
 const { width: VW, height: VH } = CONSTELLATION_VIEW;
 const xPct = (v: number) => `${(v / VW) * 100}%`;
 const yPct = (v: number) => `${(v / VH) * 100}%`;
-const LABEL_W = 260; // label box width (view units), centered under each node
+const LABEL_W = 240; // label box width (view units), centered under each node
 
 export function ConstellationField({
   category,
@@ -116,7 +116,9 @@ export function ConstellationField({
         />
       ))}
 
-      {/* node labels (below each node; titles run wider than the node circle) */}
+      {/* node labels (below each node; titles run wider than the node circle). With the 4-corner
+          layout every below-label clears the center orb — the corner nodes sit far enough to the
+          sides that their labels fall outside it (reference parity). */}
       {nodes.map((n) => {
         const dimmed = jobActive && selectedJob !== n.index;
         // Non-dimmed labels carry the role's soft accent tint (per the reference) so the ring reads

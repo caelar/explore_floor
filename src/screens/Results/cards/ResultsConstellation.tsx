@@ -1,14 +1,13 @@
 import type { CategoryId, CategoryWeights, Job, ResultsCardsCopy, RoleDetail } from '@/data/types';
 
-import { AmbientField } from './AmbientField';
 import { ConstellationField } from './ConstellationField';
 import { JobSidePanel } from './JobSidePanel';
 
 // Screen 6 of the mockup's results system (D-029 Phase F): a role's job constellation, with the
 // job overlay layered on the SAME mounted shell. `selected` and `job` both render here (one keyed
 // branch in ResultsExperience) so the constellation never remounts between them — only the side
-// panel's body swaps. Full-bleed dark canvas like the bubble map: AmbientField behind, a glass
-// 404px side rail, and the constellation field beside it (desktop-first; responsive is Phase G).
+// panel's body swaps. Full-bleed over the shared AmbientField (rendered once in ResultsExperience):
+// a glass 404px side rail and the constellation field beside it (desktop-first; responsive is Phase G).
 
 interface ResultsConstellationProps {
   copy: ResultsCardsCopy;
@@ -47,8 +46,6 @@ export function ResultsConstellation({
 }: ResultsConstellationProps) {
   return (
     <div className="absolute inset-0 overflow-hidden" data-testid="results-constellation">
-      <AmbientField reduce={reduce} />
-
       <div className="relative z-10 flex h-full w-full gap-space-4 p-space-3">
         <div className="w-[var(--container-job-panel)] shrink-0">
           <JobSidePanel

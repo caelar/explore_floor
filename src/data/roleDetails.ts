@@ -63,6 +63,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     pathUp:
       'Technician is the entry point, not the ceiling. As you build skills and earn credentials, you can grow into Specialist or Integrator. The programs under Skills, path & next steps are where that climb starts.',
     education: 'High school diploma or GED certificate required',
+    educationShort: 'High school / GED',
     educationLevel: 0,
     commonJobTitles: [
       'Robot Operator',
@@ -73,6 +74,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     ],
     salary: 'National median $45,936/yr',
     salaryMedian: 'National median $45,936/yr',
+    salaryShort: '$45,936/yr',
     payLevel: 0,
   },
   specialist: {
@@ -124,6 +126,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     whyMomentsText:
       'You kept choosing to write code and dig into hard problems. That’s the heart of being a Specialist.',
     education: "Bachelor's Degree (required) or Master's Degree (sometimes preferred)",
+    educationShort: "Bachelor's",
     educationLevel: 2,
     commonJobTitles: [
       'Robotics Specialist',
@@ -134,6 +137,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     ],
     salary: '$85,000 to $147,700/yr; national median $105,000/yr',
     salaryMedian: 'National median $105,000/yr',
+    salaryShort: '$105,000/yr',
     payLevel: 2,
   },
   integrator: {
@@ -175,6 +179,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     whyMomentsText:
       'You kept choosing to plan ahead and lead the group. That’s the heart of being an Integrator.',
     education: "Bachelor's Degree (required) or Master's Degree (sometimes preferred)",
+    educationShort: "Bachelor's",
     educationLevel: 2,
     commonJobTitles: [
       'Robotics Integrator',
@@ -185,6 +190,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
     ],
     salary: '$87,000 to $153,000/yr; national median $99,250/yr',
     salaryMedian: 'National median $99,250/yr',
+    salaryShort: '$99,250/yr',
     payLevel: 2,
   },
 };

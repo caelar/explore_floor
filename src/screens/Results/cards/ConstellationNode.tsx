@@ -101,7 +101,7 @@ export function ConstellationNode({
           }
         >
           <SparkleStar
-            size={32}
+            size={52}
             className={active ? accent.onAccent : accent.textSoft}
             // Layered drop-shadows (tight core + wider halo) read as a real glow at rest, not a
             // faint smudge; the glow token is low-alpha so a single 7px pass barely showed.

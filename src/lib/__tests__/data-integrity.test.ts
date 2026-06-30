@@ -106,7 +106,14 @@ describe('§17 cross-flow invariants', () => {
     for (const category of CATEGORIES) {
       const detail = roleDetails[category];
       expect(detail.categoryId).toBe(category);
-      for (const value of [detail.roleName, detail.description, detail.education, detail.salary]) {
+      for (const value of [
+        detail.roleName,
+        detail.description,
+        detail.education,
+        detail.educationShort,
+        detail.salary,
+        detail.salaryShort,
+      ]) {
         expect(value.trim()).not.toBe('');
       }
       expect(detail.jobActivities.length).toBeGreaterThan(0);
@@ -128,13 +135,14 @@ describe('§17 cross-flow invariants', () => {
     }
   });
 
-  it('features the ARM common-title counts of jobs per role with non-empty content (Phase F)', () => {
-    // Counts mirror ARM's published common-title counts (jobs.ts): Technician 3, Specialist 5,
-    // Integrator 5. Per-job content is placeholder but must be present + well-formed.
+  it('features exactly 4 jobs per role with non-empty content (Phase F, 4-corner constellation)', () => {
+    // Exactly 4 featured jobs per role so the constellation reads as the reference's 4-corner ring
+    // (jobs.ts): Specialist + Integrator feature 4 of ARM's 5 common titles; Technician's 4th is
+    // added from ARM's title list. Per-job content is placeholder but must be present + well-formed.
     const expectedCounts: Record<(typeof CATEGORIES)[number], number> = {
-      technician: 3,
-      specialist: 5,
-      integrator: 5,
+      technician: 4,
+      specialist: 4,
+      integrator: 4,
     };
     const allIds: string[] = [];
     for (const category of CATEGORIES) {

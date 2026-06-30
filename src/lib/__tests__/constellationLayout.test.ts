@@ -40,7 +40,19 @@ describe('constellationLayout', () => {
     }
   });
 
-  it.each([3, 5])('keeps every node fully inside the view bounds for %i jobs', (count) => {
+  it('lays 4 jobs out as four symmetric corners around the center (reference layout)', () => {
+    const { center, nodes } = constellationLayout(4);
+    expect(nodes).toHaveLength(4);
+    // A rectangle's four corners share one distance from the center.
+    const radii = nodes.map((n) => dist(n.cx, n.cy, center.cx, center.cy));
+    for (const r of radii) expect(r).toBeCloseTo(radii[0], 5);
+    // Wider than tall, per the reference (the x-spread exceeds the y-spread).
+    const xs = nodes.map((n) => n.cx);
+    const ys = nodes.map((n) => n.cy);
+    expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThan(Math.max(...ys) - Math.min(...ys));
+  });
+
+  it.each([3, 4, 5])('keeps every node fully inside the view bounds for %i jobs', (count) => {
     for (const n of constellationLayout(count).nodes) {
       expect(n.cx - n.r).toBeGreaterThanOrEqual(0);
       expect(n.cx + n.r).toBeLessThanOrEqual(CONSTELLATION_VIEW.width);

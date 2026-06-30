@@ -53,6 +53,10 @@ export interface RoleDetail {
    *  rubric: technician-is-a-rung). Omitted on the higher roles. */
   pathUp?: string;
   education: string;
+  /** Compact one-line education for the constellation side rail's small stat chips (reference
+   *  parity — the rail shows a short value like "High school / GED" / "Bachelor's", not the full
+   *  multi-line list the role/job tabs use). */
+  educationShort: string;
   /** Education ladder for the screener fit line (D-020): 0 = HS/GED, 2 = bachelor's+
    *  (level 1, an associate/cert, has no role in the three-role model but stays a valid
    *  user-appetite rung). Compared against the user's stated school appetite. */
@@ -63,6 +67,9 @@ export interface RoleDetail {
    *  compare show this for a consistent one-figure read across roles (Technician has no range),
    *  while the fuller `salary` range stays for the /select sheet. */
   salaryMedian: string;
+  /** Just the figure (e.g. "$45,936/yr") for the constellation rail's compact salary chip, where
+   *  the longer "National median …" string would wrap (reference parity). */
+  salaryShort: string;
   /** Pay ladder for the screener fit line (D-020): 0 = ~$46k (Technician), 2 = $85k+
    *  (Specialist/Integrator). Compared against the user's stated pay expectation. */
   payLevel: 0 | 1 | 2;
@@ -84,7 +91,7 @@ export interface BridgeProgram {
  *  ⚠️ PLACEHOLDER per-job copy (summary/responsibilities/skills/roleNoun) authored in the project
  *  voice pending ARM sourcing (docs/reference/Job_Program_Data_Request.md). Salary + education
  *  default to the role-level roleDetails; the optional overrides are for the day ARM provides
- *  per-job figures. The featured counts mirror ARM's published common-title counts (3/5/5). */
+ *  per-job figures. Exactly 4 featured jobs per role (the 4-node constellation ring). */
 export interface Job {
   /** Stable slug, unique across all roles, e.g. 'technician-robot-operator'. */
   id: string;
@@ -104,19 +111,6 @@ export interface Job {
   salaryMedian?: string;
   /** Optional per-job education override; defaults to roleDetails[categoryId].education. */
   education?: string;
-}
-
-/** A role's branching "where this can lead" trajectory for the job-overview "How you fit" tab
- *  (Phase G, the Claude Design branching diamond): the user's current role at the base climbs
- *  through two mid-level branch roles to one senior role at the top. ⚠️ PLACEHOLDER titles in the
- *  project voice pending ARM sourcing (docs/reference/Job_Program_Data_Request.md). */
-export interface CareerTrajectory {
-  /** Base node — where the user is now (this role). */
-  current: string;
-  /** Two mid-level roles the path can branch into. */
-  branches: [string, string];
-  /** The senior role both branches climb toward. */
-  senior: string;
 }
 
 // ---------- Flow (study instrument — DATA_MODEL §17) ----------
@@ -268,7 +262,6 @@ export interface ResultsMapCopy {
   title: string; // glass card heading
   intro: string; // one line on what the scores mean
   hint: string; // one line on how to use the map (tap a bubble)
-  back: string; // the map's own back-to-your-matches control
 }
 
 /** The compare-screen recommendation line, by variant (see lib/compareRecommendation).

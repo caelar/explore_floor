@@ -8,6 +8,7 @@ import { categoryContributions } from '@/lib/categoryBreakdown';
 import { deriveScreenerProfile, screenerFitLines } from '@/lib/screenerFit';
 import { useFlow, useSessionStore } from '@/state';
 
+import { AmbientField } from './AmbientField';
 import { CompareView } from './CompareView';
 import { fill } from './copy';
 import { JobOverview } from './JobOverview';
@@ -110,18 +111,36 @@ export function ResultsExperience() {
     </>
   );
 
-  // The map + the constellation/job overlay are full-bleed (their own dark canvas + ambient field),
-  // so they break out of the rounded, max-w-lg scroll panel that cards / compare / job-overview live in.
-  const fullBleed = nav.view === 'map' || nav.view === 'selected' || nav.view === 'job';
-  const mainClassName = fullBleed
-    ? 'relative h-[calc(100dvh-var(--spacing-nav))] w-full overflow-hidden'
-    : 'mx-auto mt-space-5 h-[calc(100dvh-var(--spacing-nav)-var(--spacing-space-5))] w-full max-w-lg overflow-y-auto rounded-t-lg pb-space-5 shadow-dark-panel';
+  // Clicking the gutter around the cards panel navigates to the map — or back to the constellation if
+  // the user dived in from there (reference parity: a full-bleed click layer sits behind the panel).
+  const gutterToConstellation = nav.fromMap;
+  const onGutterClick = gutterToConstellation
+    ? () => nav.openConstellation(nav.roleIndex)
+    : () => nav.setView('map');
+  const gutterLabel = gutterToConstellation
+    ? fill(cards.exploreRoleCta, { role: detail.roleName })
+    : cards.mapCta;
 
+  // One viewport-height canvas with a SHARED AmbientField behind every view, so the cards / compare /
+  // job-overview panels float over the same orb background as the map + constellation (each panel is
+  // translucent glass; the full-bleed views render their content directly over the field).
   return (
-    <main className={mainClassName} data-testid="results">
+    <main
+      className="relative h-[calc(100dvh-var(--spacing-nav))] w-full overflow-hidden"
+      data-testid="results"
+    >
+      <AmbientField reduce={reduce} />
       <AnimatePresence mode="wait" initial={false}>
         {nav.view === 'cards' ? (
-          <motion.div key="cards" {...fade}>
+          <motion.div key="cards" className="absolute inset-0" {...fade}>
+            {/* Gutter click layer behind the panel (cards only). */}
+            <button
+              type="button"
+              aria-label={gutterLabel}
+              data-testid="cards-gutter"
+              onClick={onGutterClick}
+              className="absolute inset-0 cursor-pointer"
+            />
             <ResultsPanel controlBar={controlBar}>
               <RoleHero
                 copy={cards}
@@ -163,7 +182,7 @@ export function ResultsExperience() {
             </ResultsPanel>
           </motion.div>
         ) : nav.view === 'compare' ? (
-          <motion.div key="compare" {...fade}>
+          <motion.div key="compare" className="absolute inset-0" {...fade}>
             <CompareView
               copy={cards}
               ranking={ranking}
@@ -197,7 +216,7 @@ export function ResultsExperience() {
             />
           </motion.div>
         ) : nav.view === 'job-overview' ? (
-          <motion.div key="job-overview" {...fade}>
+          <motion.div key="job-overview" className="absolute inset-0" {...fade}>
             <JobOverview
               copy={cards}
               detail={detail}
@@ -213,7 +232,6 @@ export function ResultsExperience() {
               matchPercentages={categoryResult.matchPercentages}
               reduce={reduce}
               onDive={nav.openConstellation}
-              onBack={() => nav.setView('cards')}
             />
           </motion.div>
         )}

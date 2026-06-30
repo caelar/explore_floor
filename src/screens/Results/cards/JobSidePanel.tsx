@@ -12,7 +12,6 @@ import type {
 import { durations, easings } from '@/lib';
 
 import { fill } from './copy';
-import { EducationList } from './EducationList';
 import { SignalBars } from './SignalBars';
 import { StatBox } from './StatBox';
 
@@ -42,7 +41,7 @@ interface JobSidePanelProps {
 }
 
 const backRow =
-  'inline-flex items-center gap-space-1 font-body text-small text-text-on-dark-muted transition-colors hover:text-text-on-dark';
+  'inline-flex items-center gap-space-1 font-body text-small font-medium text-text-on-dark-muted transition-colors hover:text-text-on-dark';
 
 export function JobSidePanel(props: JobSidePanelProps) {
   const { view, copy, explore, detail, reduce, selectedJob, jobs } = props;
@@ -61,7 +60,7 @@ export function JobSidePanel(props: JobSidePanelProps) {
       data-testid="job-side-panel"
     >
       {/* header back row */}
-      <div className="shrink-0 px-space-4 py-space-2">
+      <div className="shrink-0 border-b border-glass-border px-space-4 py-space-2">
         {view === 'selected' ? (
           <button type="button" onClick={props.onBackToMap} data-testid="job-panel-back" className={backRow}>
             <Icon name="chevron-l" size={18} />
@@ -97,12 +96,14 @@ export function JobSidePanel(props: JobSidePanelProps) {
 
       {/* footer CTA */}
       <div className="shrink-0 border-t border-glass-border px-space-4 py-space-3">
+        {/* The rail's primary action is teal (the kit's interactive voice, reference parity) for both
+            views; gold stays reserved for encouragement CTAs (Continue / Set as target role). */}
         {view === 'selected' ? (
           <button
             type="button"
             onClick={props.onRoleOverview}
             data-testid="role-overview-cta"
-            className="flex w-full items-center justify-center gap-space-2 rounded-md border border-glass-border bg-glass-fill-strong py-space-3 font-heading text-body font-medium text-text-on-dark transition-colors hover:bg-glass-fill"
+            className="flex w-full items-center justify-center gap-space-2 rounded-md bg-arm-teal py-space-3 font-heading text-body font-medium text-white transition-colors hover:bg-arm-teal-soft"
           >
             {explore.roleOverviewCta}
             <Icon name="arrow-r" size={18} />
@@ -112,7 +113,7 @@ export function JobSidePanel(props: JobSidePanelProps) {
             type="button"
             onClick={props.onOpenJobOverview}
             data-testid="job-overview-cta"
-            className="flex w-full items-center justify-center gap-space-2 rounded-md bg-arm-gold py-space-3 font-heading text-body font-medium text-near-black transition-colors hover:bg-arm-gold-soft"
+            className="flex w-full items-center justify-center gap-space-2 rounded-md bg-arm-teal py-space-3 font-heading text-body font-medium text-white transition-colors hover:bg-arm-teal-soft"
           >
             {explore.jobOverviewCta}
             <Icon name="arrow-r" size={18} />
@@ -158,12 +159,14 @@ function RoleSummaryBody({
         <p className="mt-space-2 font-body text-body text-text-on-dark-muted">{detail.description}</p>
       </section>
 
-      <div className="flex flex-col gap-space-3 sm:flex-row">
-        <StatBox label={copy.salaryLabel}>
-          <p className="font-heading text-h5 text-text-on-dark">{detail.salaryMedian}</p>
+      {/* Compact stat chips (reference parity): short single-line values so the narrow rail reads as
+          two small balanced chips, not the tall multi-line boxes the role/job tabs use. */}
+      <div className="flex flex-row gap-space-2">
+        <StatBox label={copy.salaryLabel} compact>
+          <p className="font-heading text-small font-bold text-text-on-dark">{detail.salaryShort}</p>
         </StatBox>
-        <StatBox label={copy.educationLabel}>
-          <EducationList education={detail.education} />
+        <StatBox label={copy.educationLabel} compact>
+          <p className="font-heading text-small font-bold text-text-on-dark">{detail.educationShort}</p>
         </StatBox>
       </div>
 
@@ -219,12 +222,14 @@ function JobSummaryBody({
         <p className="mt-space-2 font-body text-body text-text-on-dark-muted">{job.summary}</p>
       </section>
 
-      <div className="flex flex-col gap-space-3 sm:flex-row">
-        <StatBox label={copy.salaryLabel}>
-          <p className="font-heading text-h5 text-text-on-dark">{job.salaryMedian ?? detail.salaryMedian}</p>
+      {/* Compact chips in the rail (reference parity); the full per-job salary/education show on the
+          standalone job-overview page. Education is role-level (jobs in a path share a tier). */}
+      <div className="flex flex-row gap-space-2">
+        <StatBox label={copy.salaryLabel} compact>
+          <p className="font-heading text-small font-bold text-text-on-dark">{detail.salaryShort}</p>
         </StatBox>
-        <StatBox label={copy.educationLabel}>
-          <EducationList education={job.education ?? detail.education} />
+        <StatBox label={copy.educationLabel} compact>
+          <p className="font-heading text-small font-bold text-text-on-dark">{detail.educationShort}</p>
         </StatBox>
       </div>
 

@@ -105,7 +105,9 @@ function HeroArrow({
       onClick={onClick}
       aria-label={dir === 'prev' ? 'Previous role' : 'Next role'}
       data-testid={`role-${dir}`}
-      className={`mt-space-5 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-glass-border transition-colors disabled:pointer-events-none ${
+      // mt aligns the arrow's vertical centre with the role-name / % title row (reference parity: the
+      // gutter arrows sit level with the title so the "step through roles" affordance reads clearly).
+      className={`mt-space-6 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-glass-border transition-colors disabled:pointer-events-none ${
         disabled
           ? 'bg-glass-fill text-text-on-dark-faint opacity-50'
           : 'bg-glass-fill text-text-on-dark hover:bg-glass-fill-strong'
