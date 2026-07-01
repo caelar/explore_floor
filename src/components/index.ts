@@ -3,5 +3,8 @@ export { DragSortCard } from './DragSortCard';
 export { DropZone } from './DropZone';
 export { Icon } from './Icon';
 export { ProgressBar } from './ProgressBar';
+export { SceneBackground } from './SceneBackground';
+export { SceneCharacter } from './SceneCharacter';
 export { SegmentedControl } from './SegmentedControl';
 export { SparkleStar } from './SparkleStar';
+export { ThoughtBubble } from './ThoughtBubble';

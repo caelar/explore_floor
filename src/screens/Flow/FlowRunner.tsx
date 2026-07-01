@@ -1,8 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Icon } from '@/components';
+import { Icon, SceneBackground, SceneCharacter } from '@/components';
+import { SCENE_BACKGROUNDS, SCENE_BUBBLES, SCENE_CHARACTERS } from '@/data/sceneBackgrounds';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
 
@@ -23,7 +24,19 @@ export function FlowRunner() {
   const currentScreen = useSessionStore((s) => s.state.currentScreen);
   const stepIndex = useSessionStore((s) => s.state.stepIndex);
   const scenePhase = useSessionStore((s) => s.state.scenePhase);
+  const choiceIndex = useSessionStore((s) => s.state.choiceIndex);
   const history = useSessionStore((s) => s.state.history);
+
+  // True while the character is sliding out BEFORE the store advances to the next step.
+  // Kept local (not in the store) because it's a pure presentation concern: it only
+  // affects visibility of the character and thought bubble, not scoring or navigation.
+  const [sceneExiting, setSceneExiting] = useState(false);
+
+  // Reset the flag whenever the step or phase actually changes (covers both the normal
+  // advance and any goBack path that reverts scenePhase or stepIndex).
+  useEffect(() => {
+    setSceneExiting(false);
+  }, [stepIndex, scenePhase]);
   const answers = useSessionStore((s) => s.state.answers);
   const recordAnswer = useSessionStore((s) => s.recordAnswer);
   const advanceStep = useSessionStore((s) => s.advanceStep);
@@ -74,8 +87,32 @@ export function FlowRunner() {
   // upward" is produced inside SceneSortView by a shrinking spacer (the reference's qSpacer), not by
   // flex-centering, so both the lurch fix and the morph hold together.
 
+  // Resolve scene visual assets for the current step (undefined on MC steps → fade out).
+  const backgroundSrc = step.type === 'scene' ? SCENE_BACKGROUNDS[step.id] : undefined;
+  const characterSrc = step.type === 'scene' ? SCENE_CHARACTERS[step.id] : undefined;
+  const bubbleSrc = step.type === 'scene' ? SCENE_BUBBLES[step.id] : undefined;
+  const rating = scenePhase === 'rating';
+  // Separate flag for the character: false while sceneExiting so the character slides
+  // out before the step advances. cardShift keeps using `rating` (unchanged by sceneExiting)
+  // so the card holds its shifted position until the step actually changes.
+  const characterVisible = rating && !sceneExiting;
+
+  // When the character is visible, shift the quiz card left so the two sit side-by-side.
+  // -304px aligns the glass card's visible left edge with the RC logo's left edge in the nav
+  // on a 1280px desktop viewport (natural centered position = (1280-672)/2 = 304px; 304-304 = 0px
+  // outer edge, plus the 32px p-space-5 padding inside = 32px glass edge = logo left edge).
+  const cardShift = characterSrc && rating && !reduce ? -304 : 0;
+
   return (
-    <main className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-start p-space-5 pt-space-7">
+    <>
+    <SceneBackground src={backgroundSrc} />
+    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} />
+    <motion.main
+      className="relative z-20 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-start p-space-5 pt-space-7"
+      initial={false}
+      animate={{ x: cardShift }}
+      transition={{ duration: durations.glide, ease: easings.soft }}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={step.id}
@@ -114,6 +151,7 @@ export function FlowRunner() {
               sceneNumber={sceneSteps.findIndex((s) => s.id === step.id) + 1}
               sceneTotal={sceneSteps.length}
               reduce={reduce}
+              onBeforeLastChoice={() => setSceneExiting(true)}
             />
           )}
         </motion.div>
@@ -133,6 +171,7 @@ export function FlowRunner() {
           Back
         </button>
       )}
-    </main>
+    </motion.main>
+    </>
   );
 }
