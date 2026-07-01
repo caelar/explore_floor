@@ -1,5 +1,7 @@
 # Realignment and Design-System Unification
 
+> **ARCHIVED 2026-07-01 — the realignment sweep is COMPLETE.** Phases 2–5 (D-024–D-028) and step 8 (D-029) all shipped and are green. This memo is kept as the **decision + rationale archive** for the pivot and the design-system strategy (the "why is it like this?" for the ARM/Fivestar handoff and the portfolio case study). **Still live:** §6/§7/§10 (the shared `rc-design-system` package + the code→Claude-Design→Figma workflow) — that work is deferred, not done, and is queued in `../DESIGN_SYSTEM_RUN.md`. Live state: `../STATUS.md`. Remaining work by owner: `../REMAINING_WORK.md`.
+
 **A findings-and-recommendations memo for the quiz prototype (`explore_floor`).**
 Written 2026-06-23. Scope: where this project actually is, how it relates to `career_dashboard` and the wider RC.org prototype portfolio, and how to bring the two products, the design system, and the code/Figma/Claude-Design workflow back into one line.
 

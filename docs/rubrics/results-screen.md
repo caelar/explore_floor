@@ -6,8 +6,8 @@ version: 2
 severity_defaults:
   default: p2
 source:
-  - docs/knowledge/REALIGNMENT.md §4 (the real work ahead is the narrative results screen)
-  - docs/knowledge/VISUAL_REARCHITECTURE.md §2/§6 (the dark 5-screen results system; D-029)
+  - docs/knowledge/archive/REALIGNMENT.md §4 (the real work ahead is the narrative results screen)
+  - docs/knowledge/archive/VISUAL_REARCHITECTURE.md §2/§6 (the dark 5-screen results system; D-029)
   - "Claude Design mockup: design_handoff_quiz_to_results/Quiz to Results.dc.html (the cards screen is the visual source of truth)"
   - docs/PRD.md §5.0 / §5.4 (recommendation, not a verdict)
   - docs/DATA_MODEL.md §17 (the role cards, signal bars, why-you-matched, fit read)

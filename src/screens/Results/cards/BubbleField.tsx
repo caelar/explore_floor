@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { ROLE_ACCENT } from '@/components/categoryAccent';
 import { roleDetails } from '@/data';
 import type { CategoryId, CategoryWeights } from '@/data/types';
-import { BUBBLE_VIEW, bubbleLayout, durations, easings } from '@/lib';
+import { breathe, BUBBLE_VIEW, bubbleLayout, durations, easings } from '@/lib';
 
 // The three role bubbles on the results map (D-029 Phase E). Rank-based positions + match-%-sized
 // radii come from the pure lib/bubbleLayout; this only renders them. Each bubble fills with its role
@@ -60,10 +60,10 @@ export function BubbleField({ ranking, matchPercentages, reduce, onDive }: Bubbl
                     scale: { duration: durations.glide, delay: b.rank * 0.08, ease: easings.soft },
                     // Gentle, per-rank-varied idle float — `mirror` so it eases to a stop at both the
                     // top and bottom of the bob (an asymmetric ease on a [0,-y,0] loop reads jerky at
-                    // the turnaround). Durations are deliberately off the UI motion scale (no token
-                    // home for a multi-second ambient loop); easing is a symmetric easeInOut.
+                    // the turnaround). Base off the UI scale (see `breathe` in motion.ts — multi-second
+                    // ambient loops); per-rank increment varies each bubble; easing is a symmetric easeInOut.
                     y: {
-                      duration: 5 + b.rank * 0.6,
+                      duration: breathe.bubble + b.rank * 0.6,
                       delay: b.rank * 0.4,
                       repeat: Infinity,
                       repeatType: 'mirror',

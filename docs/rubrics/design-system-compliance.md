@@ -10,7 +10,7 @@ source:
   - docs/ARCHITECTURE.md §1, §11
   - "RC UI Kit (kit-aligned tokens, DECISIONS D-024)"
   - "src/components/categoryAccent.ts (the ROLE_ACCENT mapping)"
-  - "docs/knowledge/VISUAL_REARCHITECTURE.md + DECISIONS D-029 (the dark system, step 8)"
+  - "docs/knowledge/archive/VISUAL_REARCHITECTURE.md + DECISIONS D-029 (the dark system, step 8)"
 sections:
   tokens:
     order: 1

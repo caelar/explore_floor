@@ -14,6 +14,8 @@ It's adapted from the five-layer "design harness" idea (context · skills · orc
 | [`CASESTUDY.md`](./CASESTUDY.md) | Portfolio narrative spine, fed by the three above. | Distill at milestones. |
 | [`sessions/`](./sessions) | Dated handoff notes written at the end of large changes: what changed, why, what's next. | `/compound session`. |
 | [`HARNESS.md`](./HARNESS.md) | Full reference for the harness: skills, commands, subagents, rubrics, MCP servers, and how to use/extend them. | When the harness changes. |
+| [`REMAINING_WORK.md`](./REMAINING_WORK.md) | Router for what's left, by owner/timeframe → [`HANDOFF_GUIDE.md`](./HANDOFF_GUIDE.md) (ARM/Fivestar), [`DEFERRED_DIRECTIONS.md`](./DEFERRED_DIRECTIONS.md) (v4), [`DESIGN_SYSTEM_RUN.md`](./DESIGN_SYSTEM_RUN.md) (design-system run). | As work lands or re-scopes. |
+| [`archive/`](./archive) | Completed plans kept for rationale (the realignment memo + the step-8 build log). Not active work. | Frozen on completion. |
 
 ## How it connects
 

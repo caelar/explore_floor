@@ -22,7 +22,7 @@ Adapted the realignment memo (`REALIGNMENT.md`) into an ultracode-native executi
 
 ## Start here
 1. Continue on the existing branch **`narrative-v3-realign`** (do NOT re-branch; it's 5 commits ahead of `main`, working tree clean, gates green: lint / typecheck / 99 unit / 7 E2E).
-2. Read, in order: this note → `docs/knowledge/REALIGNMENT.md` (the plan of record, §9 sweep + Appendix A drift catalog) → `STATUS.md`. The full execution plan also lives at `~/.claude/plans/take-a-look-at-swift-curry.md` (won't auto-load in a fresh chat — this note is self-sufficient).
+2. Read, in order: this note → `docs/knowledge/archive/REALIGNMENT.md` (the plan of record, §9 sweep + Appendix A drift catalog) → `STATUS.md`. The full execution plan also lives at `~/.claude/plans/take-a-look-at-swift-curry.md` (won't auto-load in a fresh chat — this note is self-sufficient).
 3. **Locked decisions (don't relitigate):** kit-align in-repo now / shared `rc-design-system` package deferred; archive+delete classic; the user reviews between phases. The user wants this run **ultracode-style** — every substantive phase as a Workflow (parallel fan-out + an adversarial-verify stage before each commit), gates green at every commit.
 
 ## Execution model

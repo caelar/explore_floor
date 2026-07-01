@@ -31,8 +31,8 @@ interface BucketSortProps {
 // rows are a STATIC sibling that never animates (`qRatingRows` sit outside the slide clip). Because
 // the rows are identical for every choice, keeping them mounted while only the card swaps reads
 // clean — and their gold focus ring is no longer clipped by the card's overflow-hidden track (the
-// deferred Phase-G a11y note). Click-only — the drag path (DragSortCard / DropZone) stays dormant
-// by design (D-029 rule 4).
+// deferred Phase-G a11y note). Click-only: the rater sorts via tap/Enter on the rating rows. (The
+// old drag path — DragSortCard / DropZone — was removed as dead code; see DECISIONS D-031.)
 export function BucketSort({
   items,
   currentIndex,

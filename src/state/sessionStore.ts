@@ -51,6 +51,7 @@ const createInitialState = (): SessionState => ({
   history: [],
   scenePhase: 'intro',
   choiceIndex: 0,
+  lastDirection: 'forward',
   answers: {},
   statementBuckets: {},
   categoryResult: null,
@@ -90,6 +91,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             stepIndex,
             scenePhase: 'intro',
             choiceIndex: 0,
+            lastDirection: 'forward',
           },
         };
       }),
@@ -128,6 +130,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             stepIndex: nextIndex,
             scenePhase: 'intro',
             choiceIndex: 0,
+            lastDirection: 'forward',
           },
         };
       }),
@@ -159,6 +162,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             // Re-enter a prior scene at its last rated choice; a prior MC just shows its answer.
             scenePhase: enterPrevScene ? 'rating' : 'intro',
             choiceIndex: enterPrevScene ? prev.choices.length - 1 : 0,
+            lastDirection: 'back',
           },
         };
       }),

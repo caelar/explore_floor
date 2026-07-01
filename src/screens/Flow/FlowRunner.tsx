@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ export function FlowRunner() {
   const stepIndex = useSessionStore((s) => s.state.stepIndex);
   const scenePhase = useSessionStore((s) => s.state.scenePhase);
   const history = useSessionStore((s) => s.state.history);
+  const lastDirection = useSessionStore((s) => s.state.lastDirection);
   const answers = useSessionStore((s) => s.state.answers);
   const recordAnswer = useSessionStore((s) => s.recordAnswer);
   const advanceStep = useSessionStore((s) => s.advanceStep);
@@ -68,6 +69,19 @@ export function FlowRunner() {
   // always the scene intro behind, and any step past the first has a previous step on the stack.
   const canGoBack = (step.type === 'scene' && scenePhase === 'rating') || history.length > 0;
 
+  // Directional step slide: forward enters from the right and exits left; Back mirrors it (enters
+  // from the left, exits right). `custom` carries the direction to the EXITING step too, so a Back
+  // press slides the outgoing step the correct way. Reduced motion drops the travel to a crossfade.
+  const dir = lastDirection === 'back' ? -1 : 1;
+  const stepVariants: Variants = {
+    enter: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: 40 * d }),
+    center: reduce ? { opacity: 1 } : { opacity: 1, x: 0 },
+    exit: (d: number) =>
+      reduce
+        ? { opacity: 0 }
+        : { opacity: 0, x: -40 * d, transition: { duration: durations.snap, ease: easings.soft } },
+  };
+
   // Every step top-anchors (justify-start under the header), matching the reference. Pinning the
   // card's top makes a step swap a clean horizontal slide and never re-centers a tall (rating-phase)
   // block against a short (intro) one — the scene→scene "lurch/reset". The liked scene "slide
@@ -75,18 +89,16 @@ export function FlowRunner() {
   // flex-centering, so both the lurch fix and the morph hold together.
 
   return (
-    <main className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-start p-space-5 pt-space-7">
-      <AnimatePresence mode="wait">
+    <main className="relative mx-auto flex w-full max-w-read flex-1 flex-col items-center justify-start p-space-5 pt-space-7">
+      <AnimatePresence mode="wait" custom={dir}>
         <motion.div
           key={step.id}
+          custom={dir}
           className="flex w-full flex-col items-center"
-          initial={reduce ? { opacity: 0 } : { opacity: 0, x: 40 }}
-          animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0 }}
-          exit={
-            reduce
-              ? { opacity: 0 }
-              : { opacity: 0, x: -40, transition: { duration: durations.snap, ease: easings.soft } }
-          }
+          variants={stepVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
           transition={{ duration: reduce ? durations.snap : durations.glide, ease: easings.soft }}
         >
           {step.type === 'mc' && (

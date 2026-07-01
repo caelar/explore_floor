@@ -23,6 +23,19 @@ export const durationsMs = {
   reveal: 1000,
 } as const;
 
+/**
+ * Base durations (seconds) for the multi-second "breathe" idle loops on the results screens: the
+ * ambient orbs, the bubble/constellation float, and the sparkle twinkle. Deliberately off the UI
+ * scale above (which tops out at `reveal` 1s) — these are slow decorative loops, not UI feedback.
+ * Each consumer adds its own small per-index/per-rank increment + stagger delay on top of the base.
+ */
+export const breathe = {
+  orb: 7,
+  bubble: 5,
+  node: 4,
+  sparkle: 2.4,
+} as const;
+
 /** Cubic-bezier control points. */
 export const easings = {
   soft: [0.25, 0.46, 0.45, 0.94],

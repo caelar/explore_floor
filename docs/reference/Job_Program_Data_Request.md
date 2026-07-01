@@ -5,7 +5,7 @@
 **Why we need it:** The new quiz results experience ends in a per-role "constellation" of related jobs and a full job-overview page for each. Role-level content (descriptions, activities, education, salary, competencies) is already captured from your live site in `ARM Updated Role Structure - Source Content.md`. This template asks **only** for the per-job detail and the bridge-training programs the role pages don't include. Where a field is unknown, leave it blank — we'll fill plausible placeholder and mark it for replacement.
 **Reading level:** plain language a high-school junior/senior would understand; no jargon.
 
-> Context for the plan: this feeds Phase F of `docs/knowledge/VISUAL_REARCHITECTURE.md`. Phases A–E don't depend on it, so there's runway, but the sooner this comes back, the better.
+> Context for the plan: this feeds Phase F of `docs/knowledge/archive/VISUAL_REARCHITECTURE.md`. Phases A–E don't depend on it, so there's runway, but the sooner this comes back, the better.
 
 > **Status note (2026-06-29, Phase C):** the results role cards now render a **"How to bridge the gap"** list per role, built against **placeholder** bridge programs in `src/data/bridgePrograms.ts` (plausible stand-ins, not a vetted ARM list). The **bridge-training program** blocks below are the open ask that unblocks replacing that placeholder; per-job detail (job titles, summaries, responsibilities) is still only needed for Phase F. Everything else on the Phase C card (role description, duties, competencies, education, salary) is sourced from `ARM Updated Role Structure - Source Content.md` and needs nothing new.
 

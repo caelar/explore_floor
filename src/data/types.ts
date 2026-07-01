@@ -339,6 +339,9 @@ export interface SessionState {
   /** Which of the active scene's choices is being rated (0-based cursor). Drives the one-at-a-time
    *  rater and lets Back step to the previous choice with its prior pick pre-lit. */
   choiceIndex: number;
+  /** Which way the last step change moved, so the runner's step transition can slide directionally
+   *  (forward: in-from-right; back: in-from-left). Set by the nav actions, read by FlowRunner. */
+  lastDirection: 'forward' | 'back';
   answers: Record<string, string>; // stepId → chosen MCChoice/SceneChoice id
   statementBuckets: Record<string, BucketId>; // SceneChoice.id → bucket
   categoryResult: CategoryResult | null;

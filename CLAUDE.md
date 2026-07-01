@@ -8,7 +8,7 @@ This file is the operating manual for this repo. Read it fully at the start of e
 
 An interactive, narrative career-discovery experience for **RoboticsCareer.org** (RC.org), the ARM Institute's workforce platform. A user walks through a day in their life, sorting the choices each scene offers into three buckets (That's me / Kinda me / Not me), and lands on a results screen that recommends how they match ARM's three robotics career roles (Robotics Technician, Specialist, Integrator). It replaces three weak existing tools on the site (Explore the Floor, My Goal, Interest Quiz) with one focused, engaging flow. This ships as the single **Narrative** flow (`DATA_MODEL.md` §17).
 
-> **Realignment (2026-06, Phases 4–5 done).** The original concept, a stylized assembly-line sort that built a custom robot, is the **documented cut**: it was never built as a scene and its scaffolding (Classic flow + the Exam study condition) was deleted in Phase 4 (D-027, recoverable at git tag `archive/pre-narrative-only`). The live build is the **narrative quiz only**, and as of Phase 5 (D-028) it scores ARM's live **three-role** structure (Technician / Specialist / Integrator), collapsed from the four categories the study used. Plan of record: `docs/knowledge/REALIGNMENT.md`; live model: `DATA_MODEL.md` §17.
+> **Realignment (2026-06, Phases 4–5 done).** The original concept, a stylized assembly-line sort that built a custom robot, is the **documented cut**: it was never built as a scene and its scaffolding (Classic flow + the Exam study condition) was deleted in Phase 4 (D-027, recoverable at git tag `archive/pre-narrative-only`). The live build is the **narrative quiz only**, and as of Phase 5 (D-028) it scores ARM's live **three-role** structure (Technician / Specialist / Integrator), collapsed from the four categories the study used. Realignment memo (complete, archived): `docs/knowledge/archive/REALIGNMENT.md`; live model: `DATA_MODEL.md` §17; live state: `docs/knowledge/STATUS.md`.
 
 This is a **high-fidelity prototype**, not production code. It exists to (a) prove the concept to the ARM client and (b) be tested with real users. ARM's dev team would rebuild from it later. Optimize for clarity, feel, and iteration speed, not for production hardening.
 
@@ -90,7 +90,7 @@ Before calling any task complete:
 1. `pnpm dev` runs with no console errors.
 2. `pnpm lint` and `pnpm typecheck` pass.
 3. `pnpm test` passes — Vitest unit tests (the category scoring engine, `data-integrity`) and the Playwright specs (narrative / role-select / reduced-motion).
-4. The change matches the live plan (`docs/knowledge/REALIGNMENT.md` + `DATA_MODEL.md` §17); `ROADMAP.md` Phase 0/1 are done and Phase 2/3 are largely the documented cut.
+4. The change matches the live model (`DATA_MODEL.md` §17) and the current plan (`docs/knowledge/STATUS.md` + `REMAINING_WORK.md`); the realignment + visual-rearchitecture memos are complete and archived at `docs/knowledge/archive/`. `ROADMAP.md` Phase 0/1 are done and Phase 2/3 are largely the documented cut.
 
 Use Playwright to self-check visual and flow changes rather than asking the user to manually verify. Screenshot the relevant screen and inspect it.
 
@@ -99,14 +99,14 @@ Use Playwright to self-check visual and flow changes rather than asking the user
 This repo carries a small, owned agent + design harness. Use it; don't work around it.
 
 - **Session start.** Read `docs/knowledge/STATUS.md` (where we are) and the newest note in `docs/knowledge/sessions/` (what last happened) before touching anything. Built-in memory mirrors a few durable facts, but `docs/knowledge/` is the source of truth.
-- **Layer map.** Context = the six `docs/` files + `REALIGNMENT.md` (cited, never duplicated). Skills (`.claude/skills/`): `data-author` for `/src/data`, `scene-motion` for the Motion-vs-GSAP rule, plus the installed GSAP + Motion skills. Commands (`.claude/commands/`): `/phase-check`, `/design-review`, `/compound`, `/capture-figma`, `/pull-figma`, `/revise-doc` (edit a spec doc safely, reconciling the others). Evaluation = `docs/rubrics/`, graded by the `design-reviewer` subagent; `verifier` runs the gates; `doc-steward` reconciles cross-doc ripples (driven by `/revise-doc`).
+- **Layer map.** Context = the six `docs/` files + `docs/knowledge/` (read `STATUS.md` first; the completed `REALIGNMENT.md` + `VISUAL_REARCHITECTURE.md` plans now sit in `docs/knowledge/archive/`, cited for rationale, never duplicated). Skills (`.claude/skills/`): `data-author` for `/src/data`, `scene-motion` for the Motion-vs-GSAP rule, plus the installed GSAP + Motion skills. Commands (`.claude/commands/`): `/phase-check`, `/design-review`, `/compound`, `/capture-figma`, `/pull-figma`, `/revise-doc` (edit a spec doc safely, reconciling the others). Evaluation = `docs/rubrics/`, graded by the `design-reviewer` subagent; `verifier` runs the gates; `doc-steward` reconciles cross-doc ripples (driven by `/revise-doc`).
 - **Gates.** Run `/design-review` for visual work; run `/phase-check` at phase boundaries (it ticks `STATUS.md`). A task isn't done until lint + typecheck + test pass.
 - **Compounding.** Capture non-obvious calls with `/compound decision`, workflow/craft learnings with `/compound lesson`, and a handoff note at the end of a large change with `/compound session`. A lesson that recurs gets promoted to a rule here in `CLAUDE.md`.
 - **Full reference.** `docs/knowledge/HARNESS.md` documents every piece (skills, commands, subagents, rubrics, MCP servers) — what it's for, how to use it, and how to extend it.
 
 ## Phasing
 
-Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). Then the product pivoted to the narrative quiz, and the original Phase 2–3 plan is superseded. The live track is in `docs/knowledge/REALIGNMENT.md`.
+Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). Then the product pivoted to the narrative quiz, and the original Phase 2–3 plan is superseded. That realignment (and its step-8 visual re-architecture) is now **complete** — the memos are archived at `docs/knowledge/archive/`; live state is `docs/knowledge/STATUS.md`.
 
 - **Phase 0** — Scaffold, tokens, mock data, screens stubbed, clickable end to end. **Complete.**
 - **Phase 1** — Real flow content, working scoring, testable results. **Complete** (first user test).
@@ -115,7 +115,7 @@ Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). T
 - **Realignment Phase 5 (three roles)** — the four categories collapsed to ARM's three live roles (D-028). **Done.**
 - **Phase 2 (conveyor feel pass) — documented cut.** The conveyor scene, the robotic arm, the live robot, and the Build beat were never built and are no longer the plan.
 - **Phase 3 — partly superseded.** The polish that applies to the live flows survives (copy, light a11y, mobile, reduced-motion, Figma sync); the sound/conveyor/robot polish is cut.
-- **Next** — the high-fidelity narrative results screen (`REALIGNMENT.md` step 8), on the kit-aligned tokens.
+- **Next** — step 8 (the high-fidelity narrative results screen + dark re-skin) **shipped**; the realignment and visual re-architecture are complete. Current work lives in `docs/knowledge/REMAINING_WORK.md` (the design-system run + the late-July handoff).
 
 ## Hard rules
 
@@ -127,7 +127,7 @@ Phase 0 and Phase 1 shipped (scaffold; the classic flow, testable end to end). T
 
 ## Doc map
 
-- `docs/knowledge/REALIGNMENT.md` — **the plan of record.** Where the project actually is (the narrative pivot), the design-system unification, and the realignment sweep.
+- `docs/knowledge/archive/` — **completed plans, kept for rationale:** `REALIGNMENT.md` (the narrative pivot + design-system unification; its §6/§7/§10 design-system strategy is still live, queued in `docs/knowledge/DESIGN_SYSTEM_RUN.md`) and `VISUAL_REARCHITECTURE.md` (the step-8 dark re-architecture build log). Start at `docs/knowledge/STATUS.md` / `REMAINING_WORK.md` for live state.
 - `PRD.md` — what we're building and why, screen by screen. The spec (§5.0 is the live narrative flow; the conveyor screens are the documented cut).
 - `CONTEXT_BRIEF.md` — the research story, compressed. The why.
 - `DESIGN_SYSTEM.md` — tokens, components, motion. Kit-aligned to the RC UI Kit (D-024).

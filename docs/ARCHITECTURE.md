@@ -155,9 +155,11 @@ The principle: **data flows down, actions flow up, logic lives in pure functions
 │   │                               when the Landing went type-led dark; the conveyor/robot scene
 │   │                               was never built)
 │   │
-│   ├── components/                Button, SegmentedControl, DragSortCard, DropZone, ProgressBar,
+│   ├── components/                Button, SegmentedControl, ProgressBar, SparkleStar,
 │   │                              AppHeader, Icon (the Material-ligature wrapper),
 │   │                              categoryAccent.ts (live — exports ROLE_ACCENT)
+│   │                              (the click-vs-drag alternative DragSortCard/DropZone was
+│   │                              removed as dead code — D-031)
 │   │
 │   ├── state/                     sessionStore.ts, useFlow.ts, useQuestionSet.ts
 │   │

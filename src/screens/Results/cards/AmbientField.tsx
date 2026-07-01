@@ -1,5 +1,7 @@
 import { motion } from 'motion/react';
 
+import { breathe } from '@/lib';
+
 // The atmospheric layer behind the results bubble map (D-029 Phase E): large, heavily-blurred,
 // role-tinted orbs that slowly breathe. Purely decorative (aria-hidden, pointer-events-none) — it
 // keeps the four-grey dark palette from going flat without competing with the bubbles. Colors come
@@ -46,10 +48,10 @@ export function AmbientField({ reduce }: { reduce: boolean }) {
             reduce
               ? { duration: 0 }
               : // Slow, per-orb-varied breathe; `mirror` keeps the fade symmetric (eases to a stop at
-                // both ends). Durations are deliberately off the UI motion scale (no token home for a
-                // multi-second ambient loop); easing is a symmetric easeInOut.
+                // both ends). Base off the UI scale (see `breathe` in motion.ts — multi-second ambient
+                // loops); +i spreads each orb; easing is a symmetric easeInOut.
                 {
-                  duration: 7 + i,
+                  duration: breathe.orb + i,
                   delay: i * 0.4,
                   repeat: Infinity,
                   repeatType: 'mirror',

@@ -37,7 +37,7 @@
   --color-black: #000000; /* overrides Tailwind default; verify vs Figma color/neutral/black */
   --color-white: #ffffff;
 
-  /* ---- Dark system (step 8 — D-029 / docs/knowledge/VISUAL_REARCHITECTURE.md) ----
+  /* ---- Dark system (step 8 — D-029 / docs/knowledge/archive/VISUAL_REARCHITECTURE.md) ----
      The quiz renders dark-only (no theme toggle); the light tokens above stay
      present but unused by the quiz. Neutral ramp is additive-but-no-duplicate
      (ground rule 6): it reuses near-black / subtle / faint / white / black already
@@ -107,6 +107,7 @@
   --container-md: 912px;
   --container-lg: 1248px;
   --container-xl: 1500px;
+  --container-read: 672px; /* the quiz reading column in the flow runner (was an ad-hoc max-w-2xl) */
   --container-results: 760px; /* the results reading column inside the role-cards panel (D-029 Phase C) */
   --container-map-card: 640px; /* the glass "your results" intro card on the bubble map (D-029 Phase E) */
   --container-map: 1040px; /* the bubble field on the results map; matches BUBBLE_VIEW.width in lib/bubbleLayout (D-029 Phase E) */

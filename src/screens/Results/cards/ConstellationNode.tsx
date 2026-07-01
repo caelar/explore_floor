@@ -4,7 +4,7 @@ import type { CSSProperties } from 'react';
 import type { RoleAccent } from '@/components/categoryAccent';
 import { SparkleStar } from '@/components/SparkleStar';
 import type { Job } from '@/data/types';
-import { durations, easings } from '@/lib';
+import { breathe, durations, easings } from '@/lib';
 
 // One job node on the results constellation (D-029 Phase F). A circular button holding a four-point
 // sparkle star (the Claude Design glyph) that rings the role center; the label sits below it (rendered
@@ -54,11 +54,11 @@ export function ConstellationNode({
               scale: { duration: durations.glide, delay: index * 0.06, ease: easings.soft },
               // Gentle symmetric idle float — mirror so it eases to a stop at both the top and
               // bottom of the bob (an asymmetric ease on a [0,-y,0] loop reads jerky at the peak).
-              // Off the UI motion scale (multi-second ambient loop, no token home); a symmetric
-              // easeInOut on purpose — the mirror loop wants symmetry, and easings.soft is slightly
-              // asymmetric.
+              // Base off the UI scale (see `breathe` in motion.ts — multi-second ambient loops); a
+              // symmetric easeInOut on purpose — the mirror loop wants symmetry, and easings.soft is
+              // slightly asymmetric.
               y: {
-                duration: 4 + index * 0.4,
+                duration: breathe.node + index * 0.4,
                 delay: index * 0.3,
                 repeat: Infinity,
                 repeatType: 'mirror',
@@ -92,7 +92,7 @@ export function ConstellationNode({
             reduce || active
               ? undefined
               : {
-                  duration: 2.4 + index * 0.5,
+                  duration: breathe.sparkle + index * 0.5,
                   delay: index * 0.4,
                   repeat: Infinity,
                   repeatType: 'mirror',

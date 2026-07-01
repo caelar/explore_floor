@@ -2,9 +2,9 @@ import type { CategoryFlow } from '../types';
 
 // The Narrative flow (DATA_MODEL §17): six intro questions, then a day-in-the-life story in
 // seven scenes. Scores ARM's three robotics roles — Technician (entry), Specialist (mid),
-// Integrator (planning). Content from docs/reference/Narrative Quiz Structure Content Spec.md
-// (three-role re-cut, Phase 5 / D-028), grounded in the role salaries + education in
-// docs/reference/ARM Updated Role Structure - Source Content.md.
+// Integrator (planning). This file + its tests are the canonical content (the upstream
+// "Narrative Quiz Structure Content Spec" was retired; live model in DATA_MODEL.md §17), grounded
+// in the role salaries + education in docs/reference/ARM Updated Role Structure - Source Content.md.
 //
 // Q0 (experience) is an unscored background question (routing parked for later).
 // Education (Q1 "college?" + Q2 "how long?") and salary (Q3) nudge the score on the role

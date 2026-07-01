@@ -1,7 +1,21 @@
+import { motion, type Variants } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 import type { MCStep } from '@/data/types';
-import { durationsMs } from '@/lib';
+import { durations, durationsMs, easings } from '@/lib';
+
+// Answer rows cascade in after the card has slid into place (delayChildren ≈ the runner's glide),
+// so the choices arrive a beat behind the question instead of all at once. Reduced motion skips it
+// (the rows mount already shown). Only opacity/transform animate, so the buttons stay hit-testable
+// mid-entrance.
+const choiceListVariants: Variants = {
+  hidden: {},
+  show: { transition: { delayChildren: durations.glide, staggerChildren: 0.06 } },
+};
+const choiceRowVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: durations.glide, ease: easings.soft } },
+};
 
 interface MCQuestionProps {
   step: MCStep;
@@ -67,13 +81,20 @@ export function MCQuestion({
         )}
       </div>
 
-      <div className="flex flex-col gap-space-2" data-testid="mc-choices">
+      <motion.div
+        className="flex flex-col gap-space-2"
+        data-testid="mc-choices"
+        variants={choiceListVariants}
+        initial={reduce ? false : 'hidden'}
+        animate="show"
+      >
         {step.choices.map((choice) => {
           const isPicked = picked === choice.id;
           return (
-            <button
+            <motion.button
               key={choice.id}
               type="button"
+              variants={choiceRowVariants}
               disabled={acted}
               onClick={() => choose(choice.id)}
               className={`w-full rounded-md border px-space-4 py-space-3 text-left font-body text-body transition-colors disabled:pointer-events-none ${
@@ -83,10 +104,10 @@ export function MCQuestion({
               }`}
             >
               {choice.label}
-            </button>
+            </motion.button>
           );
         })}
-      </div>
+      </motion.div>
 
       <p className="text-small text-text-on-dark-faint">Select an answer to continue.</p>
     </div>
