@@ -126,6 +126,7 @@ Full phase history and decision trail: `ROADMAP.md`, `docs/knowledge/archive/REA
 - `ARCHITECTURE.md` — stack rationale, file structure, state, scoring engine, the 3D path (parked).
 - `DATA_MODEL.md` — every schema. **§17 (the three-role narrative flow) is the live model;** §1–§14 are the classic documented cut.
 - `ROADMAP.md` — Phase 0/1 done; Phase 2/3 largely the documented cut.
+- `docs/knowledge/ARM_FIVESTAR_COMPARISON.md` + `AI_ROLES_INTEGRATION.md` — **proposals, not the live model:** our quiz vs. ARM's Fivestar deck (Release 4.3), plus a documented domain-mirror path to the three AI roles (`DECISIONS.md` D-034). Build deferred; the three-robotics-role hard rule stands until green-lit. Deck source mirrored at `docs/reference/ARM_Fivestar_Interest_Quiz_4.3.md`.
 - `docs/knowledge/` — living project memory: status, decisions, lessons, case study, session handoffs. **Read `STATUS.md` first each session.**
 - `docs/rubrics/` — design-quality rubrics the `design-reviewer` subagent grades against.
 - `README.md` (root) — teammate onboarding + MCP/toolchain setup.

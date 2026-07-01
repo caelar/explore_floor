@@ -7,6 +7,7 @@
 - **Phase 1 status:** complete — all gates green; design-review passed all four classic screens with no p1/p2 findings. Built in 3 slices: Sort, Results (the conversion screen), Landing reveal + Build beat.
 - **Open items:** the step-8 content gaps (match-% line, Technician-as-rung framing, `categoryBreakdown` wiring, a programs set) all landed in Phase C. Remaining open work is catalogued in the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md` (ARM/Fivestar post-handoff content + our pre-handoff cleanup), `DESIGN_SYSTEM_RUN.md` (the `rc-design-system` build), and `DEFERRED_DIRECTIONS.md` (v4 polish + open scoring calls).
 - **Next up:** the near-term **design-system run** (`DESIGN_SYSTEM_RUN.md`) and prep for the **late-July client handoff** (`HANDOFF_GUIDE.md`). No in-flight build thread — branch `narrative-v3-realign` is committed and green.
+- **Future direction (documented, not built):** ARM's Fivestar deck (Release 4.3) was analyzed vs. our quiz: comparison + four adopted ideas in `ARM_FIVESTAR_COMPARISON.md`, and a **domain-mirror path to the three AI roles** (keep the 3-tier engine, add a physical/digital domain axis, derive 6 roles at results) in `AI_ROLES_INTEGRATION.md` (`DECISIONS.md` D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
 

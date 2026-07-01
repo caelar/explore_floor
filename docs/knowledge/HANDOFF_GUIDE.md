@@ -26,7 +26,7 @@ What ARM/Fivestar own here:
 - Deciding how the AI-prefixed variants map onto (or replace) the three base roles this prototype uses.
 - Reconciling their scenario-based quiz with this narrative quiz, if both are to coexist.
 
-The in-repo ARM source doc only captures the three base roles, so the variant angle has no answer on file here.
+The in-repo ARM source doc only captures the three base roles. **Update (2026-07-01, D-034):** ARM's Fivestar deck (Release 4.3) now supplies the mapping answer, the AI variants are the digital mirror of the three robotics tiers, on the same How/What/Why signature. A documented domain-mirror integration path (keep the 3-tier engine, add a physical/digital domain axis, derive 6 roles) is spec'd in `AI_ROLES_INTEGRATION.md`, with the comparison in `ARM_FIVESTAR_COMPARISON.md`. The **build stays deferred** and remains a green-light decision (ours post-handoff, or ARM/Fivestar's on their platform); only the "how" is now on file.
 
 ## 3. Confirm the three role names match Fivestar's live taxonomy — blocked on Fivestar/ARM
 

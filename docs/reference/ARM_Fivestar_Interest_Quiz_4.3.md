@@ -1,0 +1,912 @@
+# ARM Interest Quiz Update — Release 4.3 (2026-05-07)
+
+_Faithful text transcript of ARM's Fivestar Interest Quiz deck (`Interest Quiz Update_Release 4.3_5-7-2026.pptx`, 35 slides). Raw source material, kept for team findability, mirrors how `ARM Updated Role Structure - Source Content.md` is stored. Analysis lives in `../knowledge/ARM_FIVESTAR_COMPARISON.md`; the proposed integration in `../knowledge/AI_ROLES_INTEGRATION.md`. Images (two stock hero photos, logos) are not reproduced._
+
+## Slide 1
+- Built to Guide.  Designed to Inform.
+- Robotics & AI Career Pathway
+- Interest Quiz
+
+## Slide 2
+- Objectives of our session
+- Milestone Review
+- The User Experience
+- Design Solution
+- Next Steps
+- Agenda
+
+## Slide 3
+- Session Objectives
+- Intent:  Review the Quiz Logic / Questions / Results
+- Outcome:  Approval to move forward with implementation
+- Looking Ahead:  Gain user insights to help inform future modifications (if needed)
+
+## Slide 4
+- How we got here
+- Milestone
+- Discovery
+- Problem
+- it Solved
+- Design
+- Decision
+- Identification of 2 career pathways for ARM
+- 6 ARM pathways established. Key competencies mapped.
+- ARM worked to map competencies to the new AI career pathways
+- Generic career searches lack detail required for informed decisions about training and careers
+- Defined 6 career pathways across Robotics and AI with corresponding competency lists
+- Conducted industry research
+- Best practices identified. Interest models reviewed.
+- Researched industry-related methods for surfacing interests, preferences, likes, and dislikes
+- O-Net - RIASEC, Princeton Review, and others
+- Most career tools assume prior knowledge or ask users what they want to be
+- New users cannot answer honestly without a frame of reference
+- Adopted an approach that surfaces how a person naturally thinks and works, not what they already know about careers in advanced manufacturing
+
+## Slide 5
+- How we got here
+- Milestone
+- Discovery
+- Problem
+- it Solved
+- Design
+- Decision
+- Adjustment to assess across multiple dimensions.
+- Where | What | How | Why             Single Activity model retired
+- A single activity question could not capture the full range of how a person things/works
+- Could not reliably separate six distinct career pathways
+- Adoption of the 4 dimension model
+- With each dimension having a set of attributes that map to each career pathway based upon their competency makeup
+- Dimensions Mapped to pathways
+- Mapping based upon the pathway's competency makeup
+- Each of the six career pathways were mapped to a specific combination of dimension attributes across Where / What / How / Why
+- A job title alone is just a label
+- Users cannot act on a result that they do not understand
+- Mapping allowed for the construction of a quiz that will better identify a career pathway the user can explore
+- With the addition of a new framework, needed a way to better understand how a person naturally thinks/works
+- Based on research gathered, moving to a 4 dimension approach proved to be more reliable
+
+## Slide 6
+- The user experience
+- Stage
+- 1
+- Arrives curious
+- No clear direction
+- 2
+- Answers two everyday scenario questions
+- 3
+- Reflects on what motivates improvement of things
+- 4
+- Sees their result for the first time
+- 5
+- Established pathway and next step opportunities.
+- Thought Pattern
+- “I am interested but I have no idea where I would fit.”
+- “These questions feel like me, not like a test.”
+- “I did not expect a quiz to make me think about this.”
+- “I know something about myself I did not know before.”
+- “This is interesting.  I would like to learn more.”
+- The Problem
+- Advanced Manufacturing is a broad spanning industry.
+- Generic searches are limited.  They do not provide the right level of detail to help a user make an informed decision on careers/trainings associated to manufacturing.
+- Industry quizzes assume prior knowledge.
+- New users cannot answer honestly.
+- Most tools ask, “What do you want to be?”
+- New users do not have a clear idea of that yet.
+- A job title without context is just a label.
+- Users cannot act on it.
+- Career pathway results provide information and the user needs to know what to do next.
+- The Design Decision
+- Opening scenario is something that anyone can relate to - prior knowledge is not needed.
+- Everyday analogies offered in Q2 and Q3 reveal how an individual likes to work and the activities they prefer to perform, without gaming a result.
+- Q4 asks what satisfied them recently, surfacing natural motivations.
+- Result pairs a pathway name with personal insight narrative that describes how the user’s preferences align with the pathway.
+- Users are given options to continue exploration by viewing training programs and/or jobs aligned with the matched pathway
+- Dimension
+- Where
+- How
+- What
+- Why
+- ---
+- ---
+- Attribute
+- Physical
+- Digital
+- Structured / Discrete, Details
+- Collaborative, InterconnectivityStrategic / Undefined, Big Picture
+- Building, TestingOptimizing, Designing
+- Scaling, Automation
+- Efficiency, Operationalize
+- Efficacy & Accuracy, Improve
+- Innovation, Evolve
+- ---
+- ---
+- Emotion
+- System
+- Uncertain
+- Curious
+- Recognized
+- Reflective
+- Clarity
+- Motivated
+- Identification of Career Pathway
+- Identification of Framework
+- Final Confirmation / Tie Breaker
+- Result Display
+- Opportunities to Explore More
+
+## Slide 7
+- HOW THE QUIZ WORKS
+- 1
+- Quiz Questions
+- Four scenario-based questions designed for any user regardless of industry background.
+- 2
+- Scoring Logic
+- Each answer maps to a dimension value
+- (Where / How / What / Why).
+- All six pathways are scored simultaneously.
+- 3
+- Tie-Breaker Rules
+- A two-step cascade ensures exactly one pathway is always returned.
+- 4
+- Career Pathway Result
+- Matched pathway and personal insight are delivered to the user.
+- With additional CTAs to explore matched training programs and jobs.
+
+## Slide 8
+- You are setting up a new coffee maker straight out of the box. What do you naturally do first?
+- There is no right answer. Go with your instinct.
+- A
+- Start unpacking the parts, get them laid out, and figure out how they physically fit together
+- Robotics domain | Technician · Specialist · Integrator
+- B
+- Pull up the app, scan the QR code, or look for a setup guide online before touching anything
+- AI domain  |  Data Technician · Implementation Specialist · Developer
+- Question 1:  Environment (where)
+
+## Slide 9
+- Your friend group is planning a road trip. Nobody has taken charge. What role do you naturally fall into?
+- Think about what you actually do, as opposed to what you think you should do.
+- A
+- Start making a detailed plan: departure times, gas stops, where to eat, who drives when, etc.
+- Structured / Discrete  |  Robotics Technician · AI Data Technician
+- B
+- Start a group chat, get everyone's input, and build the plan together as a group
+- Collaborative  |  Robotics Specialist · AI Implementation Specialist
+- C
+- Pick the destination and general direction, then let the details sort themselves out along the way
+- Strategic / Big Picture  |  Robotics Integrator · AI Developer
+- Question 2:  Working style (how)
+
+## Slide 10
+- You are redesigning a kitchen in your house. No budget constraints, no limits on what you can change or add. What do you focus on first?
+- Go with what sounds genuinely appealing, not just practical.
+- A
+- Make a list of every appliance needed, making note of dimensions and specs, and confirm everything will fit
+- Building · Testing  |  Robotics Technician  ·  AI Data Technician
+- B
+- Sketch a layout that places appliances based on how you want to move and work in the kitchen; function drives the design
+- Optimizing · Designing  |  Robotics Specialist  ·  AI Implementation Specialist
+- C
+- Connect the kitchen to the whole house:  automate the grocery list, sync the family calendar with meals, errands, and appointments, and put recurring bills and household routines on a schedule that runs without daily input
+- Scaling · Automating  |  Robotics Integrator  ·  AI Developer
+- Question 3:  Activities (What)
+
+## Slide 11
+- You sit down to watch a program on your older TV, but it will not turn on. You have already unplugged and plugged it back in with no result. What would be your next step?  Assume you are the only one available to handle it.
+- A
+- Check the remote control by replacing the batteries to confirm the remote is not the issue
+- Efficiency, Operationalize | Robotics Technician  ·  AI Data Technician
+- B
+- Work through every possible cause methodically: test electrical outlet, input settings, cable connections, display configuration, etc.
+- Efficacy & Accuracy, Improve | Robotics Specialist  ·  AI Implementation Specialist
+- C
+- Use it as the push to evolve:  research a fully integrated smart home entertainment system and what it would unlock
+- Innovative, Evolve | Robotics Integrator  ·  AI Developer
+- Question 4:  Motivators (why)
+
+## Slide 12
+- HOW THE QUIZ WORKS
+- 1
+- Quiz Questions
+- Four scenario-based questions designed for any user regardless of industry background.
+- 2
+- Scoring Logic
+- Each answer maps to a dimension value
+- (Where / How / What / Why).
+- All six pathways are scored simultaneously.
+
+## Slide 13
+- How it Works
+- Question Logic
+- Each question will serve a specific purpose.
+- Question 1 will identify the framework.
+- Questions 2 and 3 will narrow the identification of the pathway
+- Question 4 will solidify the pathway and serve as a tie-breaker (if needed).
+- Highest Score Wins
+- Every answer earns points across all six pathways simultaneously.
+- Each attribute match adds 2 points.
+- The pathway with the highest total score wins (8 point max).
+- Example score breakdown:
+- Robotics Technician
+- 8/8
+- ◀ Match
+- Robotics Specialist
+- 2/8
+- Robotics Integrator
+- 2/8
+- AI Data Technician
+- 6/8
+- AI Implementation Specialist
+- 0/8
+- AI Developer
+- 0/8
+
+## Slide 14
+- HOW THE QUIZ WORKS
+- 1
+- Quiz Questions
+- Four scenario-based questions designed for any user regardless of industry background.
+- 2
+- Scoring Logic
+- Each answer maps to a dimension value
+- (Where / How / What / Why).
+- All six pathways are scored simultaneously.
+- 3
+- Tie-Breaker Rules
+- A two-step cascade ensures exactly one pathway is always returned.
+
+## Slide 15
+- Tie-Breaker Rules
+- Identify Career Pathways
+- Identify each pathway that has a tied score.
+- WHY Answer Wins the Tie
+- If two or more pathways share the highest score, the WHY answer (Question 4) is the tiebreaker.
+- The tied pathway that matches the user’s WHY answer is returned as the single result.
+- This step resolves all ties.
+- Robotics Technician
+- 2/8
+- Robotics Specialist
+- 2/8
+- Robotics Integrator
+- 2/8
+- Three pathways tied at 4/8.
+- The user's WHY answer:  Efficiency; matches AI Data Technician.
+- AI Data Technician
+- 4/8
+- AI Implementation Specialist
+- 4/8
+- AI Developer
+- 4/8
+- WHY: Efficiency
+- ◀ Wins tie
+- WHY: Efficacy
+- WHY: Innovation
+- Example score breakdown:
+
+## Slide 16
+- HOW THE QUIZ WORKS
+- 1
+- Quiz Questions
+- Four scenario-based questions designed for any user regardless of industry background.
+- 2
+- Scoring Logic
+- Each answer maps to a dimension value
+- (Where / How / What / Why).
+- All six pathways are scored simultaneously.
+- 3
+- Tie-Breaker Rules
+- A two-step cascade ensures exactly one pathway is always returned.
+- 4
+- Career Pathway Result
+- Matched pathway and personal insight are delivered to the user.
+- With additional CTAs to explore matched training programs and jobs.
+
+## Slide 17
+- Every result delivers these key components:  a matched pathway and personal insight statement
+- Robotics Specialist
+- You are a connector and improver. You work best when you can bring people together around a problem, analyze how a system is really performing, and redesign solutions that hit a higher standard.
+- You can also start exploring jobs or training program opportunities.
+- Retake Quiz
+- Result Delivery Structure
+- 1
+- Pathway Name
+- Clearly stated
+- 2
+- Personal Insight
+- 2-3 sentences describing how the user thinks and works
+- 3
+- Call to Action
+- Invitation to explore the pathway further
+- Career pathway result
+
+## Slide 18
+- Appendix
+- Data points used to influence Updated Interest Quiz
+
+## Slide 19
+- 4-Dimensions and the Attributes
+- Competency Clusters
+- Pathway Mapping to Attributes
+- Dimension Preference Mapping to Career Pathway
+- Scoring Logic
+- Quiz Introduction Narrative
+- Personal Insight Narratives
+- Sample Tests
+- Appendix Table of contents
+- CTR + Click a link to navigate to the section topic
+
+## Slide 20
+- 4 Dimensions and the Attributes
+- WHERE
+- HOW
+- WHAT
+- WHY
+- Physical
+- Structured / Discrete, Details
+- Building, Testing
+- Efficiency, Operationalize
+- Digital
+- Collaborative, Interconnectivity
+- Optimizing, Designing
+- Efficacy & Accuracy, Improve
+- Strategic / Undefined, Big Picture
+- Scaling, Automating
+- Innovation, Evolve
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 21
+- Competency Clusters
+- Robotics Technician
+- Mechanical Systems
+- Maintenance & Troubleshooting
+- Electronics & Controls
+- Electrical Systems
+- Safety (Systems & Procedures)
+- Robot Programming
+- Fluid Power
+- PLC (Programmable Logic Controller
+- Robotics Specialist
+- Safety – Risk Assessment
+- Project Management
+- Vision
+- Sensors
+- Advanced Robot Programming
+- Robot / System Troubleshooting
+- Application Emphasis
+- Installation Concepts
+- Inspection / Quality Assurance
+- Robotics Integrator
+- Augmented Reality / Virtual Reality
+- Big Data
+- Interoperability
+- System Simulation / Modeling
+- Systems & Process Design
+- Visualization
+- Simulation
+- Offline Programming
+- Computer Programming
+- AI Data Technician
+- Data Collection
+- Data Verification
+- Data Labeling
+- Data Ethics
+- Model Test Implementation
+- Model Utilization
+- Model Calibration
+- AI Model Safety & Security Adherence
+- Data Lineage
+- AI Implementation Specialist
+- Model Ethics – Unbiased Development
+- Safety – Risk Assessment
+- Data Wrangling
+- Model Tuning
+- Model Training & Test Development
+- System Troubleshooting
+- Project Management
+- Data Visualization
+- Data Analytics
+- Design Structure Application
+- AI Developer
+- Advanced Math & Statistics
+- AI Model Development
+- Synthetic Data
+- AI Model Policies
+- Strategic Planning
+- System Architecture & Lifecycle
+- Advanced Data Analytics
+- Risk Planning & Mitigation
+- Model Justification & ROI
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 22
+- Pathway Mapping to Attributes
+- When all four answers align perfectly, the pathway is identified directly from this table.
+- Pathway
+- WHERE
+- HOW
+- WHAT
+- WHY
+- Robotics Technician
+- Physical
+- Structured / Discrete
+- Building, Testing
+- Efficiency, Operationalize
+- Robotics Specialist
+- Physical
+- Collaborative
+- Optimizing, Designing
+- Efficacy & Accuracy, Improve
+- Robotics Integrator
+- Physical
+- Strategic / Big Picture
+- Scaling, Automating
+- Innovation, Evolve
+- AI Data Technician
+- Digital
+- Structured / Discrete
+- Building, Testing
+- Efficiency, Operationalize
+- AI Implementation Specialist
+- Digital
+- Collaborative
+- Optimizing, Designing
+- Efficacy & Accuracy, Improve
+- AI Developer
+- Digital
+- Strategic / Big Picture
+- Scaling, Automating
+- Innovation, Evolve
+- Physical domain — Robotics pathways
+- Digital domain — AI pathways
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 23
+- Dimension Attribute mapping
+- Robotics Technician
+- Physical
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Physical World
+- This person belongs on the floor — literally. They are most effective when they can see, touch, and interact with the equipment in front of them. The physical environment is not a backdrop for their work; it is the work.
+- Their competencies are grounded in the physical:
+- Mechanical Systems
+- Machines are their primary medium — understanding every component is foundational.
+- Electrical Systems
+- Power supply and grounding are physical realities they must command.
+- Fluid Power
+- Hydraulics and pneumatics are tangible forces they control directly.
+- HOW
+- Working Style  ·  Structured / Discrete
+- When something breaks, this person does not wait for a meeting. They reach for the manual, trace the fault step by step, and restore the machine. Their world is ordered, precise, and sequential. Every action has a place in a known process.
+- Their competencies reflect this instinct:
+- Maintenance & Troubleshooting
+- Routine discipline and systematic diagnosis are their operating mode.
+- Robot Programming
+- Coded instructions are the ultimate structured system — one command at a time.
+- PLC
+- Logic controllers are their language — sequential, reliable, exact.
+- WHAT
+- Activities  ·  Building, Testing
+- This person finds satisfaction when something broken now runs, or when something new is proven to work. They are builders and verifiers. Done does not mean planned — done means tested, confirmed, and operational.
+- Their competencies confirm this drive:
+- Electronics & Controls
+- Sensors and actuators are the tools of building and verifying machine behavior.
+- Safety (Systems and Procedures)
+- Testing without safety discipline is incomplete — both must coexist.
+- Robot Programming
+- Writing and testing programs is how the machine proves itself.
+- WHY
+- Motivators  ·  Efficiency, Operationalize
+- At the end of a great day, this person feels satisfied because the line ran without interruption. They removed a bottleneck, prevented a failure, or cut the time it takes to complete a task. Their reward is a system that runs smoothly — operationalized.
+- Their competencies serve this motivation:
+- Maintenance & Troubleshooting
+- Preventive care keeps operations running — that is the goal.
+- PLC
+- Automating processes through logic is efficiency made permanent.
+- Fluid Power
+- Optimizing pneumatic and hydraulic systems reduces waste and downtime.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 24
+- Dimension Preference mapping
+- Robotics Specialist
+- Physical
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Physical World
+- This person is also on the floor — but they are looking beyond the machine in front of them. They observe how the robot interacts with its surroundings, how operators work around it, and where the physical system is falling short of what it could be.
+- Their competencies are rooted in physical interaction:
+- Vision
+- Camera-based inspection ties physical accuracy to machine intelligence.
+- Sensors
+- Pressure, position, and temperature feedback are the language of the physical environment.
+- Installation Concepts
+- Physical setup — power, data, placement — is where their work begins.
+- HOW
+- Working Style  ·  Collaborative / Interconnected
+- This person walks the floor and sees not just the machine but the people around it. They ask questions, gather perspectives, and redesign the system so it works better for the operator, the engineer, and the quality team.
+- Their competencies reflect this instinct:
+- Project Management
+- Coordinating teams and timelines is central to how they operate.
+- Application Emphasis
+- They match the right robotic solution to the right human and production context.
+- Advanced Robot Programming
+- Sensor integration requires understanding many inputs and many stakeholders at once.
+- WHAT
+- Activities  ·  Optimizing, Designing
+- This person is not content with a system that simply works. They want to know why it works, where it loses time, and how the design could be smarter. They analyze performance data, redesign workflows, and raise the standard.
+- Their competencies confirm this drive:
+- Robot / System Troubleshooting
+- Diagnosing root causes is the first step to designing better outcomes.
+- Vision
+- Analyzing what the camera sees is how they improve accuracy and process.
+- Inspection / Quality Assurance
+- Measuring quality is how they know whether the design is actually better.
+- WHY
+- Motivators  ·  Efficacy & Accuracy, Improve
+- This person ends the day satisfied when the output is measurably better — fewer defects, higher precision, more reliable results. They are not chasing speed; they are chasing quality. The system ran correctly, and they can prove it.
+- Their competencies serve this motivation:
+- Inspection / Quality Assurance
+- Final inspection is where improvement becomes verifiable.
+- Safety - Risk Assessment
+- Accurate outcomes require a safe and controlled environment.
+- Sensors
+- Real-time feedback is how precision is maintained continuously.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 25
+- Dimension Preference mapping
+- Robotics Integrator
+- Physical
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Physical World
+- This person operates across physical environments — plural. They think about how a robotic system deployed in one facility can be replicated in another, and what physical and infrastructure constraints must be solved to make that happen at scale.
+- Their competencies span the physical landscape:
+- Interoperability
+- Physical systems from different suppliers must communicate — that is their problem to solve.
+- Installation Concepts
+- Understanding power, data, and physical placement is the foundation of any deployment.
+- Augmented Reality / VR
+- Visualizing physical environments before installation reduces costly physical errors.
+- HOW
+- Working Style  ·  Strategic / Big Picture
+- This person looks at a single robot and sees a network. They think about how this system communicates with others, how it scales across facilities, and what it will need to do next year — not just today. Details matter only when they affect the whole.
+- Their competencies reflect this instinct:
+- Big Data
+- Patterns across the entire networked operation inform strategic decisions.
+- System Simulation / Modeling
+- They plan before they build — always modeling the whole system first.
+- Computer Programming
+- Writing programs that direct the broader robot network requires systems-level thinking.
+- WHAT
+- Activities  ·  Scaling, Automating
+- This person is energized by making something work everywhere, not just somewhere. They design the playbooks, build the automation frameworks, and create the systems that allow one successful deployment to become ten — without starting from scratch.
+- Their competencies confirm this drive:
+- Offline Programming
+- Writing programs outside production means scaling without disruption.
+- Simulation
+- Testing in simulation is how they automate safely before going live.
+- Systems & Process Design
+- Designing replicable processes is the engine of scalable automation.
+- WHY
+- Motivators  ·  Innovation, Evolve
+- This person ends the day energized when something changed — a new capability deployed, a boundary pushed, a system that now does something it could not do before. They are not maintaining what exists; they are building what comes next.
+- Their competencies serve this motivation:
+- Augmented Reality / VR
+- Emerging tools for designing environments that do not yet exist.
+- Big Data
+- Identifying new patterns is how they discover what to evolve next.
+- Visualization
+- Interactive design tools let them see — and share — the future state.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 26
+- Dimension Preference mapping
+- AI Data Technician
+- Digital
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Digital World
+- This person lives in data. Their workspace is a screen populated with datasets, pipelines, and records — and they are deeply comfortable there. The digital environment is not abstract to them; it is as concrete and navigable as a production floor.
+- Their competencies are grounded in the digital:
+- Data Collection
+- Gathering raw data from sensors, APIs, and databases is where digital work begins.
+- Data Lineage
+- Tracking data as it flows through systems is how they navigate the digital environment.
+- AI Model Safety & Security Adherence
+- Protecting digital systems from unauthorized access is their responsibility.
+- HOW
+- Working Style  ·  Structured / Discrete
+- Before any model runs, this person has verified the inputs, corrected the gaps, and documented where every record came from. Precision is not a preference — it is a standard. They work through every step in sequence and leave nothing unconfirmed.
+- Their competencies reflect this instinct:
+- Data Verification
+- Checking accuracy and consistency is the discipline that underpins everything.
+- Data Labeling
+- Assigning structured tags to raw data is exacting, sequential work.
+- Model Calibration
+- Adjusting parameters step by step until the model performs correctly.
+- WHAT
+- Activities  ·  Building, Testing
+- This person builds the infrastructure that AI depends on and then tests it to make sure it holds. They construct data pipelines, prepare training datasets, and run model tests — because good outputs require proven inputs, and proven means tested.
+- Their competencies confirm this drive:
+- Data Collection
+- Building a reliable dataset is the first construction task of any AI project.
+- Model Test Implementation
+- Running validation tests is how they confirm the model is actually ready.
+- Model Utilization
+- Deploying and monitoring the model in production is the final proof of a build.
+- WHY
+- Motivators  ·  Efficiency, Operationalize
+- This person ends the day satisfied when the pipeline runs cleanly, the data is verified, and the model is processing without errors. They operationalize — turning a complex process into something reliable, repeatable, and fast.
+- Their competencies serve this motivation:
+- Data Verification
+- Clean data pipelines eliminate the errors that slow everything downstream.
+- Model Calibration
+- A well-calibrated model runs efficiently on unseen data — no surprises.
+- Data Ethics
+- Responsible data practices keep the operation trustworthy and compliant.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 27
+- Dimension Preference mapping
+- AI Implementation Specialist
+- Digital
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Digital World
+- This person works where systems meet people. Their digital environment includes AI platforms, deployment interfaces, dashboards, and the workflows of the teams who use them. They navigate technical and human systems with equal fluency.
+- Their competencies are grounded in the digital:
+- System Troubleshooting
+- Diagnosing AI system issues requires deep familiarity with the digital environment.
+- Data Visualization
+- Representing AI insights visually makes the digital world legible to others.
+- Design Structure Application
+- Planning how AI systems are organized and deployed is foundational digital work.
+- HOW
+- Working Style  ·  Collaborative / Interconnected
+- This person understands that an AI model sitting unused in a server room helps no one. They bridge the gap between what the model can do and what the team actually needs — working across departments, training users, and ensuring adoption is real.
+- Their competencies reflect this instinct:
+- Project Management
+- Coordinating people, timelines, and deliverables is how implementation succeeds.
+- Model Ethics — Unbiased Development
+- Fairness across groups requires perspectives from across the organization.
+- Data Analytics
+- Interpreting results for stakeholders bridges the technical and human worlds.
+- WHAT
+- Activities  ·  Optimizing, Designing
+- This person is not satisfied with a model that simply runs — they want it to run better. They tune parameters, analyze performance, redesign workflows, and ensure the AI is delivering the quality of output the organization actually needs.
+- Their competencies confirm this drive:
+- Model Tuning
+- Adjusting hyperparameters to improve accuracy is their core optimization task.
+- Model Training and Test Development
+- Refining how the model learns is how they raise the quality ceiling.
+- Data Wrangling
+- Cleaning and restructuring data improves what the model has to work with.
+- WHY
+- Motivators  ·  Efficacy & Accuracy, Improve
+- This person ends the day satisfied when the model is more accurate, errors are fewer, and the team is getting better answers. They care that the AI is doing what it was supposed to do — correctly, consistently, and in a way that can be verified.
+- Their competencies serve this motivation:
+- Safety — Risk Assessment
+- Identifying and mitigating risk ensures reliable, responsible outputs.
+- Model Tuning
+- Precision in parameter adjustment directly improves outcome accuracy.
+- Data Analytics
+- Measuring what the model produces is how improvement becomes visible.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 28
+- Dimension Preference mapping
+- AI Developer
+- Digital
+- How each dimension aligns to this pathway — and what the competencies reveal about the person.
+- WHERE
+- Environment  ·  Digital World
+- This person builds the digital world that others operate in. Their environment is architecture — cloud infrastructure, data pipelines, model deployment platforms, and security frameworks. They design the systems that everything else runs on.
+- Their competencies are grounded in the digital:
+- System Architecture and Lifecycle
+- Designing the underlying infrastructure is their primary domain.
+- Synthetic Data
+- Generating artificial datasets is a uniquely digital capability they command.
+- AI Model Policies
+- Setting the rules that govern how digital AI systems behave.
+- HOW
+- Working Style  ·  Strategic / Big Picture
+- This person does not just build what is asked — they envision what should exist. They design the architecture, write the algorithms, define the policies, and plan for how the system will evolve. They think in systems that outlast any single project or team.
+- Their competencies reflect this instinct:
+- Strategic Planning
+- Envisioning AI-driven value and setting organizational direction is their role.
+- AI Model Development
+- Creating intelligent systems from the ground up requires architectural thinking.
+- Risk Planning and Mitigation
+- Anticipating failures at scale requires thinking several moves ahead.
+- WHAT
+- Activities  ·  Scaling, Automating
+- This person builds systems that grow. They create models that adapt to new data, automate processes that previously required human judgment, and design deployment platforms that can serve thousands of users without degrading. Scale is built in, not bolted on.
+- Their competencies confirm this drive:
+- AI Model Development
+- Training models that generalize to new data is the engine of scale.
+- Advanced Data Analytics
+- Processing complex datasets efficiently is what makes automation trustworthy at scale.
+- System Architecture and Lifecycle
+- Containerized deployment and cloud infrastructure make scale operationally viable.
+- WHY
+- Motivators  ·  Innovation, Evolve
+- This person ends the day energized when something new exists that did not before — a model that solves a problem no one had automated, an architecture that opens capabilities the organization had not imagined. Evolution is the point, not the side effect.
+- Their competencies serve this motivation:
+- AI Model Policies
+- Defining ethical frameworks allows innovation to proceed responsibly.
+- Synthetic Data
+- Generating new data where real data does not exist unlocks previously impossible models.
+- Model Justification and ROI
+- Proving the value of innovation is how it earns the right to keep evolving.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 29
+- Scoring logic
+- Dimension
+- Answer A
+- Answer B
+- Answer C
+- Points
+- WHERE (Q1)
+- Physical
+- Digital
+- —
+- 2 pts
+- HOW (Q2)
+- Structured / Discrete, Details
+- Collaborative, Interconnectivity
+- Strategic / Undefined, Big Picture
+- 2 pts
+- WHAT (Q3)
+- Building, Testing
+- Optimizing, Designing
+- Scaling, Automating
+- 2 pts
+- WHY (Q4)
+- Efficiency, Operationalize
+- Efficacy & Accuracy, Improve
+- Innovation, Evolve
+- 2 pts
+- Maximum score: 8 points
+- (2 pts x 4 dimensions)
+- Highest scoring pathway wins outright.
+- All 6 pathways scored simultaneously.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 30
+- Interest Quiz Introduction
+- CTR + Click to Return to Appendix Table of Contents
+- This quiz is based on everyday interests and work preferences – no prior knowledge to manufacturing or technology is required.  As you answer, choose the option that best reflects what you enjoy and how you tend to approach a task.  You can expect to finish this quiz in about two minutes.
+
+## Slide 31
+- Personal Insight Narratives
+- Career Pathway
+- Personal Insight
+- Robotics Technician
+- You like to be close to the work - literally. You think in steps, value getting things right, and find real satisfaction in keeping systems running reliably. Hands-on problem-solving is where you thrive.
+- Robotics Specialist
+- You are a connector and improver. You work best when you can bring people together around a problem, analyze how a system is really performing, and redesign solutions that hit a higher standard.
+- Career Pathway
+- Personal Insight
+- Robotics Integrator
+- You think in systems and scale. You are energized by figuring out how something works in one place and making it work everywhere - and you are drawn to what is next, not just what is now.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 32
+- Personal Insight Narratives
+- Career Pathway
+- Personal Insight
+- AI Data Technician
+- You are detail-driven and methodical. You know that good outputs start with good inputs, and you take pride in building the clean, reliable foundations that everything else depends on.
+- AI Implementation Specialists
+- You are a collaborative problem-solver who bridges the gap between what AI can do and how people actually use it. You help teams get real, measurable value out of AI systems — and you care that it is done responsibly.
+- Career Pathway
+- Personal Insight
+- AI Developer
+- You are a builder and a visionary. You are energized by creating systems that do not just solve today's problems — they learn, adapt, and evolve. You think architecturally and you are always asking what comes next.
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 33
+- Sample Test Result
+- Question (Dimension)
+- Answer
+- Attribute Mapping
+- Q1 (Where)
+- A
+- Physical
+- Q2 (How)
+- A
+- Structured / Discrete, Details
+- Q3 (What)
+- A
+- Building, Testing
+- Q4 (Why)
+- A
+- Efficiency, Operationalize
+- Winner:  Robotics Technician (8 points)
+- Example score breakdown:
+- Robotics Technician
+- 8/8
+- ◀ Match
+- Robotics Specialist
+- 2/8
+- Robotics Integrator
+- 2/8
+- AI Data Technician
+- 6/8
+- AI Implementation Specialist
+- 0/8
+- AI Developer
+- 0/8
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 34
+- Sample Test Result
+- Question (Dimension)
+- Answer
+- Attribute Mapping
+- Q1 (Where)
+- B
+- Digital
+- Q2 (How)
+- B
+- Collaborative, Interconnectivity
+- Q3 (What)
+- B
+- Optimizing, Designing
+- Q4 (Why)
+- A
+- Efficiency, Operationalize
+- Winner:  AI Implementation Specialist ( 6 points)
+- Example score breakdown:
+- Robotics Technician
+- 2/8
+- ◀ Match
+- Robotics Specialist
+- 4/8
+- Robotics Integrator
+- 0/8
+- AI Data Technician
+- 4/8
+- AI Implementation Specialist
+- 6/8
+- AI Developer
+- 2/8
+- CTR + Click to Return to Appendix Table of Contents
+
+## Slide 35
+- Sample Test Result
+- Question (Dimension)
+- Answer
+- Attribute Mapping
+- Q1 (Where)
+- B
+- Digital
+- Q2 (How)
+- B
+- Collaborative, Interconnectivity
+- Q3 (What)
+- C
+- Scaling, Automating
+- Q4 (Why)
+- A
+- Efficiency, Operationalize
+- Winner:  AI Data Technician (4 points)
+- Resolved via Tie Breaker Question
+- Example score breakdown:
+- Robotics Technician
+- 2/8
+- ◀ Match
+- Robotics Specialist
+- 2/8
+- Robotics Integrator
+- 2/8
+- AI Data Technician
+- 4/8
+- AI Implementation Specialist
+- 4/8
+- AI Developer
+- 4/8
+- CTR + Click to Return to Appendix Table of Contents
