@@ -10,8 +10,8 @@ _Execution ledger for `ECOSYSTEM_PLAN.md` (the rationale doc; read it for the "w
 |---|---|---|
 | 1 | Asset rescue + this run sheet + D-035 bookkeeping | ✅ done 2026-07-02 |
 | 2 | Stand up `rc-design-system` (`@rc/ui`) | ✅ done 2026-07-02 (pushed, tag `v1`) |
-| 3 | Excavate Kayla's branches into `robotics_career` | ☐ next (prereq: Kayla) |
-| 4 | Harness port into the UX repo | ☐ |
+| 3 | Excavate Kayla's branches into `robotics_career` | ✅ done 2026-07-02 (pushed; + six-role content) |
+| 4 | Harness port into the UX repo | ☐ next |
 | 5 | Tokenize Kayla's ~90 hex literals | ☐ |
 | 6 | explore_floor pre-sync pass | ☐ |
 | 7 | Figma: dark variables + Interest Quiz file + capture | ☐ |
@@ -122,9 +122,16 @@ No `"private": true` (blocks `pnpm pack`), no `prepare` script (see Build), no `
 
 ---
 
-## Pass 3 — Excavate the branches into `robotics_career` — ~1 session
+## Pass 3 — Excavate the branches into `robotics_career` — ✅ (2026-07-02)
 
-**Prerequisite (Caelan, async): Kayla coordination** — her intent for the two branches, the "RC.org Prototype" Figma file key (nodes 815:3564 NavBar, 815:3201 homepage, 796:1949 competencies, 555:1262 sign-up panel, 360:1018 the June-22 quiz mockup), and her read on the Landing content questions (old four-category role tabs, "NOW FEATURING AI ROLES" hero badge) — mirror-the-live-site vs reconcile-to-three-roles is a content call for the handoff.
+Executed as specced, plus the now-unblocked content call. Repo at `Prototypes/robotics_career`, main @ `2a89b55` (3 commits), **pushed to `github.com/caelar/robotics_career` (private)**. Both flows click through console-clean on `@rc/ui` Mode A (zero local token authorship); lint + typecheck green; all 10 assets serve from `/figma-assets/`. Beyond the spec: the Landing role section now carries **ARM's six published roles** — the four legacy tabs collapsed to the three robotics roles (reference doc) plus the three AI roles (transcribed from Caelan's live-site screenshots into `robotics_career/docs/reference/ARM_AI_Role_Structure.md`), as a grouped tab rail (ROBOTICS / AI); role content extracted to `src/data/roles.ts`; `competencies.ts` names reconciled verbatim to ARM's site (ids stable). Fixed in passing: the stray `;;`, a JobCard button-in-button nesting, an import-spacing typo. Deliberate keeps: local `Icon.tsx` (Kayla's 5 names aren't in the packaged Icon — atoms-pass item), local montserrat-500 face (`@rc/ui` v1.1 candidate), the `us-atlas` CDN topojson. Session note: [2026-07-02](./sessions/2026-07-02-ecosystem-pass-3-robotics-career.md).
+
+**Kayla-prereq answers, now standing rulings (Caelan, 2026-07-02):**
+- The "RC.org Prototype" file key is **`k3AjijocJEmzrvlKTd9vJM`** — **pull-only** (design source and asset source). Code→Figma sync for the UX repo goes to a **new Figma file** stood up in the Figma pass, never into Kayla's file. (Amends this sheet's Pass 4/Pass 7 lines that named her file as capture target.)
+- Branch intent confirmed: the two branches were always meant to combine into one new prototype, and **the old branches close once their work is in the new repo** (supersedes the earlier leave-in-place-for-provenance note). Local archive tags `archive/homepage-and-explore` + `archive/sign-up-flow` exist in career_dashboard; the remote tag push + branch deletion await Caelan (git-push deny rule): `git push origin tag archive/homepage-and-explore tag archive/sign-up-flow && git push origin --delete homepage-and-explore sign-up-flow`.
+- Landing content: adapt to ARM's new six-role content (done, above). The quiz's own AI build (D-034) stays deferred; explore_floor's three-robotics-role hard rule is unchanged.
+
+**Original prerequisite note (for the record):** Kayla coordination — branch intent, the file key (nodes 815:3564 NavBar, 815:3201 homepage, 796:1949 competencies, 555:1262 sign-up panel, 360:1018 the June-22 quiz mockup), and the Landing content call (old four-category role tabs, "NOW FEATURING AI ROLES" hero badge).
 
 **Steps** (`ECOSYSTEM_PLAN.md` §3; the branches only work as a pair — disjoint file sets, each imports the other's files; merging is conflict-free):
 1. `git init -b main` in `robotics_career` (rename first if wanted — Caelan keeps the naming call), first commit = the already-rescued `public/figma-assets/` + MANIFEST.
@@ -144,7 +151,7 @@ No `"private": true` (blocks `pnpm pack`), no `prepare` script (see Build), no `
 Hand-port, best-of-both (`ECOSYSTEM_PLAN.md` §4; no template repo before handoff — extract that later as a post-handoff artifact):
 - From **career_dashboard**: `capture-figma.md` / `pull-figma.md` (FIGMA_MAP-aware generation) and `phase-check.md` (has the spec-consistency step), the 7-01 token-slimdown conventions (STATUS snapshot, DECISIONS index, guard hook — dashboard's shape + thresholds).
 - From **explore_floor**: the root `README.md` onboarding/harness sections (the dashboard has no root README).
-- Regenerate per-project: skills (a data-discipline skill for the inline mock content; an interaction skill only if a footgun appears), rubrics beyond design-system-compliance, the seeded per-project FIGMA_MAP (register the "RC.org Prototype" file key from Kayla here).
+- Regenerate per-project: skills (a data-discipline skill for the inline mock content; an interaction skill only if a footgun appears), rubrics beyond design-system-compliance, the seeded per-project FIGMA_MAP — register Kayla's "RC.org Prototype" file `k3AjijocJEmzrvlKTd9vJM` as **design source, pull-only**; the capture target is the new file from the Figma pass (Pass-3 ruling).
 - `settings.json` nearly as-is; no `.mcp.json` (D-012); skill packs are a human install (`npx skills add`, L-002).
 - Knowledge layer: STATUS.md, DECISIONS.md, sessions/, CLAUDE.md written fresh for the repo.
 
@@ -172,7 +179,7 @@ No sprawl campaign needed (audit verdict: 5 arbitrary Tailwind values repo-wide,
 2. **Create a new "Interest Quiz" Figma file** in the ARM team, subscribing to the DS library. RC-CC (`yGDi4yDtptKttboTYV8on7`) is dead — don't resuscitate.
 3. Port the dashboard's FIGMA_MAP-aware `/capture-figma` into this repo + seed a small per-project FIGMA_MAP (Pass 4 may have done the UX repo's; this is explore_floor's).
 4. Capture the final dark screens (results 5-screen set + quiz steps) into the Interest Quiz file.
-5. Register the "RC.org Prototype" file key (from Kayla) in the UX repo's FIGMA_MAP.
+5. Register the "RC.org Prototype" file key (`k3AjijocJEmzrvlKTd9vJM`, on hand since Pass 3) in the UX repo's FIGMA_MAP as design source, **pull-only**; stand up a separate new file as the UX repo's capture target (Pass-3 ruling: never capture into Kayla's file).
 6. Claude Design: reuse the dashboard's `.design-sync` tokens-and-styles pattern for the UX refinement loop, sourced from `@rc/ui`. Do-not-merge rule stands: the "RoboticsCareer.org Design System" project (`8686032d…`) is the live-site recreation — keep the kit vocabulary out of it. The esbuild real-atoms bundle stays the conscious skip.
 
 **Exit gates:** DS library carries the dark variables published; Interest Quiz file holds the captured screens; captures bind to variables, not raw values.
