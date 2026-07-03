@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-07-03
+
+### L-009 — The capture pipeline that ships: human clicks the Figma Chrome extension, the agent does the bind pass
+- **Context:** Second session where the MCP `generate_figma_design` HTML capture died (first: expired batch IDs + occlusion throttling, D-039's war story; now: stalled at the submit step even before the mitigations got a fair run). Caelan interrupted and captured all 9 staged states himself with the **official Figma Chrome extension** in minutes — same capture engine, working interface. The output was genuinely good: real text layers in the product fonts (Montserrat/Roboto, Material Icons as ligatures), honest glass alphas (4.3% captured ≈ the 4.5% token), modest layer trees (28–269 nodes/frame). What made them *handoff-grade* was the agent-side integration pass: rename to the FIGMA_MAP §2 naming contract, then a Plugin-API sweep binding every matchable paint to a library variable by a value→variable map with context rules (`#262626` opaque = Near Black per the header's own code; `#FFB81C` = ARM Gold in chrome, Role/Technician in role contexts; white text on an accent ancestor = the `Role/* On` alias). 502 paints bound, 9 raw keeps, zero visual drift.
+- **Do:** Split the round-trip by who's good at what: the human clicks capture (the extension is reliable; the MCP submit path is not in this environment), the agent stages app states beforehand and makes the result token-true afterward. Two Plugin-API gotchas from the bind sweep: **alpha-carrying variables** (the glass set) — reset the paint's own `opacity` to 1 when binding, or the variable's alpha multiplies against the captured alpha and the surface nearly vanishes; and **TEXT nodes need their fonts loaded** (`getStyledTextSegments(['fontName'])` → `loadFontAsync`) before reassigning fills. Also: derive the value→variable map from the *code's* token usage (grep the component), not from value equality alone — `#262626` was three different tokens by context.
+
 ## 2026-06-30
 
 ### L-008 — When the user cites a design reference, read the actual source via the design MCP, not screenshots

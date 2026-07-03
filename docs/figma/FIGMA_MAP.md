@@ -2,7 +2,7 @@
 
 The durable record of this repo's Figma mirror: file keys, node IDs, variable IDs/keys, and the naming contract that binds React components to Figma components and `@theme` tokens to Figma Variables. This is the repo's replacement for Code Connect (Org/Enterprise-only; we're on Education). The `/capture-figma` and `/pull-figma` commands read this file first. Shape mirrors `career_dashboard/docs/figma/FIGMA_MAP.md` (D-038).
 
-Status: **stood up in ecosystem Pass 7 (2026-07-02, D-038)** — the dark extension (24 variables + 2 effect styles) is created in the DS library, verified value-exact against `globals.css`, and **published** (Caelan's publish click, same day); the Foundations pages render the dark section; the Interest Quiz file lives in the ARM team project, subscribed to the library, and holds **reference stills of all 8 final screens** (§6). The editable, variable-bound screen rebuilds are the pass's recorded remainder (`ECOSYSTEM_RUN.md` Pass 7). **An ID here is ground truth; an empty cell means not yet built.**
+Status: **complete (2026-07-03, D-040)** — the dark extension (24 variables + 2 effect styles) is **published** in the DS library (stood up 2026-07-02, D-038, verified value-exact against `globals.css`); the Foundations pages render the dark section; and the Interest Quiz file holds **editable, variable-bound frames of all 9 final screens** (§6): captured with the official Figma Chrome extension, then bound to library variables via the MCP Plugin API (502 paints). The 2026-07-02 reference stills were deleted once each rebuild verified (the replace ruling, D-040). **An ID here is ground truth; an empty cell means not yet built.**
 
 ## 1. Files
 
@@ -75,17 +75,20 @@ The two `Role/* On` whites alias `Color/Neutral/On CTA` (value-identical `#FFFFF
 | Shadow/Dark Panel | `S:fba444b7168919821ddd192abdc2ab054f58a101,` | 0 20px 70px rgb(0 0 0 / 0.35) | `--shadow-dark-panel` |
 | Shadow/Dark Card | `S:f3414e178d9f871b31f2f6ad69ee9f42467890ef,` | 0 10px 40px rgb(0 0 0 / 0.28) | `--shadow-dark-card` |
 
-## 6. Reference captures — Interest Quiz file
+## 6. Screen captures — Interest Quiz file
 
-**Reference stills, captured 2026-07-02:** 1440×900 image-fill frames of the built app (production build, reduced-motion settled states; Playwright-driven, believable mixed score spread — Specialist top at 45%). They are visual ground truth of the final build, **not** editable frames — the editable, variable-bound screen rebuilds (paints bound to the §4 dark variables) are the pass's recorded remainder. When a rebuild lands, it goes beside its `Ref/*` twin and gets its own row here.
+**Editable, variable-bound frames, landed 2026-07-03 (D-040):** all 9 final screens at 1440×900, captured from the production preview with the **official Figma Chrome extension** (Caelan-driven, settled states, believable spread — Technician 82% / Specialist 80% / Integrator 80%), then integrated by an MCP Plugin-API pass: frames renamed to the §2 naming contract and **502 paints bound to library variables** — the §4 dark set plus `Color/Brand/ARM Gold` and `Color/Neutral/Near Black` from the light kit (the header chrome's own tokens), on-accent whites to the `Role/* On` aliases. Evidence: `get_variable_defs` per frame returns the `var()` vocabulary with zero raw hex where a token exists. The 2026-07-02 `Ref/*` stills were deleted after per-frame visual verification (the replace ruling; this supersedes the earlier keep-beside note).
 
-| Screen | Route / state | Page | Node ID |
-|---|---|---|---|
-| Landing | `/` | Quiz Flow | `7:2` (`Ref/Landing`) |
-| Intro question | `/flow` (question step) | Quiz Flow | `7:3` (`Ref/IntroQuestion`) |
-| Scene bucket-sort | `/flow` (scene step, settled) | Quiz Flow | `7:4` (`Ref/SceneSort`) |
-| Results — role cards | `/results` screen 1 | Results | `7:5` (`Ref/RoleCards`) |
-| Results — compare | `/results` screen 2 | Results | `7:6` (`Ref/Compare`) |
-| Results — bubble map | `/results` screen 3 | Results | `7:7` (`Ref/BubbleMap`) |
-| Results — constellation + job panel | `/results` screen 4 | Results | `7:8` (`Ref/Constellation`) |
-| Results — job overview | `/results` screen 5 | Results | `7:9` (`Ref/JobOverview`) |
+Deliberate raw keeps inside the captures: `#595959` (`--color-text-subtle`, a code token with no published library variable — same class as `--color-white`), one `white/10` fill on the map, the avatar's gold gradient + ambient-orb/bubble-glow gradients, and vector geometry (radar, bubbles, constellation) — code-owned per §2.
+
+| Screen | React component (frame name) | Route / state | Page | Node ID |
+|---|---|---|---|---|
+| Landing | `Landing` | `/` | Quiz Flow | `25:32` |
+| Intro question | `MCQuestion` | `/flow` (question step) | Quiz Flow | `25:62` |
+| Scene intro | `SceneSortView` | `/flow` (scene step, pre-sort) | Quiz Flow | `25:192` |
+| Scene bucket-sort | `BucketSort` | `/flow` (scene step, sorting) | Quiz Flow | `25:117` |
+| Results — role cards | `ResultsPanel` | `/results` screen 1 | Results | `25:253` |
+| Results — compare | `CompareView` | `/results` screen 2 | Results | `25:494` |
+| Results — bubble map | `ResultsMap` | `/results` screen 3 | Results | `25:881` |
+| Results — constellation + job panel | `ResultsConstellation` | `/results` screen 4 | Results | `25:965` |
+| Results — job overview | `JobOverview` | `/results` screen 5 | Results | `25:1183` |

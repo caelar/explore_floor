@@ -10,6 +10,7 @@ This is the highest-value handoff artifact: when ARM's dev team (or future-you) 
 
 _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-guard` hook checks the count). When you append a decision, add its row here._
 
+- **D-040** (07-03) — Pass 7 remainder closed: extension-captured, variable-bound rebuilds replace the stills (502 paints bound); steps 7–8 done; capture pipeline = human extension click + MCP bind pass
 - **D-039** (07-02) — Pass 7 executed: dark set published to the DS library, Interest Quiz file + FIGMA_MAP live, precedence flipped to the three-artifact model; captures are reference stills, editable rebuilds the remainder
 - **D-038** (07-02) — Pass 7 adopts the dashboard's DS conventions wholesale: FIGMA_MAP manifest, post-publication precedence flip, keeps/proposals sections
 - **D-037** (07-02) — Retire RC-CC as the token source: the `@theme` block is canonical, flow is code-outward (Pass 6 doc reconcile)
@@ -54,6 +55,15 @@ _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-
 - **D-001** (05-29) — Innovator archetype max = 27; scoring normalizes per archetype
 
 ---
+
+## 2026-07-03
+
+### D-040 — Pass 7 remainder closed: extension-captured, variable-bound rebuilds replace the stills; steps 7–8 done
+- **Decision:** Pass 7 is fully closed. (1) The Interest Quiz file's screens are now **9 editable, variable-bound frames** (the 8 planned states plus the `SceneSortView` scene-intro state Caelan added): captured by **Caelan with the official Figma Chrome extension** against the production preview at 1440×900, then integrated by an MCP Plugin-API pass — frames renamed to the §2 naming contract (`Landing`, `MCQuestion`, `SceneSortView`, `BucketSort`, `ResultsPanel`, `CompareView`, `ResultsMap`, `ResultsConstellation`, `JobOverview`) and **502 paints bound to library variables** (the FIGMA_MAP §4 dark set + `ARM Gold`/`Near Black` light primitives for the header chrome; on-accent whites to the `Role/* On` aliases). The `Ref/*` stills were **deleted** after per-frame visual verification — Caelan's replace ruling supersedes the §6 keep-beside contract. (2) Ledger step 7 was recognized as done cross-repo (the UX repo's D-007 capture-target session). (3) Step 8 landed: new Claude Design project **"RC.org Site — UX Refinement"** (`a28efdc8-57d4-4730-aec6-38e5141b19f5`) carrying the `@rc/ui` Mode B closure + `REFINEMENT_BRIEF.md`, with the `.design-sync/` trio (config/conventions/NOTES) in `robotics_career`.
+- **Why:** The MCP `generate_figma_design` pipeline stalled at the submit step a second time, and the extension is the same capture engine behind an interface that demonstrably works on this account (it produced clean layer trees: real text in the product fonts, honest glass alphas, 28–269 nodes per frame). Capture provenance doesn't matter to the exit gate — "captures bind to variables, not raw values" is met by the bind pass, whoever clicked capture. Replace-not-keep because the bound frames verified pixel-faithful against the live app, making the stills redundant weight in a handoff file.
+- **Alternatives:** Retry the MCP capture with the war-story mitigations (attempted; Caelan pulled the plug when it stalled and captured all 9 states himself in minutes). `use_figma` hand-builds from source (the D-007 method) — unnecessary once the extension output proved clean, and a multi-session job for 9 dark screens. Keep the stills beside the rebuilds — overruled by Caelan (replace).
+- **Deliberate keeps inside the captures:** `#595959` (`--color-text-subtle` — a code token never published to the library; same class as `--color-white`), one `white/10` map fill, gradients (gold avatar, ambient orbs, bubble glows), vector geometry. The score spread is Technician 82 / Specialist 80 / Integrator 80 (the stills' Specialist-45 spread wasn't reproduced; believable is the bar, per the capture command).
+- **Affected:** Interest Quiz file (9 frames, stills gone), `docs/figma/FIGMA_MAP.md` (preamble + §6 rewrite), `ECOSYSTEM_RUN.md` (Pass 7 row + exit gates all ✅, steps 7–8 annotated), `ROADMAP.md` §4.6 (done), `STATUS.md`, `LESSONS.md` L-009, `robotics_career/.design-sync/*` (new, uncommitted for Caelan). No `src/` changes; gates unaffected.
 
 ## 2026-07-02
 

@@ -1,0 +1,20 @@
+# 2026-07-03 — Ecosystem run Pass 7 remainder: variable-bound screen rebuilds, steps 7–8 closed (D-040)
+
+**Resume here.** Pass 7 is **fully closed** (D-040): the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak2`) holds all **9 final screens as editable, variable-bound frames** (the `Ref/*` stills are deleted — Caelan's replace ruling), ledger **step 7** was recognized as done cross-repo (the UX repo's D-007), and **step 8** landed (Claude Design project "RC.org Site — UX Refinement", `a28efdc8-57d4-4730-aec6-38e5141b19f5`, + `.design-sync/` in `robotics_career`). The ecosystem run's remaining work is only the **stretch pass**; the late-July handoff is the next milestone. Awaiting Caelan: the robotics_career commits/pushes (Pass-5 + D-007 docs + the new `.design-sync/`), the dashboard archive tags, and an eyeball pass on the Interest Quiz file.
+
+## What landed
+
+- **The 9 screen rebuilds (the D-039 remainder).** The MCP `generate_figma_design` pilot stalled again at the submit step, so the pipeline split (L-009): Caelan captured all 9 staged states with the **official Figma Chrome extension** against the production preview (1440×900) — the 8 planned states plus a `SceneSortView` scene-intro state he added — and the agent side did the integration: frames renamed to the FIGMA_MAP §2 contract (`Landing`, `MCQuestion`, `SceneSortView`, `BucketSort`, `ResultsPanel`, `CompareView`, `ResultsMap`, `ResultsConstellation`, `JobOverview`) and **502 paints bound to library variables** via one Plugin-API sweep per page. Bindings: the §4 dark set + `ARM Gold`/`Near Black` light primitives (the header's own tokens per `AppHeader.tsx`), on-accent whites → `Role/* On` aliases, context rules for the three-way `#262626` (Near Black opaque / Glass Panel @85% / on-gold ink). Deliberate keeps: `#595959` (`--color-text-subtle`, unpublished code token), one `white/10` map fill, gradients + vector geometry. Verified per frame: `get_variable_defs` returns the `var()` vocabulary, screenshots pixel-faithful (glass alphas render honestly). Spread: Technician 82 / Specialist 80 / Integrator 80. One capture artifact fixed (the JobOverview salary wrap). Node IDs: FIGMA_MAP §6.
+- **Step 7 tick.** Done cross-repo on 2026-07-02 by the UX repo's own D-007 session ("RC.org Site Prototype — Captures", `F3GRK7HNLLtG48vPosyXKw`, first sweep bound by publish-key import). The explore_floor ledger now records it; nothing was rebuilt here.
+- **Step 8.** New Claude Design project **"RC.org Site — UX Refinement"** with the `@rc/ui` **Mode B closure verbatim** (160-pair `tokens/tokens.css` diff-clean against the package; fonts incl. the UX repo's local montserrat-500 face; base + its button-cursor rule) plus `REFINEMENT_BRIEF.md` as the round's input brief. Return trip contracted as `refine/*.html` + `refine/CHANGES.md`. Repo-side `.design-sync/` trio (config/conventions/NOTES) written in `robotics_career`, **uncommitted for Caelan**. The live-rip project (`8686032d…`) untouched; current-state captures deferred to the refinement session itself.
+
+## Capture pipeline verdict (for the next capture session)
+
+Don't fight the MCP HTML-capture submit path — the working pipeline is: **agent stages states on the production preview → human clicks the extension's "Capture page" per state → agent bind pass makes it token-true** (L-009). Bind-pass gotchas: alpha-carrying variables (glass set) need the paint's own opacity reset to 1; TEXT nodes need fonts loaded before fills reassign; map values to variables by the *code's* token usage, not value equality alone.
+
+## State at end of session
+
+- explore_floor `main`: docs-only commit (FIGMA_MAP, ledger, ROADMAP §4.6, STATUS, DECISIONS D-040, LESSONS L-009, this note); `src/` + `index.html` untouched. Gates green at close: lint / typecheck / 82 unit / 3 E2E.
+- Figma: Interest Quiz file complete (Cover / Quiz Flow ×4 / Results ×5, all bound); DS library untouched this session.
+- robotics_career: `.design-sync/` added (3 files), uncommitted alongside the earlier Pass-5 + D-007 docs — all Caelan's to commit/push.
+- Servers stopped; scratchpad artifacts (screenshots, ds-bundle) session-only.
