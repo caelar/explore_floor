@@ -14,7 +14,7 @@ The dashboard already invented the model: real published component sets in the D
 
 | Pass | What | Status |
 |---|---|---|
-| 0 | Audit + promotion registry, ratified by Caelan | ☐ |
+| 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☐ |
 | 2 | Interest Quiz file — local components + instance swaps | ☐ |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
@@ -56,9 +56,9 @@ One shared top-nav component set replaces the three divergent navs. Anatomy: the
 - **`Auth=in`:** right slot = profile pill. Reference: the bound `Landing` capture in the Interest Quiz file (node `25:32`) already carries this state token-bound — extract the master from it rather than authoring from scratch.
 - **`Auth=out`:** right slot = `Resources ▾` + divider + `Sign In` text link + gold `Sign Up` pill CTA. Reference image: **`docs/reference/nav-logged-out-target.png`** (Caelan, 2026-07-03).
 - **Dashboard:** tier 1 of its two-tier nav is replaced by the set (`Auth=in`). Tier 2 (`SecondaryNav`) is **dashboard-only** — it stays its own published component, outside the mega set.
-- **robotics_career:** logged-out screens use `Auth=out`; logged-in state uses `Auth=in`. `TopNavV2`'s current design is retired by this ruling. Open question for Pass 0: the fate of its Light/OverHero scroll states (kept as an axis, or dropped).
+- **robotics_career:** logged-out screens use `Auth=out`; logged-in state uses `Auth=in`. `TopNavV2`'s current design is retired by this ruling. Pass 0 ruling (D-042): the over-hero idea survives as a **`Scroll=Solid/OverHero` axis** — OverHero is the Auth=out design with the bar background removed, lightly adapted for legibility over the hero photo (text/ink switches). Only shipped combo: Out+OverHero (the marketing Landing).
 - **Boundary:** only things that are literally the nav bar join the set. Page-local headers that aren't nav elements are not forced in.
-- Caelan will provide further screenshots and guidance at Pass 0 kickoff.
+- Nav guidance received at Pass 0 (2026-07-03): the reference image plus the OverHero ruling above is the full spec; no further screenshots needed.
 
 ## Pass specs
 
@@ -80,10 +80,14 @@ One shared top-nav component set replaces the three divergent navs. Anatomy: the
 - **Known debts folded in** (don't re-discover them): the dashboard widget-Card instancing gap; DEF-012's CardHead action slot; the Icon union + robotics_career raw spans (D-006); robotics_career's four-way button divergence; explore_floor's two unpublished code tokens.
 - **Pipeline:** this is Plugin-API restructuring work, proven at the 502-paint scale (L-009). Frame-to-component extraction and instance swapping are heavier than paint binding — treat each pass as a full session.
 
-## Open questions (settle at Pass 0)
+## Pass 0 outcomes (settled 2026-07-03, D-042)
 
-1. Buttons: one set with a Shape axis, or two sets (rectangular CTA + pill)? Caelan leans two.
-2. Chip consolidation: which sizes/tones survive; do `MetaChip`/`CountBadge`/`NewBadge` fold into the consolidated `Chip` or stay distinct?
-3. `TopNavV2` Light/OverHero scroll states: an axis on the mega set, or dropped?
-4. Where the registry lives in `rc-design-system` (`REGISTRY.md` vs a `conventions.md` section).
-5. Awaiting from Caelan: the additional nav screenshots/guidance he offered.
+The registry itself is `rc-design-system/REGISTRY.md` — ratified by Caelan. The five open questions resolved:
+
+1. **Buttons: two sets.** `CtaButton` (rectangular: Style=Filled/Outline × Color=Teal/Gold × Size=lg/md, shipped combos only; the 6px-vs-8px radius call settles at the Pass 1 master build) + `PillButton` (Surface=Light/Dark × Fill=Gold/Teal/Outline). Evidence: the dashboard is rectangular 6px, the quiz results chrome and *every* robotics_career CTA are 36px pills. The kit-verbatim Figma `Button` (`10:14`) stays as a kit-provenance reference, not-for-app-use.
+2. **Chip consolidation: fold `MetaChip` + `GoldChip` into one shared `Chip`** (the 5 shipped combos + a Show Icon boolean; code already retired GoldChip into `Chip tone="gold"`). `CountBadge`/`NewBadge` stay distinct (18px nav micro-badges nested in the published `SecondaryNav/Pill`); `StatusPill` untouched.
+3. **`TopNavV2` scroll states: kept** as the mega set's `Scroll=Solid/OverHero` axis (Caelan overruled the drop recommendation — the marketing hero treatment is a real designed state). Spec in the nav section above.
+4. **Registry home: `REGISTRY.md`** at the rc-design-system root, with a pointer line in `conventions.md`.
+5. **Nav guidance: received** — the reference image + the OverHero ruling; no further screenshots.
+
+Audit facts recorded for later passes: Icon union = **61 names** (47 packaged + 10 explore_floor + 4 robotics_career live extras; dead `wrench` and dup `close` dropped); explore_floor's `ProgressBar`/`SegmentedControl` are orphaned at zero call sites (deletion candidates); the reference image's Sign Up CTA is a rounded-rect gold button (a `CtaButton`, not a pill).
