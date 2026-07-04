@@ -10,6 +10,8 @@ This is the highest-value handoff artifact: when ARM's dev team (or future-you) 
 
 _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-guard` hook checks the count). When you append a decision, add its row here._
 
+- **D-044** (07-04) — Componentization Pass 1 shared tier built; TopNav model reshaped (reverses D-042 ruling 3): OverHero dropped, `Secondary` promoted to an independent axis (dashboard `In+On` / quiz `In+Off` / marketing `Out+Off`), search centered to nav width, secondary padding aligned, `Resources`/`Sign In` → List Row; dashboard boards swapped to `In+On`
+- **D-043** (07-04) — CtaButton corner radius settles at 8px (`radius/md`, token-bound); the code ripple is one line (`CtaButton.tsx` `rounded-sm` → `rounded-md`, at Pass 4)
 - **D-042** (07-03) — Componentization Pass 0 done: promotion registry ratified (`rc-design-system/REGISTRY.md`) — two button sets (CtaButton + PillButton), chip fold (MetaChip/GoldChip retire), nav OverHero kept as a Scroll axis, Icon union sized at 61 names
 - **D-041** (07-03) — Figma componentization run ratified: nav mega set (centered search wins, Auth in/out), button standardization, chip consolidation, form-family promotion, Icon union in code, quiz tier local, no dark-mode restructure; run sheet = `COMPONENTIZATION_RUN.md`
 - **D-040** (07-03) — Pass 7 remainder closed: extension-captured, variable-bound rebuilds replace the stills (502 paints bound); steps 7–8 done; capture pipeline = human extension click + MCP bind pass
@@ -57,6 +59,20 @@ _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-
 - **D-001** (05-29) — Innovator archetype max = 27; scoring normalizes per archetype
 
 ---
+
+## 2026-07-04
+
+### D-044 — Componentization Pass 1: shared tier built; the TopNav model is reshaped at build time
+- **Decision:** Pass 1's shared tier is built in the DS library — the **TopNav mega set** (`636:40`), **PillButton** (`686:2`), and the **form family** (`Forms` page) — and the **TopNav model diverges from the D-042 spec** on Caelan's live direction: (1) **OverHero dropped** (the `Scroll` axis is gone); (2) **`Secondary` is an independent variant axis, not tied to Auth** — the secondary nav is dashboard-only, so `Auth`{In,Out} × `Secondary`{On,Off} with 3 shipped combos (`In+On` dashboard, `In+Off` quiz, `Out+Off` marketing); (3) the published `SecondaryNav` (`260:2`) **nests as an instance** inside `In+On` rather than being duplicated or bundled as markup; (4) the search is **centered to true nav width** (equal FILL columns wrap the logo and right slot); (5) the nested secondary's **edge padding = 16px** to match the top bar; (6) `Resources`/`Sign In` use the **List Row** style. The 3 dashboard boards were swapped to `In+On` (each board's separate SecondaryNav deleted).
+- **Why:** Caelan on OverHero: "makes little to no sense in the current prototype, and after revision it will make none" — a single unused marketing state didn't earn an axis. On Secondary: a logged-in *quiz* user (the Guest pill) has no secondary, so presence tracks the surface, not auth — an independent axis models the three real surfaces exactly, and nesting the existing SecondaryNav keeps one source of truth. Centering and padding were legibility/alignment fixes he called out directly. The dashboard swap to `In+On` (vs keeping a separate SecondaryNav) realizes the "dashboard uses the variant" intent and verified clean (active pill + counts intact).
+- **Alternatives:** Keep OverHero as ratified (rejected by Caelan); fold Secondary into Auth so `In` always carries it (rejected — quiz breaks it); a boolean `Show Secondary` property (viable, but a whole tier is structural and Caelan asked for a variant; the code-composition caveat is identical either way); swap boards to `In+Off` + keep the separate SecondaryNav (rejected — wouldn't use the variant, and In+On tested clean).
+- **Affected:** DS library masters (TopNav/PillButton/form family); Dashboard file `7t46ROAv93lIQRspgaslgz` (3 board navs swapped); reverses D-042 ruling 3 and narrows its SecondaryNav stance. Pending: Caelan's Publish №2, retirement of old masters `262:30`/`184:8`/`183:2`, FIGMA_MAPs ×3. FIGMA_MAP must note `Secondary=On` maps to composing `<SecondaryNav/>` in code, not a `<TopNav>` prop. Chip swap was moot — zero MetaChip/GoldChip instances in the dashboard file.
+
+### D-043 — CtaButton corner radius settles at 8px
+- **Decision:** The dashboard-6px vs quiz-8px radius question left open in D-042 settles at **8px** (`radius/md`), token-bound on the built `CtaButton` masters.
+- **Why:** Caelan's call at the Pass-1 plan review; 8px reads as the shared rounded-rect CTA geometry across surfaces.
+- **Alternatives:** 6px (the dashboard's prior value) — rejected.
+- **Affected:** `CtaButton` set (`608:7`, built previous chat, radius verified bound this session). One-line code ripple deferred to Pass 4: `CtaButton.tsx` `rounded-sm` → `rounded-md` (17 call sites already extracted).
 
 ## 2026-07-03
 

@@ -15,7 +15,7 @@ The dashboard already invented the model: real published component sets in the D
 | Pass | What | Status |
 |---|---|---|
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
-| 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☐ |
+| 1 | Shared tier — build/reconcile component sets in the DS library, publish | ◐ 2026-07-04 (D-043/D-044) — built + published №1 + dashboard swapped; pending Publish №2, retire, FIGMA_MAPs |
 | 2 | Interest Quiz file — local components + instance swaps | ☐ |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
@@ -91,3 +91,16 @@ The registry itself is `rc-design-system/REGISTRY.md` — ratified by Caelan. Th
 5. **Nav guidance: received** — the reference image + the OverHero ruling; no further screenshots.
 
 Audit facts recorded for later passes: Icon union = **61 names** (47 packaged + 10 explore_floor + 4 robotics_career live extras; dead `wrench` and dup `close` dropped); explore_floor's `ProgressBar`/`SegmentedControl` are orphaned at zero call sites (deletion candidates); the reference image's Sign Up CTA is a rounded-rect gold button (a `CtaButton`, not a pill).
+
+## Pass 1 outcomes (2026-07-04, D-043/D-044)
+
+Built in the DS library (`afi5Q5nFtcnT9HJ04Cbylg`), all token-clean (raw-hex audit across 10 masters found only the pre-existing `CardDismiss` white):
+
+- **TopNav mega set** (`636:40`) — **reshaped from the D-042 spec** (D-044): OverHero dropped; `Secondary` is an **independent axis** (not tied to Auth); `Auth`{In,Out} × `Secondary`{On,Off}, 3 shipped combos — `In+On` dashboard / `In+Off` quiz / `Out+Off` marketing. `SecondaryNav` (`260:2`) nests as an instance in `In+On`. Search centered to nav width; nested-secondary padding = 16px; Resources/Sign In on List Row.
+- **PillButton** (`686:2`) — `Surface`{Light,Dark} × `Fill`{Gold,Teal,Outline}, 5 shipped combos, `radius/full`, `Label` prop.
+- **Form family** (`Forms` page `694:2`) — FormField (+`Show Icon`), OptionRow set (4 variants: Checkbox/Radio × Checked/Unchecked, teal accent), OAuthButton, HintRow, StepFooter (+`Show Skip`); all with TEXT props.
+- **CtaButton** radius = **8px** (D-043, token-bound); **Chip** + **CardHead** slot verified from the previous chat.
+
+**Sanctioned Figma-leads-code divergences** (enumerate at Pass 4): dashboard board TopNav instances swapped to `In+On` (each board's separate `SecondaryNav` deleted; the two-tier is now one component instance) — verified clean (active pill + counts intact). **Chip swap was moot** — zero `MetaChip`/`GoldChip` instances anywhere in the dashboard file. `Secondary=On` maps to composing `<SecondaryNav/>` in code, **not** a `<TopNav>` prop.
+
+**Pending to close Pass 1:** Caelan's **Publish №2**; **retire** old masters `TopNav 262:30` / `MetaChip 184:8` / `GoldChip 183:2` (keep kit-verbatim `10:14`/`14:2`/`16:2` provenance); **FIGMA_MAPs ×3**.
