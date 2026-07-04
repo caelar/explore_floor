@@ -94,3 +94,12 @@ Deliberate raw keeps inside the captures: `#595959` (`--color-text-subtle`, a co
 | Results — bubble map | `ResultsMap` | `/results` screen 3 | Results | `25:881` |
 | Results — constellation + job panel | `ResultsConstellation` | `/results` screen 4 | Results | `25:965` |
 | Results — job overview | `JobOverview` | `/results` screen 5 | Results | `25:1183` |
+
+## 7. DS library — shared components this repo owns (Pass 1, D-042/D-044)
+
+Componentization Pass 1 promoted the shared **TopNav** and **PillButton** sets into the DS library (`afi5Q5nFtcnT9HJ04Cbylg`) — explore_floor's `AppHeader` is the nav reference (centered search wins the top tier everywhere). Keys are for `importComponentByKeyAsync`. The full DS component manifest lives in `career_dashboard/docs/figma/FIGMA_MAP.md` §6; these two rows are the ones this repo owns.
+
+| Component | Node ID | Page | Key | Variants / props / code map |
+|---|---|---|---|---|
+| TopNav (mega set) | `636:40` | Shell Chrome | `f69105be…` | `Auth`{In,Out} × `Secondary`{On,Off}, **3 shipped combos** (D-044). `Auth=In, Secondary=Off` (`664:73`, key `ac27fc11…`) = this repo's `AppHeader.tsx` — quiz nav: centered search + Guest profile pill, no secondary. `In+On` (`ded8be8c…`) = dashboard two-tier (nests a `SecondaryNav` instance; `Secondary=On` maps to composing `<SecondaryNav/>` below `<TopNav/>`, **not** a `<TopNav>` prop). `Out+Off` (`0b0673a3…`) = marketing/logged-out (Resources ▾ · Sign In · gold Sign Up = nested `CtaButton` Filled/Gold/lg). Search centered to true nav width; Resources/Sign In → `List Row`. Supersedes the retired dashboard `TopNav` (`262:30`) and robotics_career's local `TopNavV2`. OverHero was dropped (D-044, was a D-042 axis). |
+| PillButton (set) | `686:2` | Buttons | `ce4f8c7d…` | `Surface`{Light,Dark} × `Fill`{Gold,Teal,Outline}, **5 shipped combos** (no Dark/Teal); Label TEXT. Radius `radius/full`, all 36h (no Size axis). Light labels → `List Row` px32; Dark Gold → `Item Title`, Dark Outline → `Body/Default` (16). The pill-shaped CTA family (the quiz results chrome + every robotics_career pill); rectangular CTAs use `CtaButton` (career_dashboard §6). |
