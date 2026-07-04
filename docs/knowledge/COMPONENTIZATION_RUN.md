@@ -15,7 +15,7 @@ The dashboard already invented the model: real published component sets in the D
 | Pass | What | Status |
 |---|---|---|
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
-| 1 | Shared tier — build/reconcile component sets in the DS library, publish | ◐ 2026-07-04 (D-043/D-044) — built + published №1 + dashboard swapped; pending Publish №2, retire, FIGMA_MAPs |
+| 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; only Caelan's final republish (to push the deletions) remains |
 | 2 | Interest Quiz file — local components + instance swaps | ☐ |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
@@ -103,4 +103,4 @@ Built in the DS library (`afi5Q5nFtcnT9HJ04Cbylg`), all token-clean (raw-hex aud
 
 **Sanctioned Figma-leads-code divergences** (enumerate at Pass 4): dashboard board TopNav instances swapped to `In+On` (each board's separate `SecondaryNav` deleted; the two-tier is now one component instance) — verified clean (active pill + counts intact). **Chip swap was moot** — zero `MetaChip`/`GoldChip` instances anywhere in the dashboard file. `Secondary=On` maps to composing `<SecondaryNav/>` in code, **not** a `<TopNav>` prop.
 
-**Pending to close Pass 1:** Caelan's **Publish №2**; **retire** old masters `TopNav 262:30` / `MetaChip 184:8` / `GoldChip 183:2` (keep kit-verbatim `10:14`/`14:2`/`16:2` provenance); **FIGMA_MAPs ×3**.
+**Pass 1 closed 2026-07-04:** old masters `TopNav 262:30` / `MetaChip 184:8` / `GoldChip 183:2` **retired** (kit-verbatim `10:14`/`14:2`/`16:2` provenance kept); **FIGMA_MAPs ×3 done** (career_dashboard §6 `782a7be`, explore_floor §7 `7c098e9`, robotics_career `e1b3b0a`). New DS keys: CtaButton `c3215d14…`, Chip `a51417db…`, TopNav mega set `f69105be…`, PillButton `ce4f8c7d…`, FormField `88dd923c…`, OptionRow `d31a14f7…`, OAuthButton `431abdb5…`, HintRow `5067f0a9…`, StepFooter `b3c1d94b…`. **Only Caelan's final DS-library republish remains** (to push the 3 deletions as deprecations). Next core pass: **Pass 2 — Interest Quiz file**.
