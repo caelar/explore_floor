@@ -32,6 +32,8 @@ Status: **complete (2026-07-03, D-040)** — the dark extension (24 variables + 
 
 Published into the library's existing collections following its own invariant: raw values → `Primitives`, `var()` references → `Semantic` (every Semantic variable is a `VARIABLE_ALIAS`, never a raw value). Every variable carries an `extension:` lineage description (the kit has no dark ramp), narrow scopes (no `ALL_SCOPES`), and `var()`-wrapped WEB code syntax matching the code token exactly. Collection totals after the append: Primitives 89, Semantic 16.
 
+> **Later append (2026-07-03, `robotics_career` D-008):** the UX/marketing repo added 4 more `Primitives` rows (Frost, On Glass Soft, Data Accent, Radius/2xl) + the `Shadow/1 Up` effect style, same lineage discipline — totals now **93 Primitives / 16 Semantic, 6 effect styles**. Those rows live in `robotics_career/docs/figma/FIGMA_MAP.md` §4; this file's dark-extension registry below is unaffected.
+
 **`Primitives` (`VariableCollectionId:6:2`, mode `Value` `6:0`) — 17 added:**
 
 | Variable | ID | Key | Value | WEB code syntax |
