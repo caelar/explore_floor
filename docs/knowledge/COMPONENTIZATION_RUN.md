@@ -16,7 +16,7 @@ The dashboard already invented the model: real published component sets in the D
 |---|---|---|
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; only Caelan's final republish (to push the deletions) remains |
-| 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☐ (D-046) — handoff spec below; a Pass-1 amendment (library, ecosystem-wide), needs Caelan's republish |
+| 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☑ 2026-07-05 (D-046) — built + verified in the DS library; both sets carry additive leading/trailing icon slots (defaults off), token-bound per variant; **only Caelan's republish remains** (bundles with the pending Pass-1 deletions). Outcomes below. |
 | 2 | Interest Quiz file — local components + instance swaps | ◑ 2026-07-05 (D-045) — 5 local masters + shared nav/CtaButton swapped, all 9 frames pixel-faithful; SignalBars / RoleTabs / icon-pills / cards deferred to **Pass 2b** |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
@@ -141,3 +141,18 @@ Componentized the 9 Interest Quiz frames (`pjgrRJS5YYII1iciW7Pak2`). Full manife
 **Carve-out (D-046):** the compare **"Compare with ● Specialist ⌄" dropdown** (code `CompareTargetMenu.tsx`) is **not a PillButton** — different shape/size/behavior (a select with a color swatch + chevron). It stays a distinct **quiz-local** master built in Pass 2b, excluded from this icon work.
 
 **Glyph map for the Pass-2b swaps** (which icon each results control needs, once the slots exist): Compare roles → lead `compare_arrows`; Skip to map → trail `arrow_forward`; Back to Technician → lead `arrow_back`; Set as target role → lead `star`; Back to Technician careers → trail `arrow_forward`; Role overview (CtaButton) → trail `arrow_forward`.
+
+## Pass 1b outcomes (2026-07-05, D-046)
+
+Built in the DS library (`afi5Q5nFtcnT9HJ04Cbylg`, page `Buttons`). Both sets gained **four additive component properties** — `Show Icon Left` (BOOL, default **false**), `Icon Left` (TEXT, Material Icons ligature), `Show Icon Right` (BOOL, default **false**), `Icon Right` (TEXT) — plus a leading Material Icons text node inserted before the Label and a trailing one after it, in **every** variant.
+
+- **PillButton** (`686:2`) — 5 variants, prop keys `Show Icon Left#728:0` / `Icon Left#728:6` / `Show Icon Right#728:12` / `Icon Right#728:18`. Icon glyph 18px; `itemSpacing` set **0 → 8** so the gap appears when an icon shows (label-only rendering is unchanged — a hidden auto-layout child adds no gap or width).
+- **CtaButton** (`608:7`) — 5 variants, prop keys `Show Icon Left#731:0` / `Icon Left#731:6` / `Show Icon Right#731:12` / `Icon Right#731:18`. Icon size **tracks the Size axis** (lg 18 / md 16); `itemSpacing` was already 8.
+- **Token binding (L-009 clone method):** each icon's fill is a clone of its own variant's Label `fills`, so the bound variable carries over verbatim — verified label == iconLeft == iconRight for all 10 variants (PillButton: Ink `6:8` / On CTA `370:3` / Near Black `134:73` / Text On Dark `513:4`; CtaButton: On CTA `370:3` / Ink `6:8` / Near Black `134:73`). `get_variable_defs` on both sets shows only tokens — no raw hex introduced.
+- **Extraction (L-009):** treatment (size 18–19, gap 8, Material Icons Regular, fill-follows-label) lifted from the bound results pills `25:297` "Compare roles" (lead `compare_arrows`) and `25:303` "Skip to map" (trail `arrow_forward`) in the quiz file, not authored from scratch.
+
+**Non-breaking (verified):** icons-off masters are pixel-identical to the pre-edit baseline for both sets. Instance census: **zero** PillButton instances anywhere (so its add cannot break a consumer); CtaButton has exactly **one** dashboard instance (`325:1202` "Sign Up", Board Parts) and **one** quiz instance (`93:83` Landing "Start the story"). Both consumers are remote instances frozen on the last-published version until republish, so they show no change now; a post-republish simulation (a fresh Gold/lg instance, Label "Sign Up", icon props at default) renders label-only at 120×36 with the Label override preserved and `iconLeft`/`iconRight` hidden — pixel-identical to the dashboard baseline. Adding a leading sibling does not reset overrides (Figma maps overrides by node ID, not index).
+
+**Remaining gate:** Caelan's DS-library republish — it now bundles the still-pending Pass-1 old-master deletions **and** these icon slots in one publish. After that, **Pass 2b** swaps the results toolbar pills → PillButton and the icon-CTAs → CtaButton per the glyph map above.
+
+**Carve-out held:** the compare dropdown (`CompareTargetMenu`) stays a distinct quiz-local master (Pass 2b) — untouched here.
