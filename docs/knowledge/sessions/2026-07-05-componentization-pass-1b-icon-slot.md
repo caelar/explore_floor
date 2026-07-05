@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-05 · **Decision:** D-046 · **Run sheet:** `COMPONENTIZATION_RUN.md` (Pass 1b) · **Manifest:** `docs/figma/FIGMA_MAP.md` §7 (PillButton) + `career_dashboard/docs/figma/FIGMA_MAP.md` §6 (CtaButton)
 
-> **Resume here.** Pass 1b is **built and verified in the DS library** (`afi5Q5nFtcnT9HJ04Cbylg`, page `Buttons`) — docs committed, no push. Both shared button sets now carry **additive leading + trailing icon slots**, defaults off, token-bound per variant: **PillButton** (`686:2`) and **CtaButton** (`608:7`). Nothing changed for existing consumers (verified). **The one remaining gate is Caelan's DS-library republish** — it now bundles the still-pending Pass-1 old-master deletions **and** these icon slots. After the republish, **Pass 2b** swaps the results toolbar pills → PillButton and the icon-CTAs → CtaButton (glyph map in `COMPONENTIZATION_RUN.md`). The compare dropdown (`CompareTargetMenu`) stays carved out — a quiz-local master for Pass 2b, untouched here.
+> **Resume here.** Pass 1b is **built, verified, and PUBLISHED** (`afi5Q5nFtcnT9HJ04Cbylg`, page `Buttons`) — docs committed, no push. Both shared button sets now carry **additive leading + trailing icon slots**, defaults off, token-bound per variant: **PillButton** (`686:2`) and **CtaButton** (`608:7`). Nothing changed for existing consumers (verified). **Caelan republished the DS library 2026-07-05** (bundled the pending Pass-1 old-master deletions + these icon slots); the published sets return the icon props on import-by-key, so **Pass 2b is fully unblocked**. Pass 2b swaps the results toolbar pills → PillButton and the icon-CTAs → CtaButton (glyph map in `COMPONENTIZATION_RUN.md`), builds the deferred local tail (SignalBars / RoleTabs / cards / compact variants), and builds the compare dropdown (`CompareTargetMenu`) as a distinct quiz-local master (carved out of the icon work here).
 
 ## What shipped
 
@@ -32,4 +32,6 @@ Four additive component properties per set, plus a Material Icons text node befo
 
 ## Next
 
-**Caelan republishes the DS library** (bundles Pass-1 deletions + these icon slots) → **Pass 2b**: swap the results toolbar pills → PillButton and icon-CTAs → CtaButton per the glyph map, plus the deferred local tail (SignalBars, RoleTabs, cards, compact variants) and the compare dropdown as a quiz-local master.
+**Republished 2026-07-05** (Caelan; bundled the Pass-1 deletions + these icon slots). Post-publish check: `importComponentSetByKeyAsync` on `c3215d14…` (CtaButton) and `ce4f8c7d…` (PillButton) returns the four icon-slot props each — Pass 2b is unblocked. Existing consumer instances (dashboard `325:1202`, quiz `93:83`) still render label-only and keep their overrides; they pick up the additive slots when their file accepts the library update, and the swaps import the republished sets by key regardless.
+
+**Pass 2b** (new chat): swap the results toolbar pills → PillButton and icon-CTAs → CtaButton per the glyph map (set `Show Icon Left/Right` + `Icon Left/Right` on each swapped instance), plus the deferred local tail (SignalBars, RoleTabs, cards, compact variants) and the compare dropdown as a quiz-local master.
