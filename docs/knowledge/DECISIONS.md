@@ -10,6 +10,7 @@ This is the highest-value handoff artifact: when ARM's dev team (or future-you) 
 
 _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-guard` hook checks the count). When you append a decision, add its row here._
 
+- **D-046** (07-05) — Componentization: the PillButton/CtaButton icon-slot add becomes its own **Pass 1b** (shared-library amendment + republish, separate from the quiz-file Pass 2b); the compare dropdown (`CompareTargetMenu`) ruled a distinct element, not a PillButton
 - **D-045** (07-05) — Componentization Pass 2 (partial): Interest Quiz `Components` page + 5 local masters (Chip/StatBox/ChoiceRow/TierBadge/HeroArrow) + shared TopNav ×9 (guest pill converges to Guest/"G") + CtaButton ×1 swapped, all 9 frames pixel-faithful; SignalBars / RoleTabs / cards deferred and the results icon-pills blocked on a PillButton/CtaButton icon-slot add → Pass 2b
 - **D-044** (07-04) — Componentization Pass 1 shared tier built; TopNav model reshaped (reverses D-042 ruling 3): OverHero dropped, `Secondary` promoted to an independent axis (dashboard `In+On` / quiz `In+Off` / marketing `Out+Off`), search centered to nav width, secondary padding aligned, `Resources`/`Sign In` → List Row; dashboard boards swapped to `In+On`
 - **D-043** (07-04) — CtaButton corner radius settles at 8px (`radius/md`, token-bound); the code ripple is one line (`CtaButton.tsx` `rounded-sm` → `rounded-md`, at Pass 4)
@@ -62,6 +63,13 @@ _Every decision, newest first — one row per heading, kept 1:1 (the `knowledge-
 ---
 
 ## 2026-07-04
+
+### D-046 — Componentization: icon-slot add is Pass 1b (a shared-tier amendment); compare dropdown is a distinct element
+
+- **Decision:** The `PillButton`/`CtaButton` icon-slot add (needed to unblock the results icon-pills, D-045) becomes its own **Pass 1b** — a shared-library amendment run as a separate session, **not** folded into the quiz-file Pass 2b. Additive leading + trailing glyph slots (`Show Icon` booleans default off), token-bound per variant; handoff spec in `COMPONENTIZATION_RUN.md`. Separately, the compare **"Compare with ● Specialist ⌄" dropdown** (`CompareTargetMenu.tsx`) is ruled a **distinct element, not a PillButton** — different shape/size/behavior — so it stays a quiz-local master built in Pass 2b, excluded from the icon work.
+- **Why:** The icon slot edits the DS library, which the dashboard + robotics_career also consume — ecosystem blast radius + a republish dependency. Folding that into a quiz-file pass would break the run's one-surface-per-pass discipline and re-gate Pass 2b on Caelan. Keeping 1b separate lets Pass 2b's local work (SignalBars / RoleTabs / cards / compact variants) run unblocked now, with the icon-pill/CTA swaps folding in after the republish. The dropdown's shape/size/behavior differ enough that forcing it onto the pill set would be unfaithful.
+- **Alternatives:** roll the icon slot into 2b (rejected — hides an ecosystem-wide library change inside a file pass and re-gates 2b on the republish); make the dropdown a PillButton variant (rejected — wrong shape/behavior, it's a select).
+- **Affected:** `COMPONENTIZATION_RUN.md` (Pass 1b ledger row + handoff spec), `FIGMA_MAP.md` §8 (dropdown carve-out), the future Pass-1b session (library) + Pass-2b session (quiz). Refines D-045.
 
 ### D-045 — Componentization Pass 2 (partial): Interest Quiz file componentized; guest-nav converges; icon-slot blocker surfaced
 

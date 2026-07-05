@@ -16,6 +16,7 @@ The dashboard already invented the model: real published component sets in the D
 |---|---|---|
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; only Caelan's final republish (to push the deletions) remains |
+| 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☐ (D-046) — handoff spec below; a Pass-1 amendment (library, ecosystem-wide), needs Caelan's republish |
 | 2 | Interest Quiz file — local components + instance swaps | ◑ 2026-07-05 (D-045) — 5 local masters + shared nav/CtaButton swapped, all 9 frames pixel-faithful; SignalBars / RoleTabs / icon-pills / cards deferred to **Pass 2b** |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
@@ -121,4 +122,22 @@ Componentized the 9 Interest Quiz frames (`pjgrRJS5YYII1iciW7Pak2`). Full manife
 - **Results toolbar pills → PillButton** and **icon-CTAs ("Continue", "Role overview") → CtaButton** — **blocked:** both sets are label-only; the targets carry icons. Needs a Pass-1 library change (add an icon slot), then swap.
 - **RoleTabs** (2 strips) — `RoleTab` item with `Active` variant; **QuestionCard / SceneCard** — low capture repetition; **BridgeProgramRow** — not in the captured frames; **compact StatBox/SignalBars** (JobSidePanel) — a `Size=Compact` follow-up.
 
-**Next:** Pass 2b (the deferred tail; the icon-pill work pairs with a Pass-1 PillButton/CtaButton icon-slot add), then **Pass 3 — Captures file**.
+**Next:** **Pass 1b** (the shared-tier icon-slot add — handoff spec below) → Caelan republishes → **Pass 2b** (the deferred local tail + the icon-pill/CTA swaps) → **Pass 3 — Captures file**. Pass 1b and Pass 2b are separate sessions on purpose (1b edits the shared library and needs a republish; 2b's local work is unblocked and can run anytime).
+
+## Pass 1b — shared-tier icon slot (handoff spec, D-046)
+
+**Why:** Pass 2 found `PillButton` and `CtaButton` are **label-only**, blocking every icon-bearing results pill/CTA. This is a Pass-1 (shared-library) gap, carved out from Pass 2b because it edits the DS library (`afi5Q5nFtcnT9HJ04Cbylg`) — ecosystem blast radius (the dashboard + robotics_career consume these too) and it needs Caelan's republish. Run it as its own session, before the Pass-2b pill swaps. Work happens **in the library file, not the quiz file.**
+
+**Scope:** add optional **leading + trailing** icon slots to the two sets, strictly additive so existing consumers are untouched.
+- **PillButton** — set `686:2`, page Buttons, key `ce4f8c7df3677e2207d65b47c100fa7caa2eb705`; 5 variants (Surface×Fill).
+- **CtaButton** — set `608:7`, page Buttons, key `c3215d14a0449df2c90fb66fb0c272d6b0822e18`; 5 variants (Style×Color×Size).
+
+**Property model** (mirror the Chip `Show Icon` precedent): per set add `Show Icon Left` (BOOL, **default false**), `Icon Left` (TEXT — Material Icons ligature), `Show Icon Right` (BOOL, **default false**), `Icon Right` (TEXT). Insert a Material Icons text node before the Label (leading) and after it (trailing) in each variant's auto-layout; bind visibility to the booleans, characters to the glyph props, and **the icon fill to the same variable as that variant's label** so the icon ink follows the gold/teal/outline label per variant. Extract the icon treatment (size ~16–18, gap) from a bound results pill (`25:297` "Compare roles", `25:303` "Skip to map") rather than authoring from scratch (L-009).
+
+**Non-breaking check (required):** with defaults false, screenshot a dashboard board and a robotics_career screen before/after the library edit — confirm no visible change and no reset instance overrides.
+
+**Verify + document:** screenshot the PillButton/CtaButton variants with icons toggled on (leading + trailing); `get_variable_defs` shows the icon fills token-bound. Update the FIGMA_MAP rows (career_dashboard §6 CtaButton, explore_floor §7 PillButton) with the new props. **Then Caelan republishes** (pairs with the still-pending Pass-1 final republish).
+
+**Carve-out (D-046):** the compare **"Compare with ● Specialist ⌄" dropdown** (code `CompareTargetMenu.tsx`) is **not a PillButton** — different shape/size/behavior (a select with a color swatch + chevron). It stays a distinct **quiz-local** master built in Pass 2b, excluded from this icon work.
+
+**Glyph map for the Pass-2b swaps** (which icon each results control needs, once the slots exist): Compare roles → lead `compare_arrows`; Skip to map → trail `arrow_forward`; Back to Technician → lead `arrow_back`; Set as target role → lead `star`; Back to Technician careers → trail `arrow_forward`; Role overview (CtaButton) → trail `arrow_forward`.

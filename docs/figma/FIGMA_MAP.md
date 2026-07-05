@@ -136,7 +136,8 @@ Componentization Pass 2 turned the 9 flat variable-bound frames (§6) into real 
 ### Deferred tail (Pass 2b — nothing destroyed; these remain faithful original frames)
 
 - **SignalBars** (4 occ: `25:330/581/739/1031`) — needs responsive-width tracks + a `Highlight` variant axis (Technician-gold / Specialist-teal) + fixed-width fill recompute; extract-and-swap is lossy as-is.
-- **Results toolbar pills → PillButton, and icon-CTAs "Continue"/"Role overview" → CtaButton** — **BLOCKED:** `PillButton` and `CtaButton` are label-only (no icon slot); every target here carries an icon. Needs a Pass-1 library change (add an icon/leading-glyph slot), then swap.
+- **Results toolbar pills → PillButton, and icon-CTAs "Continue"/"Role overview" → CtaButton** — **BLOCKED on Pass 1b:** `PillButton` and `CtaButton` are label-only; every target carries an icon. The shared-tier icon-slot add is **Pass 1b** (`COMPONENTIZATION_RUN.md`, D-046) → Caelan republish → then these swap in Pass 2b. Glyph-per-pill map lives in the Pass 1b spec.
+- **Compare "● Specialist ⌄" dropdown** (`25:544`, code `CompareTargetMenu.tsx`) — **a distinct element, NOT a PillButton** (D-046): different shape/size, a select with a color swatch + chevron. Build as a **quiz-local** master in Pass 2b; excluded from the Pass-1b icon work.
 - **RoleTabs** (`25:396` 2-tab, `25:1253` 3-tab) — needs a `RoleTab` item with `Active` variant; variable tab count.
 - **QuestionCard** (`25:96`), **SceneCard** (`25:149/224`) — low capture repetition; deferred.
 - **BridgeProgramRow** — not present in the captured frames (the Skills tab state isn't captured); N/A this pass.
