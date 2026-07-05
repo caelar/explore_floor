@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-07-05
+
+### L-010 — Building Figma variant sets over existing instances: `combineAsVariants` resets sizing, and imported variables hide from `getLocalVariablesAsync`
+- **Context:** Pass 2b (D-047) promoted StatBox to a `Size` set and built three net-new variant masters (SignalBar/RoleTab/CompareTargetMenu) by cloning bound occurrences. Two Plugin-API traps cost round-trips. (1) **`combineAsVariants` silently reset the layout-sizing overrides on the 8 existing StatBox instances** — they had been `FILL` (flex-1) in their 2-col rows; after the combine they reverted toward the master's FIXED width and *overlapped* on the real frame (the isolated-row screenshot rendered blank because the glass fills are near-transparent, hiding the bug). It also surfaced that the Default value paragraph was a hardcoded `FIXED 322`, not `FILL`, so text overflowed once the box width changed. (2) **The `role-*` swatch variables are DS-library imports**, so `getLocalVariablesAsync('COLOR').find(v => v.name === 'Color/Role/Technician')` returned `null`; passing that null into `setBoundVariableForPaint(paint,'color',null)` didn't throw — it *unbound* the swatch and left the raw color, so all three CompareTargetMenu variants rendered the same teal.
+- **Do:** After any `combineAsVariants` on a component that already has instances, **re-verify every instance's `layoutSizingHorizontal/Vertical` on a real dark-backed frame** and restore `FILL` where the design is flex; check inner text/paragraph nodes are `FILL` (+ `textAutoResize='HEIGHT'`) not a stale fixed px. To bind imported/remote variables, resolve them by **ID** (`getVariableByIdAsync`) or walk the variable's collection (`getVariableCollectionByIdAsync` → `variableIds`), never by name via `getLocalVariablesAsync`. Build one variant fully (with props) from a bound occurrence, then `clone()` it per variant and change only the delta — clones preserve prop keys, so `combineAsVariants` merges Label/Value into one shared property. And screenshot dark components full-frame (or dark-backed): on the transparent canvas, active near-white text is invisible and faint text looks *darker*, inverting the emphasis you're checking. Generalizes L-009's paint-binding gotchas to variant-set construction.
+
 ## 2026-07-03
 
 ### L-009 — The capture pipeline that ships: human clicks the Figma Chrome extension, the agent does the bind pass

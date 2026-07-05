@@ -17,7 +17,7 @@ The dashboard already invented the model: real published component sets in the D
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; **final republish landed 2026-07-05** (pushed the 3 old-master deletions as deprecations, bundled with Pass 1b) |
 | 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☑ 2026-07-05 (D-046) — built + verified + **published**; both sets carry additive leading/trailing icon slots (defaults off), token-bound per variant; the republished sets expose the icon props (importable by key). Outcomes below. |
-| 2 | Interest Quiz file — local components + instance swaps | ◑ 2026-07-05 (D-045) — 5 local masters + shared nav/CtaButton swapped, all 9 frames pixel-faithful; SignalBars / RoleTabs / icon-pills / cards deferred to **Pass 2b** |
+| 2 | Interest Quiz file — local components + instance swaps | ☑ 2026-07-05 (D-045 + **D-047**) — Pass 2: `Components` page + 5 local masters + shared nav ×9 / CtaButton ×1. **Pass 2b (D-047): tail closed** — results icon-pill/CTA swaps ×7 onto the icon-slotted shared sets, + 3 net-new masters (`SignalBar` / `RoleTab` / `CompareTargetMenu`) + `StatBox Size=Compact`; 20 instances, all frames pixel-faithful, masters token-clean. Outcomes below. |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
 | 5 | (Conditional) Dashboard file reconciliation | ☐ |
@@ -122,7 +122,7 @@ Componentized the 9 Interest Quiz frames (`pjgrRJS5YYII1iciW7Pak2`). Full manife
 - **Results toolbar pills → PillButton** and **icon-CTAs ("Continue", "Role overview") → CtaButton** — **blocked:** both sets are label-only; the targets carry icons. Needs a Pass-1 library change (add an icon slot), then swap.
 - **RoleTabs** (2 strips) — `RoleTab` item with `Active` variant; **QuestionCard / SceneCard** — low capture repetition; **BridgeProgramRow** — not in the captured frames; **compact StatBox/SignalBars** (JobSidePanel) — a `Size=Compact` follow-up.
 
-**Next:** **Pass 1b** (the shared-tier icon-slot add — handoff spec below) → Caelan republishes → **Pass 2b** (the deferred local tail + the icon-pill/CTA swaps) → **Pass 3 — Captures file**. Pass 1b and Pass 2b are separate sessions on purpose (1b edits the shared library and needs a republish; 2b's local work is unblocked and can run anytime).
+**Next:** **Pass 1b** (the shared-tier icon-slot add — handoff spec below) → Caelan republishes → **Pass 2b** (the deferred local tail + the icon-pill/CTA swaps) → **Pass 3 — Captures file**. Pass 1b and Pass 2b are separate sessions on purpose (1b edits the shared library and needs a republish; 2b's local work is unblocked and can run anytime). _(Pass 1b done D-046; **Pass 2b done D-047** — outcomes below; next core pass is Pass 3.)_
 
 ## Pass 1b — shared-tier icon slot (handoff spec, D-046)
 
@@ -156,3 +156,25 @@ Built in the DS library (`afi5Q5nFtcnT9HJ04Cbylg`, page `Buttons`). Both sets ga
 **Republished 2026-07-05.** Caelan's DS-library republish landed — it bundled the pending Pass-1 old-master deletions **and** these icon slots in one publish. Verified post-publish: importing `CtaButton` (`c3215d14…`) and `PillButton` (`ce4f8c7d…`) by key returns the icon-slot props (`Show Icon Left/Right` + `Icon Left/Right`), so **Pass 2b is fully unblocked**. Existing consumer instances (dashboard `325:1202`, quiz `93:83`) still render label-only and keep their overrides — they gain the additive slots when their file accepts the library update; the Pass-2b swaps import the republished sets by key regardless. **Pass 2b** now swaps the results toolbar pills → PillButton and the icon-CTAs → CtaButton per the glyph map above.
 
 **Carve-out held:** the compare dropdown (`CompareTargetMenu`) stays a distinct quiz-local master (Pass 2b) — untouched here.
+
+## Pass 2b outcomes (2026-07-05, D-047)
+
+Closed the D-045 deferred tail in the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak2`) — all local (ruling 7), no republish, nothing needed from Caelan. Sequenced icon-swaps-first per Caelan. Full manifest: `docs/figma/FIGMA_MAP.md` §8. Gates: every affected frame re-screenshotted pixel-faithful; `get_variable_defs` on all four masters returns only tokens; Components-page census clean (no orphan temp nodes).
+
+**A — Results icon-pill / icon-CTA swaps (7):** the raw `<button>`/`<span>` toolbar controls swapped to the Pass-1b icon-slotted shared instances, glyphs per the map above:
+- `PillButton Dark/Outline`: Compare roles (`108:32`, lead `compare_arrows`), Skip to map (`110:138`, trail `arrow_forward`), Back to Technician (`111:141`, lead `arrow_back`), Back to Technician careers (`111:149`, trail `arrow_forward`).
+- `PillButton Dark/Gold`: Set as target role (`111:145`, lead `star`).
+- `CtaButton Filled/Teal/lg`: Role overview (`112:171`, trail `arrow_forward`) — set `FILL` width + fixed 54h so the side panel keeps its footprint.
+- `CtaButton Filled/Gold/lg`: Flow "Continue" (`114:105`, trail `arrow_forward`, SceneSortView) — the last deferred icon-CTA.
+- The conditional "Explore careers" gold pill is **not** present in the settled captures (only "Skip to map" renders) → no swap. The two Flow **Back** buttons stay deferred (not in the glyph map).
+
+**Three net-new local masters** (page `Components` `84:96`), each extracted L-009 from a token-bound occurrence:
+- **`SignalBar`** (`127:175`) — `Highlight`{Technician,Specialist,Off} × `Label`/`Value`. A single bar row: label (`w-20`) + responsive FILL track (`#1b1b1b`, radius 6, clips) + `%` value. Active = role accent fill (Technician `role-technician` gold / Specialist `role-specialist` teal, bound) + `text-on-dark` label/value; Off = `#595959` raw + `text-on-dark-faint` faint. Fill width is **data**, so per instance the fill child is resized to the captured px (not a variant). Built from `25:332` (Tech gold) + `25:750` (Spec teal) + `25:341` (Off). **No Integrator-active variant** — never appears in captures (ruling 9). Swapped 12 bars across `25:330` / `25:581` / `25:739` / `25:1031`.
+- **`RoleTab`** (`131:238`) — `State`{Active,Inactive} × `Label`. Active = 2px `text-on-dark` underline + `text-on-dark` Bold; Inactive = transparent 2px border + `text-on-dark-faint` Medium (Montserrat 16). One item master serves both the 2-tab strip (`25:396`) and the identical 3-tab strip (`25:1253`); swapped inside the existing `Tab:margin` wrappers, 5 tabs total.
+- **`CompareTargetMenu`** (`134:263`, the D-046 carve-out) — `Target`{Technician,Specialist,Integrator} (swatch color, bound to `role-*`) × `Label`/`TargetName`. `rounded-md` glass-fill-strong trigger: "Compare with" (faint) + role swatch dot + target name (Montserrat Bold, `text-on-dark`) + `expand_more` chevron. Closed state only. Swapped `25:544` → `136:238` (Target=Specialist). _(Gotcha: the `role-*` variables are remote/imported, so `getLocalVariablesAsync` can't find them by name — resolve via the variable's collection (`getVariableCollectionByIdAsync`) or `getVariableByIdAsync`, then `setBoundVariableForPaint`.)_
+
+**StatBox → set** (`117:7`): promoted the Pass-2 master to a `Size`{Default,Compact} axis (Compact = `px-space-3 py-space-2`, value 20px). Swapped the 2 JobSidePanel compacts (`118:153`/`118:158`); restored `FILL` on the 8 Default instances (the `combineAsVariants` reset their width overrides) and made the Default value paragraph/text `FILL` (were a hardcoded FIXED 322) so the box is responsive — a structural repair.
+
+**Sanctioned Figma-leads-code divergences (Pass 4):** Continue 139×46 → CtaButton lg 120×36; Role overview 354×54 → CtaButton lg full-width + 54h override; Set-as-target `px-space-4`→`px-space-3` (−15px); RoleTab inactive underline black→transparent (identical on dark). See `FIGMA_MAP.md` §8 divergences #4–#7.
+
+**Deferred tail after 2b:** QuestionCard (`25:96`), SceneCard (`25:149/224`), BridgeProgramRow (not captured), the two Flow Back buttons (`25:188`/`25:249`). Next core pass: **Pass 3 — Captures file**.

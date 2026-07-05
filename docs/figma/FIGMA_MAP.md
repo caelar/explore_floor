@@ -104,21 +104,24 @@ Componentization Pass 1 promoted the shared **TopNav** and **PillButton** sets i
 | TopNav (mega set) | `636:40` | Shell Chrome | `f69105be…` | `Auth`{In,Out} × `Secondary`{On,Off}, **3 shipped combos** (D-044). `Auth=In, Secondary=Off` (`664:73`, key `ac27fc11…`) = this repo's `AppHeader.tsx` — quiz nav: centered search + Guest profile pill, no secondary. `In+On` (`ded8be8c…`) = dashboard two-tier (nests a `SecondaryNav` instance; `Secondary=On` maps to composing `<SecondaryNav/>` below `<TopNav/>`, **not** a `<TopNav>` prop). `Out+Off` (`0b0673a3…`) = marketing/logged-out (Resources ▾ · Sign In · gold Sign Up = nested `CtaButton` Filled/Gold/lg). Search centered to true nav width; Resources/Sign In → `List Row`. Supersedes the retired dashboard `TopNav` (`262:30`) and robotics_career's local `TopNavV2`. OverHero was dropped (D-044, was a D-042 axis). |
 | PillButton (set) | `686:2` | Buttons | `ce4f8c7d…` | `Surface`{Light,Dark} × `Fill`{Gold,Teal,Outline}, **5 shipped combos** (no Dark/Teal); Label TEXT. Radius `radius/full`, all 36h (no Size axis). Light labels → `List Row` px32; Dark Gold → `Item Title`, Dark Outline → `Body/Default` (16). The pill-shaped CTA family (the quiz results chrome + every robotics_career pill); rectangular CTAs use `CtaButton` (career_dashboard §6). **Pass 1b (D-046, 2026-07-05):** optional leading + trailing icon slots added — `Show Icon Left#728:0` / `Icon Left#728:6` / `Show Icon Right#728:12` / `Icon Right#728:18` (BOOL **default off** + Material Icons ligature TEXT). An 18px Material Icons Regular glyph sits before/after the Label; `itemSpacing` set 0→8 for the gap (label-only rendering unchanged since a hidden child adds no gap); each icon fill is cloned from its variant's label so the ink follows Gold/Teal/Outline per variant (Near Black / On CTA / Ink / Text On Dark). Strictly additive — defaults off, zero existing PillButton instances anywhere so no consumer risk. Extracted from the bound results pills `25:297`/`25:303` (L-009). **Published 2026-07-05** (import-by-key returns the icon props). |
 
-## 8. Interest Quiz file — local components + instance swaps (Pass 2, partial, 2026-07-05, D-045)
+## 8. Interest Quiz file — local components + instance swaps (Pass 2 + 2b, 2026-07-05, D-045/D-047)
 
-Componentization Pass 2 turned the 9 flat variable-bound frames (§6) into real instances. Local **quiz-vocabulary** masters live on a new **`Components`** page (`84:96`) in the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak2`); shared chrome swaps to **published library instances** (§7 + career_dashboard §6). Masters were extracted by cloning a token-bound occurrence (never authored from scratch, L-009), so bound paints carried over. **This pass is partial** — the clean, most-repeated elements are done; a variant-heavy / icon-blocked tail is deferred (below). All 9 frames stay per-frame pixel-faithful; the three normalizations below are sanctioned Figma-leads-code divergences to close at Pass 4.
+Componentization Pass 2 turned the 9 flat variable-bound frames (§6) into real instances. Local **quiz-vocabulary** masters live on a new **`Components`** page (`84:96`) in the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak2`); shared chrome swaps to **published library instances** (§7 + career_dashboard §6). Masters were extracted by cloning a token-bound occurrence (never authored from scratch, L-009), so bound paints carried over. **Pass 2b (D-047) closed the tail:** the results icon-pills/CTAs swapped onto the Pass-1b icon-slotted shared sets, and the three variant-heavy masters (`SignalBar`, `RoleTab`, `CompareTargetMenu`) plus a StatBox `Size=Compact` variant were built and swapped. All 9 frames stay per-frame pixel-faithful; every master is token-clean (`get_variable_defs` returns only tokens; the sanctioned `#595959` SignalBar-Off keep has no library primitive). The normalizations below are sanctioned Figma-leads-code divergences to close at Pass 4.
 
 ### Local masters built (page `Components` `84:96`)
 
 | Component | Node ID | Props | Swapped instances | Extracted from |
 |---|---|---|---|---|
 | **Chip** (glass results chip) | `84:99` | `Label#84:0` (TEXT) | 4 — answer chips in ResultsPanel + CompareView (`25:369/620/778/781`) | `25:369` "Help a sibling get ready" |
-| **StatBox** | `87:105` | `Label#87:0`, `Value#87:1` (TEXT) | 8 full-size — Salary/Education pairs in ResultsPanel, CompareView ×2, JobOverview | `25:423` Salary |
+| **StatBox** (set, 2b) | `117:7` | `Size`{Default,Compact} + `Label`, `Value` (TEXT) | 8 full-size (Default) + **2 compact** (`118:153` Salary, `118:158` Education — JobSidePanel) | `25:423` Salary (Default); compact from `25:1069` |
 | **ChoiceRow** | `90:80` | `Label#90:0` (TEXT) | 5 — MC answer rows + bucket-sort rows (`25:108/111/174/177/180`) | `25:174` "That's me" |
 | **TierBadge** | `94:134` | `Label#94:0` (TEXT) | 1 — "Entry level" (JobOverview `25:1248`) | `25:1248` |
 | **HeroArrow** | `94:139` | — (icon-only; glyph override) | 2 — carousel Prev/Next (`25:311` chevron_left, `25:388` chevron_right) | `25:311` |
+| **SignalBar** (set, 2b) | `127:175` | `Highlight`{Technician,Specialist,Off} + `Label`, `Value` (TEXT) | **12** — 3 bars × 4 groups (`25:330` ResultsPanel, `25:581/739` CompareView cols, `25:1031` compact side panel); fill px set per instance | `25:332` (Tech-active gold) + `25:750` (Spec-active teal) + `25:341` (Off) |
+| **RoleTab** (set, 2b) | `131:238` | `State`{Active,Inactive} + `Label` (TEXT) | **5** — 2-tab strip `25:396` (The role / Skills…) + 3-tab strip `25:1253` (Job overview / Skills & competencies / How you fit); swapped inside the `Tab:margin` wrappers | `25:397` (active tab) |
+| **CompareTargetMenu** (set, 2b) | `134:263` | `Target`{Technician,Specialist,Integrator} (swatch) + `Label`, `TargetName` (TEXT) | **1** — CompareView "Compare with ● Specialist ⌄" (`25:544` → `136:238`), closed state | `25:544` |
 
-`ChoiceRow` / `QuestionCard` / `SceneCard` have **no React component yet** (registry `ChoiceRow`); Figma leads code here (extract at Pass 4). `SignalBars` / `StatBox` / `RoleTabs` / `Chip` / `HeroArrow` / `BridgeProgramRow` are real components (`src/screens/Results/cards/*`).
+`ChoiceRow` / `QuestionCard` / `SceneCard` have **no React component yet** (registry `ChoiceRow`); Figma leads code here (extract at Pass 4). `SignalBars` / `StatBox` / `RoleTabs` / `Chip` / `HeroArrow` / `BridgeProgramRow` / `CompareTargetMenu` are real components (`src/screens/Results/cards/*`). **SignalBar** models a single bar row (label `w-20` + responsive FILL track `#1b1b1b` + `%` value); the fill width is data, so it is a per-instance resize (not a variant), and the `Highlight` axis carries only the shipped tones (no Integrator-active, ruling 9). **RoleTab** — one item master serves both strips (`RoleTabs.tsx` 2-tab and the identical inline `JobOverview.tsx` 3-tab strip). **StatBox** `Size=Compact` = `px-space-3 py-space-2`, value 20px (vs Default 24px); the Default value paragraph/text were made FILL (were a hardcoded FIXED 322) so the box is responsive.
 
 ### Shared library instances swapped in
 
@@ -126,22 +129,27 @@ Componentization Pass 2 turned the 9 flat variable-bound frames (§6) into real 
 |---|---|---|---|
 | **TopNav** (§7) | `Auth=In, Secondary=Off` (`664:73`) | `f69105beb3f62971c41307ab576e5685f6fb80b2` | **9** — every frame's nav header; profile pill set to **Guest / initial "G"** |
 | **CtaButton** (career_dashboard §6) | `Style=Filled, Color=Gold, Size=lg` | `c3215d14a0449df2c90fb66fb0c272d6b0822e18` | **1** — Landing "Start the story" (`25:59`) |
+| **PillButton** (§7, 2b) | `Surface=Dark, Fill=Outline` | `ce4f8c7d…` | **4** — Compare roles (`108:32`, lead `compare_arrows`), Skip to map (`110:138`, trail `arrow_forward`), Back to Technician (`111:141`, lead `arrow_back`), Back to Technician careers (`111:149`, trail `arrow_forward`) |
+| **PillButton** (§7, 2b) | `Surface=Dark, Fill=Gold` | `ce4f8c7d…` | **1** — Set as target role (`111:145`, lead `star`) |
+| **CtaButton** (career_dashboard §6, 2b) | `Style=Filled, Color=Teal, Size=lg` | `c3215d14…` | **1** — Role overview (`112:171`, trail `arrow_forward`; FILL width + 54h footprint preserved) |
+| **CtaButton** (career_dashboard §6, 2b) | `Style=Filled, Color=Gold, Size=lg` | `c3215d14…` | **1** — Flow "Continue" (`114:105`, trail `arrow_forward`; SceneSortView) |
 
 ### Sanctioned Figma-leads-code divergences (close at Pass 4)
 
 1. **Nav guest pill.** The shared `TopNav In+Off` nests the dashboard's `ProfileMenu` (24px avatar + text initial), so the quiz nav converges from `AppHeader.tsx`'s person-icon "Guest" pill (28px) to an initial-avatar **"G" / "Guest"**. Reconcile `AppHeader.tsx` (adopt the initial avatar, or add a guest/icon mode to `ProfileMenu`). Caelan-approved 2026-07-05.
 2. **Landing CTA.** "Start the story" normalized from the bespoke 149×46 to `CtaButton` lg **120×36** (radius `radius/md` 8px). Reconcile `Button.tsx`/Landing at Pass 4 (parallels the dashboard 6px→8px normalization).
 3. **Compare Education StatBox.** The `CompareColumn` Education box (a `font-body` bulleted `<ul>`) normalized onto the shared `StatBox`; its Value is an instance override (Roboto 16/22, bound to `Color/Dark/Text On Dark Muted` `b712127b…`). Minor: bullets render muted rather than faint.
+4. **Continue CTA (2b).** Flow "Continue" normalized from bespoke 139×46 to `CtaButton Filled/Gold/lg` **120×36** (parallels the Landing normalization, #2).
+5. **Role overview CTA (2b).** Normalized from bespoke 354×54 onto `CtaButton Filled/Teal/lg`, but **kept full-width** (instance `FILL` = 354 in its panel) and the panel's **54px footprint** (instance height override; the standard lg is 36) so the side panel does not reflow.
+6. **Set-as-target pill (2b).** The inert gold `<span>` (`bg-arm-gold px-space-4`) normalized to `PillButton Dark/Gold`; 15px narrower (`px-space-4`→`px-space-3`).
+7. **RoleTab inactive underline (2b).** The captured inactive tab used a black (invisible-on-dark) 2px border; the `RoleTab State=Inactive` master uses a transparent 2px border (renders identically, semantically `border-transparent`).
 
-### Deferred tail (Pass 2b — nothing destroyed; these remain faithful original frames)
+### Deferred tail (still open after Pass 2b — nothing destroyed; these remain faithful original frames)
 
-- **SignalBars** (4 occ: `25:330/581/739/1031`) — needs responsive-width tracks + a `Highlight` variant axis (Technician-gold / Specialist-teal) + fixed-width fill recompute; extract-and-swap is lossy as-is.
-- **Results toolbar pills → PillButton, and icon-CTAs "Continue"/"Role overview" → CtaButton** — **UNBLOCKED (Pass 1b published 2026-07-05, D-046):** `PillButton` (§7) + `CtaButton` (career_dashboard §6) now carry `Show Icon Left/Right` + `Icon Left/Right` (defaults off), verified importable by key. **Pass 2b** does the swaps per the glyph-per-pill map in the Pass 1b spec (`COMPONENTIZATION_RUN.md`).
-- **Compare "● Specialist ⌄" dropdown** (`25:544`, code `CompareTargetMenu.tsx`) — **a distinct element, NOT a PillButton** (D-046): different shape/size, a select with a color swatch + chevron. Build as a **quiz-local** master in Pass 2b; excluded from the Pass-1b icon work.
-- **RoleTabs** (`25:396` 2-tab, `25:1253` 3-tab) — needs a `RoleTab` item with `Active` variant; variable tab count.
 - **QuestionCard** (`25:96`), **SceneCard** (`25:149/224`) — low capture repetition; deferred.
-- **BridgeProgramRow** — not present in the captured frames (the Skills tab state isn't captured); N/A this pass.
-- **Compact variants:** JobSidePanel StatBox `25:1069/1078` (171×84) and SignalBars `25:1031` (compact) — a `Size=Compact` follow-up.
+- **BridgeProgramRow** — not present in the captured frames (the Skills tab state isn't captured); N/A.
+- **Flow "Back" buttons** (`25:188` SceneSortView, `25:249` BucketSort) — outline/ghost back controls, **not in the Pass-2b glyph map**; a `CtaButton Outline` (or ghost) candidate, deferred to keep scope tight. Note for Pass 4 code reconcile.
+- **SignalBar Integrator-active tone** — intentionally **not built** (ruling 9): Integrator never appears as the top/target role in the captured frames, so the `Highlight` axis ships Technician/Specialist/Off only. Add if an Integrator-top capture ever lands.
 
 ### Token decision (publish-or-keep, per Pass 2 gate)
 
