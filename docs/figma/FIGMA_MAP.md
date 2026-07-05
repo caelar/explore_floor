@@ -103,3 +103,45 @@ Componentization Pass 1 promoted the shared **TopNav** and **PillButton** sets i
 |---|---|---|---|---|
 | TopNav (mega set) | `636:40` | Shell Chrome | `f69105be…` | `Auth`{In,Out} × `Secondary`{On,Off}, **3 shipped combos** (D-044). `Auth=In, Secondary=Off` (`664:73`, key `ac27fc11…`) = this repo's `AppHeader.tsx` — quiz nav: centered search + Guest profile pill, no secondary. `In+On` (`ded8be8c…`) = dashboard two-tier (nests a `SecondaryNav` instance; `Secondary=On` maps to composing `<SecondaryNav/>` below `<TopNav/>`, **not** a `<TopNav>` prop). `Out+Off` (`0b0673a3…`) = marketing/logged-out (Resources ▾ · Sign In · gold Sign Up = nested `CtaButton` Filled/Gold/lg). Search centered to true nav width; Resources/Sign In → `List Row`. Supersedes the retired dashboard `TopNav` (`262:30`) and robotics_career's local `TopNavV2`. OverHero was dropped (D-044, was a D-042 axis). |
 | PillButton (set) | `686:2` | Buttons | `ce4f8c7d…` | `Surface`{Light,Dark} × `Fill`{Gold,Teal,Outline}, **5 shipped combos** (no Dark/Teal); Label TEXT. Radius `radius/full`, all 36h (no Size axis). Light labels → `List Row` px32; Dark Gold → `Item Title`, Dark Outline → `Body/Default` (16). The pill-shaped CTA family (the quiz results chrome + every robotics_career pill); rectangular CTAs use `CtaButton` (career_dashboard §6). |
+
+## 8. Interest Quiz file — local components + instance swaps (Pass 2, partial, 2026-07-05, D-045)
+
+Componentization Pass 2 turned the 9 flat variable-bound frames (§6) into real instances. Local **quiz-vocabulary** masters live on a new **`Components`** page (`84:96`) in the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak2`); shared chrome swaps to **published library instances** (§7 + career_dashboard §6). Masters were extracted by cloning a token-bound occurrence (never authored from scratch, L-009), so bound paints carried over. **This pass is partial** — the clean, most-repeated elements are done; a variant-heavy / icon-blocked tail is deferred (below). All 9 frames stay per-frame pixel-faithful; the three normalizations below are sanctioned Figma-leads-code divergences to close at Pass 4.
+
+### Local masters built (page `Components` `84:96`)
+
+| Component | Node ID | Props | Swapped instances | Extracted from |
+|---|---|---|---|---|
+| **Chip** (glass results chip) | `84:99` | `Label#84:0` (TEXT) | 4 — answer chips in ResultsPanel + CompareView (`25:369/620/778/781`) | `25:369` "Help a sibling get ready" |
+| **StatBox** | `87:105` | `Label#87:0`, `Value#87:1` (TEXT) | 8 full-size — Salary/Education pairs in ResultsPanel, CompareView ×2, JobOverview | `25:423` Salary |
+| **ChoiceRow** | `90:80` | `Label#90:0` (TEXT) | 5 — MC answer rows + bucket-sort rows (`25:108/111/174/177/180`) | `25:174` "That's me" |
+| **TierBadge** | `94:134` | `Label#94:0` (TEXT) | 1 — "Entry level" (JobOverview `25:1248`) | `25:1248` |
+| **HeroArrow** | `94:139` | — (icon-only; glyph override) | 2 — carousel Prev/Next (`25:311` chevron_left, `25:388` chevron_right) | `25:311` |
+
+`ChoiceRow` / `QuestionCard` / `SceneCard` have **no React component yet** (registry `ChoiceRow`); Figma leads code here (extract at Pass 4). `SignalBars` / `StatBox` / `RoleTabs` / `Chip` / `HeroArrow` / `BridgeProgramRow` are real components (`src/screens/Results/cards/*`).
+
+### Shared library instances swapped in
+
+| Set | Variant | Key | Instances |
+|---|---|---|---|
+| **TopNav** (§7) | `Auth=In, Secondary=Off` (`664:73`) | `f69105beb3f62971c41307ab576e5685f6fb80b2` | **9** — every frame's nav header; profile pill set to **Guest / initial "G"** |
+| **CtaButton** (career_dashboard §6) | `Style=Filled, Color=Gold, Size=lg` | `c3215d14a0449df2c90fb66fb0c272d6b0822e18` | **1** — Landing "Start the story" (`25:59`) |
+
+### Sanctioned Figma-leads-code divergences (close at Pass 4)
+
+1. **Nav guest pill.** The shared `TopNav In+Off` nests the dashboard's `ProfileMenu` (24px avatar + text initial), so the quiz nav converges from `AppHeader.tsx`'s person-icon "Guest" pill (28px) to an initial-avatar **"G" / "Guest"**. Reconcile `AppHeader.tsx` (adopt the initial avatar, or add a guest/icon mode to `ProfileMenu`). Caelan-approved 2026-07-05.
+2. **Landing CTA.** "Start the story" normalized from the bespoke 149×46 to `CtaButton` lg **120×36** (radius `radius/md` 8px). Reconcile `Button.tsx`/Landing at Pass 4 (parallels the dashboard 6px→8px normalization).
+3. **Compare Education StatBox.** The `CompareColumn` Education box (a `font-body` bulleted `<ul>`) normalized onto the shared `StatBox`; its Value is an instance override (Roboto 16/22, bound to `Color/Dark/Text On Dark Muted` `b712127b…`). Minor: bullets render muted rather than faint.
+
+### Deferred tail (Pass 2b — nothing destroyed; these remain faithful original frames)
+
+- **SignalBars** (4 occ: `25:330/581/739/1031`) — needs responsive-width tracks + a `Highlight` variant axis (Technician-gold / Specialist-teal) + fixed-width fill recompute; extract-and-swap is lossy as-is.
+- **Results toolbar pills → PillButton, and icon-CTAs "Continue"/"Role overview" → CtaButton** — **BLOCKED:** `PillButton` and `CtaButton` are label-only (no icon slot); every target here carries an icon. Needs a Pass-1 library change (add an icon/leading-glyph slot), then swap.
+- **RoleTabs** (`25:396` 2-tab, `25:1253` 3-tab) — needs a `RoleTab` item with `Active` variant; variable tab count.
+- **QuestionCard** (`25:96`), **SceneCard** (`25:149/224`) — low capture repetition; deferred.
+- **BridgeProgramRow** — not present in the captured frames (the Skills tab state isn't captured); N/A this pass.
+- **Compact variants:** JobSidePanel StatBox `25:1069/1078` (171×84) and SignalBars `25:1031` (compact) — a `Size=Compact` follow-up.
+
+### Token decision (publish-or-keep, per Pass 2 gate)
+
+**Keep, no new publish.** The masters inherited the §6 "deliberate raw keeps": `--color-text-subtle` (`#595959`) stays raw (no library primitive exists), `--color-white` stays aliased to `Color/Neutral/On CTA`. The only fill I newly set (compare-Education body) is bound to the published muted variable, so no unbound hex was introduced beyond the sanctioned keeps.

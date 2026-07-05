@@ -16,7 +16,7 @@ The dashboard already invented the model: real published component sets in the D
 |---|---|---|
 | 0 | Audit + promotion registry, ratified by Caelan | ☑ 2026-07-03 (D-042) |
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; only Caelan's final republish (to push the deletions) remains |
-| 2 | Interest Quiz file — local components + instance swaps | ☐ |
+| 2 | Interest Quiz file — local components + instance swaps | ◑ 2026-07-05 (D-045) — 5 local masters + shared nav/CtaButton swapped, all 9 frames pixel-faithful; SignalBars / RoleTabs / icon-pills / cards deferred to **Pass 2b** |
 | 3 | Captures file — swap to library instances where promoted | ☐ |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
 | 5 | (Conditional) Dashboard file reconciliation | ☐ |
@@ -104,3 +104,21 @@ Built in the DS library (`afi5Q5nFtcnT9HJ04Cbylg`), all token-clean (raw-hex aud
 **Sanctioned Figma-leads-code divergences** (enumerate at Pass 4): dashboard board TopNav instances swapped to `In+On` (each board's separate `SecondaryNav` deleted; the two-tier is now one component instance) — verified clean (active pill + counts intact). **Chip swap was moot** — zero `MetaChip`/`GoldChip` instances anywhere in the dashboard file. `Secondary=On` maps to composing `<SecondaryNav/>` in code, **not** a `<TopNav>` prop.
 
 **Pass 1 closed 2026-07-04:** old masters `TopNav 262:30` / `MetaChip 184:8` / `GoldChip 183:2` **retired** (kit-verbatim `10:14`/`14:2`/`16:2` provenance kept); **FIGMA_MAPs ×3 done** (career_dashboard §6 `782a7be`, explore_floor §7 `7c098e9`, robotics_career `e1b3b0a`). New DS keys: CtaButton `c3215d14…`, Chip `a51417db…`, TopNav mega set `f69105be…`, PillButton `ce4f8c7d…`, FormField `88dd923c…`, OptionRow `d31a14f7…`, OAuthButton `431abdb5…`, HintRow `5067f0a9…`, StepFooter `b3c1d94b…`. **Only Caelan's final DS-library republish remains** (to push the 3 deletions as deprecations). Next core pass: **Pass 2 — Interest Quiz file**.
+
+## Pass 2 outcomes (partial, 2026-07-05, D-045)
+
+Componentized the 9 Interest Quiz frames (`pjgrRJS5YYII1iciW7Pak2`). Full manifest: `docs/figma/FIGMA_MAP.md` §8. **Local components stay local** (ruling 7) — no library publish needed, so Pass 2 needs nothing from Caelan.
+
+**Done (all 9 frames re-verified pixel-faithful):**
+- New **`Components`** page (`84:96`); 5 local masters extracted from token-bound occurrences (L-009): **Chip** `84:99`, **StatBox** `87:105`, **ChoiceRow** `90:80`, **TierBadge** `94:134`, **HeroArrow** `94:139`.
+- Instance swaps: **Chip ×4, StatBox ×8, ChoiceRow ×5, TierBadge ×1, HeroArrow ×2** + shared **TopNav ×9** (`Auth=In,Secondary=Off`, guest pill → Guest/G) + **CtaButton ×1** (Landing gold).
+- Token call: **keep** — `--color-text-subtle` (#595959) raw, whites aliased to `On CTA`; no unbound hex introduced (the one new fill, compare-Education body, is bound to the muted variable).
+
+**Sanctioned Figma-leads-code divergences (Pass 4):** (1) nav guest pill converges to the shared ProfileMenu (initial "G" vs AppHeader's person-icon; Caelan-approved); (2) Landing CTA normalized to CtaButton lg 120×36 (was 149×46); (3) compare Education StatBox body normalized (bulleted `<ul>` → StatBox Value override).
+
+**Deferred to Pass 2b (nothing destroyed — these are still faithful original frames):**
+- **SignalBars** (×4) — needs responsive tracks + `Highlight` variant (Tech-gold/Spec-teal) + fill recompute.
+- **Results toolbar pills → PillButton** and **icon-CTAs ("Continue", "Role overview") → CtaButton** — **blocked:** both sets are label-only; the targets carry icons. Needs a Pass-1 library change (add an icon slot), then swap.
+- **RoleTabs** (2 strips) — `RoleTab` item with `Active` variant; **QuestionCard / SceneCard** — low capture repetition; **BridgeProgramRow** — not in the captured frames; **compact StatBox/SignalBars** (JobSidePanel) — a `Size=Compact` follow-up.
+
+**Next:** Pass 2b (the deferred tail; the icon-pill work pairs with a Pass-1 PillButton/CtaButton icon-slot add), then **Pass 3 — Captures file**.
