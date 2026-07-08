@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 220 233.298" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<g id="Group 20">
+<rect id="Rectangle 404" y="6.86176" width="188.697" height="226.436" fill="#E4E4E4"/>
+<rect id="Rectangle 403" x="4.57422" y="3.43085" width="188.697" height="226.436" fill="#F5F4F4"/>
+<rect id="Rectangle 402" x="10.2925" width="188.697" height="226.436" fill="white"/>
+<g id="Frame 21">
+<g clip-path="url(#clip0_0_1)">
+<rect x="181.509" y="57.2862" width="53.5117" height="142.763" rx="18.2979" transform="rotate(44.0034 181.509 57.2862)" fill="#FFB81C"/>
+<rect id="Rectangle 405" x="194.429" y="27.4468" width="74.3352" height="66.3298" transform="rotate(45 194.429 27.4468)" fill="#FF7272"/>
+<rect id="Rectangle 406" x="156.016" y="80.7267" width="74.3352" height="16.4439" transform="rotate(45 156.016 80.7267)" fill="#CCCBCB"/>
+</g>
+</g>
+<mask id="mask0_0_1" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="70" y="149" width="60" height="60">
+<path id="Polygon 1" d="M75.5804 207.919C72.7852 209.002 70.043 206.232 71.1547 203.448L91.6735 152.066C92.5901 149.771 95.5595 149.169 97.2981 150.925L128.369 182.318C130.108 184.075 129.475 187.038 127.17 187.931L75.5804 207.919Z" fill="#FAE0A9"/>
+</mask>
+<g mask="url(#mask0_0_1)">
+<path id="Polygon 2" d="M75.5804 207.919C72.7852 209.002 70.043 206.232 71.1547 203.448L91.6735 152.066C92.5901 149.771 95.5595 149.169 97.2981 150.925L128.369 182.318C130.108 184.075 129.475 187.038 127.17 187.931L75.5804 207.919Z" fill="#FAE0A9"/>
+<rect id="Rectangle 407" x="77.2065" y="184.602" width="24.6298" height="25.1596" transform="rotate(44 77.2065 184.602)" fill="#262626"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_1">
+<rect x="181.509" y="57.2862" width="53.5117" height="142.763" rx="18.2979" transform="rotate(44.0034 181.509 57.2862)" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useAnimate } from 'motion/react';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { CHARACTER_VARIATIONS } from '@/data/sceneBackgrounds';
 import { durations, easings } from '@/lib';
 
 import { ThoughtBubble } from './ThoughtBubble';
@@ -10,6 +11,8 @@ interface SceneCharacterProps {
   src: string | undefined;
   /** Public-relative path for the thought bubble image. Pass undefined for no bubble. */
   bubbleSrc: string | undefined;
+  /** Scene step id — passed through to ThoughtBubble for per-scene icons. */
+  sceneId: string | undefined;
   /** True when the scene is in the rating phase (after Continue is pressed). */
   visible: boolean;
   /** Which choice inside the scene is currently shown (0-based). Used to re-trigger the
@@ -27,30 +30,70 @@ const CHAR_DELAY = durations.glide;             // 0.4s
 const BOUNCE_DELAY = durations.glide * 2 + 0.2; // 1.0s
 const BUBBLE_DELAY = durations.glide * 2 + 0.3; // 1.1s
 
+// Scaled img is 985.442px wide. The img used to sit at left:-218px inside a
+// container at left:880 — that placed the img's left edge at viewport x=662,
+// but overflow-hidden on the container (starting at x=880) clipped those 218px.
+// Fix: shift the container left by 218px (→662) and set img left:0 so the full
+// SVG is visible while img pixel 218 stays at viewport x=880 (same pose).
+const CHAR_IMG_WIDTH = 985.442;
+const CHAR_IMG_OFFSET = 218; // former img left:-218px bleed
+const CHAR_CONTAINER_LEFT = 880 - CHAR_IMG_OFFSET; // 662
+const CHAR_IMG_LEFT = 0;
+const CHAR_CONTAINER_WIDTH = CHAR_IMG_WIDTH;
+
 // How long after a new choice appears before the re-bounce fires.
 const REBOUNCE_DELAY = 0.15; // seconds
 
-export function SceneCharacter({ src, bubbleSrc, visible, choiceIndex, reduce }: SceneCharacterProps) {
+function pickNextVariation(previous: string | undefined): string {
+  const pool = CHARACTER_VARIATIONS.filter((v) => v !== previous);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, reduce }: SceneCharacterProps) {
+  // Default pose on entrance; each bounce swaps to a random variation.
+  const [displayedSrc, setDisplayedSrc] = useState(src);
+  const previousPoseRef = useRef<string | undefined>(src);
   // useAnimate lets us imperatively replay the bounce each time choiceIndex changes,
   // rather than relying on a one-shot `animate` prop that only fires on mount.
   const [charRef, animateBounce] = useAnimate();
 
   useEffect(() => {
-    if (!visible || reduce || !charRef.current) return;
+    previousPoseRef.current = src;
+    setDisplayedSrc(src);
+  }, [src]);
+
+  useEffect(() => {
+    if (!visible) {
+      previousPoseRef.current = src;
+      setDisplayedSrc(src);
+      return;
+    }
+    if (reduce) return;
     // First question (choiceIndex=0) keeps the longer choreography delay so the bounce
     // follows the character's entrance. Subsequent questions use a short pause instead.
     const delay = choiceIndex === 0 ? BOUNCE_DELAY : REBOUNCE_DELAY;
-    void animateBounce(
-      charRef.current,
-      { y: [0, -12, 0, -6, 0, -3, 0] },
-      {
-        duration: 0.7,
-        ease: easings.soft,
-        times: [0, 0.15, 0.35, 0.5, 0.65, 0.8, 1],
-        delay,
-      },
-    );
-  }, [visible, choiceIndex, reduce, animateBounce]);
+
+    const switchTimer = setTimeout(() => {
+      const next = pickNextVariation(previousPoseRef.current);
+      previousPoseRef.current = next;
+      setDisplayedSrc(next);
+    }, delay * 1000);
+
+    if (charRef.current) {
+      void animateBounce(
+        charRef.current,
+        { y: [0, -12, 0, -6, 0, -3, 0] },
+        {
+          duration: 0.7,
+          ease: easings.soft,
+          times: [0, 0.15, 0.35, 0.5, 0.65, 0.8, 1],
+          delay,
+        },
+      );
+    }
+
+    return () => clearTimeout(switchTimer);
+  }, [visible, choiceIndex, reduce, animateBounce, src]);
 
   if (!src) return null;
 
@@ -62,11 +105,7 @@ export function SceneCharacter({ src, bubbleSrc, visible, choiceIndex, reduce }:
           <motion.div
             key="scene-character"
             className="pointer-events-none fixed z-20"
-            // Figma spec (node 299:148): character is 480×832px anchored at
-            // (calc(60%+102px), 165px). The image is taller than the 800px
-            // viewport so the feet/legs are cropped below the fold — this is
-            // intentional, giving an "in-the-scene" zoomed perspective.
-            style={{ left: 'calc(60% + 102px)', top: '165px' }}
+            style={{ left: `${CHAR_CONTAINER_LEFT}px`, top: '60px', bottom: 0 }}
             initial={reduce ? { opacity: 0 } : { opacity: 0, x: 80 }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0 }}
             exit={
@@ -80,15 +119,24 @@ export function SceneCharacter({ src, bubbleSrc, visible, choiceIndex, reduce }:
               delay: reduce ? 0 : CHAR_DELAY,
             }}
           >
-            {/* Bounce is driven imperatively by the useEffect above (useAnimate),
-                so this img carries no `animate` prop for y. */}
-            <img
-              ref={charRef}
-              src={src}
-              alt=""
-              aria-hidden="true"
-              className="h-[832px] w-[480px] object-contain object-top"
-            />
+            <div
+              className="relative h-full overflow-hidden"
+              style={{ width: CHAR_CONTAINER_WIDTH }}
+            >
+              <img
+                ref={charRef}
+                src={displayedSrc}
+                alt=""
+                aria-hidden="true"
+                className="absolute max-w-none object-cover object-bottom"
+                style={{
+                  width: `${CHAR_IMG_WIDTH}px`,
+                  height: 'calc(100% + 26px)',
+                  top: '5px',
+                  left: `${CHAR_IMG_LEFT}px`,
+                }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -102,9 +150,8 @@ export function SceneCharacter({ src, bubbleSrc, visible, choiceIndex, reduce }:
               // z-30 places the bubble above the quiz card (z-20) so it never
               // gets clipped by the card's stacking context.
               className="pointer-events-none fixed z-30"
-              // Exact position from Figma node 278:209 ("Think bubble"),
-              // which already uses the zoomed-in 480×832 character (node 299:150).
-              style={{ left: '800px', top: '140px' }}
+              // Figma node 357:207 — main bubble anchor at (670, 127).
+              style={{ left: '770px', top: '127px' }}
               // The parent wrapper only handles presence fade so AnimatePresence
               // can unmount cleanly. Individual circle entrances (spring scale)
               // and perpetual bobs are owned by ThoughtBubble internally.
@@ -113,7 +160,7 @@ export function SceneCharacter({ src, bubbleSrc, visible, choiceIndex, reduce }:
               exit={{ opacity: 0, transition: { duration: durations.snap, ease: easings.soft } }}
               transition={{ duration: 0.05 }}
             >
-              <ThoughtBubble baseDelay={BUBBLE_DELAY} symbolIndex={choiceIndex} reduce={reduce} />
+              <ThoughtBubble baseDelay={BUBBLE_DELAY} sceneId={sceneId} symbolIndex={choiceIndex} reduce={reduce} />
             </motion.div>
           )}
         </AnimatePresence>

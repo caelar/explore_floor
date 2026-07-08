@@ -6,22 +6,33 @@
 export const SCENE_BACKGROUNDS: Record<string, string> = {
   'n-s1': '/explore_floor/scenes/scene-1.png',
   'n-s2': '/explore_floor/scenes/scene-2.png',
-  // n-s3 through n-s7: backgrounds to be added per scene as assets arrive.
+  'n-s3': '/explore_floor/scenes/scene-3.png',
+  'n-s4': '/explore_floor/scenes/scene-4.png',
+  'n-s5': '/explore_floor/scenes/scene-5.png',
+  'n-s6': '/explore_floor/scenes/scene-6.png',
+  'n-s7': '/explore_floor/scenes/scene-7.png',
 };
+
+// Default character shown on entrance; bounce swaps to a random variation.
+export const CHARACTER_DEFAULT = '/explore_floor/scenes/character.svg';
+export const CHARACTER_VARIATIONS = [
+  '/explore_floor/scenes/character-variation-1.svg',
+  '/explore_floor/scenes/character-variation-2.svg',
+  '/explore_floor/scenes/character-variation-3.svg',
+] as const;
 
 // Maps each scene step ID to a character image path shown during the rating
 // phase (after the user clicks Continue). Character slides in from the right
 // while the quiz card shifts left. All scenes share the same placeholder
 // character for now; swap per-scene once pose assets are ready.
-const CHARACTER = '/explore_floor/scenes/character.svg';
 export const SCENE_CHARACTERS: Record<string, string> = {
-  'n-s1': CHARACTER,
-  'n-s2': CHARACTER,
-  'n-s3': CHARACTER,
-  'n-s4': CHARACTER,
-  'n-s5': CHARACTER,
-  'n-s6': CHARACTER,
-  'n-s7': CHARACTER,
+  'n-s1': CHARACTER_DEFAULT,
+  'n-s2': CHARACTER_DEFAULT,
+  'n-s3': CHARACTER_DEFAULT,
+  'n-s4': CHARACTER_DEFAULT,
+  'n-s5': CHARACTER_DEFAULT,
+  'n-s6': CHARACTER_DEFAULT,
+  'n-s7': CHARACTER_DEFAULT,
 };
 
 // Maps each scene step ID to a thought bubble (presence signals that a bubble

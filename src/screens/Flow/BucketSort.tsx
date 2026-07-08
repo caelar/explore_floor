@@ -85,7 +85,7 @@ export function BucketSort({
 
   return (
     <div className="flex w-full flex-col gap-space-3">
-      <p className="text-small text-text-on-dark-faint" data-testid={progressTestId}>
+      <p className="text-small text-text-on-dark" data-testid={progressTestId}>
         Choice {Math.min(currentIndex + 1, items.length)} of {items.length}
       </p>
 
@@ -138,7 +138,7 @@ export function BucketSort({
         })}
       </div>
 
-      <p className="text-small text-text-on-dark-faint">
+      <p className="text-small text-text-on-dark">
         Select the response that fits. Your pick advances to the next choice.
       </p>
     </div>

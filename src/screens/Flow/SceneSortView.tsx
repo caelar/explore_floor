@@ -104,7 +104,7 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce, onBeforeL
         animate={{ padding: rating ? 24 : 32 }}
         transition={morph}
       >
-        <p className="text-small text-text-on-dark-faint" data-testid="scene-progress">
+        <p className="text-small text-text-on-dark" data-testid="scene-progress">
           Scene {sceneNumber} of {sceneTotal}
         </p>
         <div className="border-t border-glass-border-soft" />

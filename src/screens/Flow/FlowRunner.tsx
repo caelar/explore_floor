@@ -106,7 +106,7 @@ export function FlowRunner() {
   return (
     <>
     <SceneBackground src={backgroundSrc} />
-    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} />
+    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} sceneId={step.type === 'scene' ? step.id : undefined} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} />
     <motion.main
       className="relative z-20 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-start p-space-5 pt-space-7"
       initial={false}
@@ -165,7 +165,7 @@ export function FlowRunner() {
           type="button"
           data-testid="flow-back"
           onClick={goBack}
-          className="absolute bottom-space-4 left-1/2 flex -translate-x-1/2 items-center gap-space-1 text-small font-medium text-text-on-dark-faint transition-colors hover:text-text-on-dark"
+          className="absolute bottom-space-4 left-1/2 flex -translate-x-1/2 items-center gap-space-1 text-small font-medium text-text-on-dark transition-colors hover:text-text-on-dark-muted"
         >
           <Icon name="arrow-l" size={20} />
           Back

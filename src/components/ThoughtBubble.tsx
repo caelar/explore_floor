@@ -25,14 +25,17 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 
-// Placeholder symbols that cycle as the user moves through each scene's questions.
-// Replace entries (or swap in <img> nodes) once per-question illustrations exist.
+import { getThoughtBubbleIcon,THOUGHT_BUBBLE_ICON_PX } from '@/data/thoughtBubbleIcons';
+
+// Placeholder symbols for choices without a custom illustration yet.
 const SYMBOLS = ['?', '!', '★'];
 
 interface ThoughtBubbleProps {
   /** Seconds to wait before the first circle begins its entrance. */
   baseDelay?: number;
-  /** Which symbol to show (maps to SYMBOLS via modulo). Pass choiceIndex directly. */
+  /** Scene step id (e.g. n-s1) — used to look up per-scene bubble icons. */
+  sceneId?: string;
+  /** Which choice inside the scene is shown (0-based). Pass choiceIndex directly. */
   symbolIndex?: number;
   /** True when prefers-reduced-motion is active — skips spring and bob. */
   reduce?: boolean;
@@ -45,8 +48,10 @@ const glass = {
   border: '2px solid rgba(255,255,255,0.7)',
 } as React.CSSProperties;
 
-export function ThoughtBubble({ baseDelay = 0, symbolIndex = 0, reduce = false }: ThoughtBubbleProps) {
+export function ThoughtBubble({ baseDelay = 0, sceneId, symbolIndex = 0, reduce = false }: ThoughtBubbleProps) {
+  const iconSrc = getThoughtBubbleIcon(sceneId, symbolIndex);
   const symbol = SYMBOLS[symbolIndex % SYMBOLS.length];
+  const contentKey = iconSrc ?? symbol;
 
   // Returns the animate + transition props for one circle.
   // stagger  — additional delay on top of baseDelay before entrance starts
@@ -93,7 +98,7 @@ export function ThoughtBubble({ baseDelay = 0, symbolIndex = 0, reduce = false }
         style={{
           ...glass,
           left: 141,
-          top: 205,
+          top: 212,
           width: 28,
           height: 28,
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
@@ -107,7 +112,7 @@ export function ThoughtBubble({ baseDelay = 0, symbolIndex = 0, reduce = false }
         style={{
           ...glass,
           left: 97,
-          top: 173,
+          top: 180,
           width: 40,
           height: 40,
           boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
@@ -131,10 +136,13 @@ export function ThoughtBubble({ baseDelay = 0, symbolIndex = 0, reduce = false }
         {/* Symbol — springs out and back in each time symbolIndex changes.
             mode="wait" ensures the old symbol exits fully before the new one enters,
             keeping the swap crisp on fast taps. */}
-        <div className="absolute inset-0 flex items-center justify-center pb-2">
+        <div
+          className={`absolute inset-0 flex items-center justify-center${iconSrc ? '' : ' pb-2'}`}
+        >
           <AnimatePresence mode="wait">
-            <motion.span
-              key={symbol}
+            <motion.div
+              key={contentKey}
+              className="flex items-center justify-center"
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
@@ -143,18 +151,36 @@ export function ThoughtBubble({ baseDelay = 0, symbolIndex = 0, reduce = false }
                   ? { duration: 0.1 }
                   : { type: 'spring', stiffness: 500, damping: 22, duration: 0.25 }
               }
-              style={{
-                fontFamily: 'Montserrat, sans-serif',
-                fontWeight: 700,
-                fontSize: 72,
-                lineHeight: 1,
-                color: 'rgba(255,255,255,0.9)',
-                textShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                display: 'block',
-              }}
             >
-              {symbol}
-            </motion.span>
+              {iconSrc ? (
+                <img
+                  src={iconSrc}
+                  alt=""
+                  aria-hidden="true"
+                  width={THOUGHT_BUBBLE_ICON_PX}
+                  height={THOUGHT_BUBBLE_ICON_PX}
+                  className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+                  style={{
+                    width: THOUGHT_BUBBLE_ICON_PX,
+                    height: THOUGHT_BUBBLE_ICON_PX,
+                  }}
+                />
+              ) : (
+                <span
+                  style={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 700,
+                    fontSize: 72,
+                    lineHeight: 1,
+                    color: 'rgba(255,255,255,0.9)',
+                    textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                    display: 'block',
+                  }}
+                >
+                  {symbol}
+                </span>
+              )}
+            </motion.div>
           </AnimatePresence>
         </div>
       </motion.div>
