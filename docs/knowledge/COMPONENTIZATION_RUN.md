@@ -18,7 +18,7 @@ The dashboard already invented the model: real published component sets in the D
 | 1 | Shared tier — build/reconcile component sets in the DS library, publish | ☑ 2026-07-04 (D-043/D-044) — built, published, dashboard swapped, old masters retired, FIGMA_MAPs ×3 done; **final republish landed 2026-07-05** (pushed the 3 old-master deletions as deprecations, bundled with Pass 1b) |
 | 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☑ 2026-07-05 (D-046) — built + verified + **published**; both sets carry additive leading/trailing icon slots (defaults off), token-bound per variant; the republished sets expose the icon props (importable by key). Outcomes below. |
 | 2 | Interest Quiz file — local components + instance swaps | ☑ 2026-07-05 (D-045 + **D-047**) — Pass 2: `Components` page + 5 local masters + shared nav ×9 / CtaButton ×1. **Pass 2b (D-047): tail closed** — results icon-pill/CTA swaps ×7 onto the icon-slotted shared sets, + 3 net-new masters (`SignalBar` / `RoleTab` / `CompareTargetMenu`) + `StatBox Size=Compact`; 20 instances, all frames pixel-faithful, masters token-clean. Outcomes below. |
-| 3 | Captures file — swap to library instances where promoted | ☐ |
+| 3 | Captures file — swap to library instances where promoted | ☑ 2026-07-08 (D-048) — 10 nav + 37 form instances swapped to shared DS instances; 5 form masters + `State=Light` nav variant retired; Landing OverHero kept local; all frames pixel-faithful bar the sanctioned nav divergence. Outcomes below. |
 | 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
 | 5 | (Conditional) Dashboard file reconciliation | ☐ |
 
@@ -178,3 +178,23 @@ Closed the D-045 deferred tail in the Interest Quiz file (`pjgrRJS5YYII1iciW7Pak
 **Sanctioned Figma-leads-code divergences (Pass 4):** Continue 139×46 → CtaButton lg 120×36; Role overview 354×54 → CtaButton lg full-width + 54h override; Set-as-target `px-space-4`→`px-space-3` (−15px); RoleTab inactive underline black→transparent (identical on dark). See `FIGMA_MAP.md` §8 divergences #4–#7.
 
 **Deferred tail after 2b:** QuestionCard (`25:96`), SceneCard (`25:149/224`), BridgeProgramRow (not captured), the two Flow Back buttons (`25:188`/`25:249`). Next core pass: **Pass 3 — Captures file**.
+
+## Pass 3 outcomes (2026-07-08, D-048)
+
+Swapped the RC.org Captures file (`F3GRK7HNLLtG48vPosyXKw`, robotics_career) local-master instances to DS-library instances where promoted — a sanctioned Figma-leads-code pass (closes at Pass 4). Full manifest: `robotics_career/docs/figma/FIGMA_MAP.md` §5. Gates: every affected frame re-screenshotted pixel-faithful (bar the intended nav change); document-wide census clean (0 instances left on any retired master); no raw hex introduced (swaps carry the DS masters' bound paints). All 47 swaps used `swapComponent`, which **preserved every override and mapped it into the DS component properties** — the DS masters were promoted from these exact captures (L-009), so layer names match and nothing needed manual re-setting.
+
+**Nav — 10 instances** `TopNavV2 State=Light` → shared **`TopNav Auth=Out, Secondary=Off`** (variant key `0b0673a3…`, set `f69105be…`):
+- 8 auth frames (Sign-up page `2:4`): SignUp `8:21`, SignIn `12:49`, SetupName `12:108`, SetupLocation `12:142`, Interests `12:180`, CareerStatus `12:218`, Military `12:263`, Competencies `13:216`.
+- 2 Explore frames (page `2:3`): Explore-list `84:3`, Explore-map `90:158`.
+- **Landing OverHero (`21:18`) kept local** (Caelan, this session) — the mega set has no OverHero variant (dropped D-044). `TopNavV2` set `19:21` retained, now **OverHero-only** (Light variant `5:9` deleted).
+
+**Forms — 37 instances** → the shared form family (overrides preserved, incl. dropdown chevrons, password-eye glyphs, the Google brand icon):
+- **FormField ×10** (`88dd923c…`), **OptionRow ×12** (set `d31a14f7…`; Checkbox/Unchecked `d5a94ce6…` ×9, Radio/Unchecked `c2c192df…` ×3), **OAuthButton ×4** (`431abdb5…`; Google buttons keep the local `GoogleIcon` nested), **HintRow ×5** (`5067f0a9…`), **StepFooter ×6** (`b3c1d94b…`).
+
+**Header-gap (Caelan chose "tighten gap"):** the nav shrank 80→60px. The 8 auth frames are VERTICAL auto-layout (flush), so content auto-reflowed up 20px and each frame hugged 20px shorter — no manual work. The 2 absolute Explore frames were nudged manually: Content + SiteFooter up 20px, frame height 1952→1932, to hold the original 40px nav-to-content gap.
+
+**Retired (deleted, 0 instances doc-wide):** local `FormField` `7:8`, `OptionRow` `11:52`, `OAuthButton` `8:14`, `HintRow` `7:11`, `StepFooter` `11:48`, `TopNavV2 State=Light` `5:9`. **Local tier remaining** (registry §4, unchanged): `TopNavV2` (OverHero-only), `SiteFooter` `17:4`, `CompetencyTile` `13:213`, `LinkedInIcon` `8:7`, `GoogleIcon` `8:13`, `Chip` `81:3`, `FilterDropdown` `81:5`, `JobCard` `82:4`.
+
+**Sanctioned Figma-leads-code divergences (close at Pass 4):** (1) **nav light→dark unification** (local light 80px, left search, `Resources ▾ · About us · Sign up · Sign in` → shared dark 60px, centered search + sliders, gear + wordmark, `Resources ⌄ · Sign In · gold Sign Up`; **"About us" dropped**, casing changed); (2) **Explore nav search now visible** (local hid it; the mega set always shows the centered search); (3) content nudged up 20px to compensate the shorter nav. Code (`TopNavV2.tsx`, auth screens, `Explore.tsx`) still renders the light nav / hidden search until Pass 4.
+
+**Next core pass: Pass 4 — code alignment** (nav auth states, button standardization, Icon 61-name union; hops repos). Passes 0–3 done; only Pass 4 (+ conditional Pass 5) remain. Pass 3 needed nothing from Caelan (local swaps only; the DS library was already published).
