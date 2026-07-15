@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 
-import { Button, Icon } from '@/components';
+import { CtaButton, Icon } from '@/components';
 import { SORT_BUCKETS } from '@/data/flows/buckets';
 import type { SceneStep } from '@/data/types';
 import { durations, easings, typeScale } from '@/lib';
@@ -96,13 +96,14 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
 
         {!rating && (
           <div className="mt-space-2">
-            <Button
+            <CtaButton
+              color="gold"
+              size="lg"
               data-testid="scene-continue"
-              className="inline-flex items-center gap-space-1 font-bold"
               onClick={startScene}
             >
               Continue <Icon name="arrow-r" size={18} />
-            </Button>
+            </CtaButton>
           </div>
         )}
       </motion.div>

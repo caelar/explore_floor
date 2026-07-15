@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components';
+import { CtaButton } from '@/components';
 import { roleSelectLanding } from '@/data';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
@@ -41,9 +41,9 @@ export function Landing() {
         <p className="text-overline text-text-on-dark-faint">{landingCopy.overline}</p>
         <h1 className="font-heading text-h1 text-text-on-dark">{landingCopy.heading}</h1>
         <p className="max-w-md text-body text-text-on-dark-muted">{landingCopy.description}</p>
-        <Button onClick={begin} data-testid="start-cta">
+        <CtaButton color="gold" size="lg" onClick={begin} data-testid="start-cta">
           {landingCopy.cta}
-        </Button>
+        </CtaButton>
       </motion.div>
     </main>
   );

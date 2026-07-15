@@ -36,11 +36,13 @@ export function AppHeader() {
 
         {/* Profile pill — no auth; a generic account stub for chrome fidelity. */}
         <div className="flex shrink-0 items-center gap-space-1 rounded-full bg-glass-fill py-space-0 pl-space-0 pr-space-2 text-text-on-dark">
+          {/* Initial-avatar to match the shared TopNav ProfileMenu (componentization Pass 4, D-049 /
+              FIGMA_MAP §8 #1) — the guest slot shows a "G" initial, not a person icon. */}
           <span
-            className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-arm-gold to-gold-deep text-near-black"
+            className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-arm-gold to-gold-deep font-body text-small font-bold text-near-black"
             aria-hidden
           >
-            <Icon name="user" size={15} />
+            G
           </span>
           <span className="hidden font-body text-small font-medium sm:inline">Guest</span>
           <Icon name="chevron-d" size={12} className="text-text-on-dark-faint" />

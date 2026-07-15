@@ -37,7 +37,7 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
       {/* Inert chrome (no real "set target" action in scope). */}
       <span
         data-testid="set-target"
-        className="inline-flex h-control-lg items-center gap-space-1 rounded-full bg-arm-gold px-space-4 font-heading text-body font-bold text-near-black"
+        className="inline-flex h-control-lg items-center gap-space-1 rounded-full bg-arm-gold px-space-3 font-heading text-body font-bold text-near-black"
       >
         <Icon name="star" size={18} />
         {explore.setTargetCta}

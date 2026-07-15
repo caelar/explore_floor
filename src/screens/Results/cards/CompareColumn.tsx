@@ -87,7 +87,7 @@ export function CompareColumn(props: CompareColumnProps) {
           <ul className="flex flex-col gap-space-1">
             {educationLines.map((line) => (
               <li key={line} className="flex gap-space-2 font-body text-body text-text-on-dark-muted">
-                <span className="text-text-on-dark-faint">&bull;</span>
+                <span className="text-text-on-dark-muted">&bull;</span>
                 <span>{line}</span>
               </li>
             ))}

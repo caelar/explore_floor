@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 
+import { CtaButton } from '@/components';
 import { Icon } from '@/components/Icon';
 import type {
   CategoryId,
@@ -103,25 +104,27 @@ export function JobSidePanel(props: JobSidePanelProps) {
         {/* The rail's primary action is teal (the kit's interactive voice, reference parity) for both
             views; gold stays reserved for encouragement CTAs (Continue / Set as target role). */}
         {view === 'selected' ? (
-          <button
-            type="button"
+          <CtaButton
+            color="teal"
+            size="lg"
             onClick={props.onRoleOverview}
             data-testid="role-overview-cta"
-            className="flex w-full items-center justify-center gap-space-2 rounded-md bg-arm-teal py-space-3 font-heading text-body font-bold text-white transition-colors hover:bg-arm-teal-soft"
+            className="w-full"
           >
             {explore.roleOverviewCta}
             <Icon name="arrow-r" size={18} />
-          </button>
+          </CtaButton>
         ) : (
-          <button
-            type="button"
+          <CtaButton
+            color="teal"
+            size="lg"
             onClick={props.onOpenJobOverview}
             data-testid="job-overview-cta"
-            className="flex w-full items-center justify-center gap-space-2 rounded-md bg-arm-teal py-space-3 font-heading text-body font-bold text-white transition-colors hover:bg-arm-teal-soft"
+            className="w-full"
           >
             {explore.jobOverviewCta}
             <Icon name="arrow-r" size={18} />
-          </button>
+          </CtaButton>
         )}
       </div>
     </div>

@@ -19,7 +19,7 @@ The dashboard already invented the model: real published component sets in the D
 | 1b | **Shared-tier icon slot** — add optional leading/trailing icon to PillButton + CtaButton in the DS library; republish. Unblocks the Pass-2b results icon-pills. | ☑ 2026-07-05 (D-046) — built + verified + **published**; both sets carry additive leading/trailing icon slots (defaults off), token-bound per variant; the republished sets expose the icon props (importable by key). Outcomes below. |
 | 2 | Interest Quiz file — local components + instance swaps | ☑ 2026-07-05 (D-045 + **D-047**) — Pass 2: `Components` page + 5 local masters + shared nav ×9 / CtaButton ×1. **Pass 2b (D-047): tail closed** — results icon-pill/CTA swaps ×7 onto the icon-slotted shared sets, + 3 net-new masters (`SignalBar` / `RoleTab` / `CompareTargetMenu`) + `StatBox Size=Compact`; 20 instances, all frames pixel-faithful, masters token-clean. Outcomes below. |
 | 3 | Captures file — swap to library instances where promoted | ☑ 2026-07-08 (D-048) — 10 nav + 37 form instances swapped to shared DS instances; 5 form masters + `State=Light` nav variant retired; Landing OverHero kept local; all frames pixel-faithful bar the sanctioned nav divergence. Outcomes below. |
-| 4 | Code alignment — nav, buttons, Icon union (hops repos) | ☐ |
+| 4 | Code alignment — **sliced into 4a/4b/4c** (D-049); hops repos | ◐ — **4a done 2026-07-15** (explore_floor, all gates green); **4b/4c deferred** |
 | 5 | (Conditional) Dashboard file reconciliation | ☐ |
 
 Core order 0 → 1 → 2 → 3; Pass 4 can interleave any time after Pass 1's rulings are built. Minimum worthwhile cut if the pre-handoff window tightens: **Passes 0–2** (registry + shared tier + a componentized Interest Quiz file).
@@ -71,7 +71,7 @@ One shared top-nav component set replaces the three divergent navs. Anatomy: the
 
 **Pass 3 — Captures file.** Swap its local masters to library instances where promoted: nav → mega set (an intentional visible change — the file will lead the code until Pass 4), forms → the shared family. `JobCard`, `SiteFooter`, `CompetencyTile`, brand icons stay local. Enumerate every intentional Figma-leads-code divergence in the session note. Gate: robotics_career FIGMA_MAP updated; divergence list written.
 
-**Pass 4 — code alignment (hops repos).** The accepted pass-back-to-code: dashboard tier-1 `TopNav` swaps to the centered-search design; robotics_career implements the two nav auth states; button standardization lands per the registry; the Icon name union lands in `@rc/ui` (version bump + tag; robotics_career picks it up and clears its ~33 raw `material-icons` spans per its own rubric's `icon-atom` criterion). Each repo's own gates apply (lint / typecheck / tests, design review for visual changes).
+**Pass 4 — code alignment (hops repos).** The accepted pass-back-to-code: dashboard tier-1 `TopNav` swaps to the centered-search design; robotics_career implements the two nav auth states; button standardization lands per the registry; the Icon name union lands in `@rc/ui` (version bump + tag; robotics_career picks it up and clears its ~33 raw `material-icons` spans per its own rubric's `icon-atom` criterion). Each repo's own gates apply (lint / typecheck / tests, design review for visual changes). **Sliced into 4a/4b/4c at D-049 — see the slice map below.**
 
 **Pass 5 — conditional, dashboard file.** Widgets instance the DS `Card`; the chip consolidation ripples through the widget sets. Only if the last week is calm — the dashboard file is already the strongest artifact.
 
@@ -198,3 +198,39 @@ Swapped the RC.org Captures file (`F3GRK7HNLLtG48vPosyXKw`, robotics_career) loc
 **Sanctioned Figma-leads-code divergences (close at Pass 4):** (1) **nav light→dark unification** (local light 80px, left search, `Resources ▾ · About us · Sign up · Sign in` → shared dark 60px, centered search + sliders, gear + wordmark, `Resources ⌄ · Sign In · gold Sign Up`; **"About us" dropped**, casing changed); (2) **Explore nav search now visible** (local hid it; the mega set always shows the centered search); (3) content nudged up 20px to compensate the shorter nav. Code (`TopNavV2.tsx`, auth screens, `Explore.tsx`) still renders the light nav / hidden search until Pass 4.
 
 **Next core pass: Pass 4 — code alignment** (nav auth states, button standardization, Icon 61-name union; hops repos). Passes 0–3 done; only Pass 4 (+ conditional Pass 5) remain. Pass 3 needed nothing from Caelan (local swaps only; the DS library was already published).
+
+## Pass 4 slice map (D-049, 2026-07-15)
+
+Pass 4 is split into three per-concern slices (single-session units, one repo's gates each). A pre-flight audit against the registry + all three FIGMA_MAP divergence manifests + the live code found the Figma tier clean and the only gaps on the code-plan side; those are resolved here. Caelan's rulings (2026-07-15) are folded in. A Figma spot-check of the TopNav mega set + icon-slotted CtaButton/PillButton passed (as documented).
+
+**Slice 4a — explore_floor (run this cycle; explore_floor gates only).** Self-contained, no repo hop. The complete edit list is `explore_floor/docs/figma/FIGMA_MAP.md` §8 "Sanctioned Figma-leads-code divergences" #1–#7:
+1. **Guest pill → initial avatar** — `AppHeader.tsx` adopts the shared `ProfileMenu`'s initial-avatar "G"/"Guest" (or add a guest/icon mode to ProfileMenu). (§8 #1)
+2. **Landing CTA** 149×46 → `CtaButton` lg **120×36**, radius 8px — `Button.tsx`/Landing. (§8 #2)
+3. **Compare Education StatBox** — bulleted `<ul>` → StatBox Value override, muted. (§8 #3)
+4. **Continue CTA** 139×46 → `CtaButton Filled/Gold/lg` 120×36. (§8 #4)
+5. **Role-overview CTA** 354×54 → `CtaButton Filled/Teal/lg`, kept full-width (FILL) + 54px footprint. (§8 #5)
+6. **Set-as-target pill** → `PillButton Dark/Gold`, `px-space-4`→`px-space-3` (−15px). (§8 #6)
+7. **RoleTab inactive underline** — black→`border-transparent` (renders identically on dark). (§8 #7)
+
+Plus: reconcile the two **Flow Back buttons** (`25:188` SceneSortView, `25:249` BucketSort — the §8 deferred-tail code note; a `CtaButton Outline`/ghost candidate) and **delete the orphaned `ProgressBar` + `SegmentedControl`** (zero call sites — registry §7; Caelan 07-15 "get rid of the orphaned stuff"). Gates: lint / typecheck / 82 unit / 3 E2E + `/design-review` (the CTA/pill/nav changes can move E2E selectors + are visual).
+
+**Slice 4b — nav code (DEFERRED).** career_dashboard `TopNav` → centered search (**verify first — the code already uses `mx-auto`, so it may already be aligned**) + `CtaButton` `rounded-sm`→`rounded-md` (D-043, one line); robotics_career's two nav auth states (light 80px → dark 60px mega nav; §5 divergence #1: centered search, `Resources ⌄ · Sign In · gold Sign Up`, wordmark, **"About us" dropped**, casing). **The dashboard portion waits until career_dashboard's Phase-5-mechanics branch settles** (`p5/01-mechanics-reset`, D-053–D-058) — re-check with Caelan next session. ⚠️ Name collision: that repo's "Phase 5" ≠ this run's conditional "Pass 5."
+
+**Slice 4c — Icon union (DEFERRED, robotics_career).** **Path A** (D-049): expand robotics_career's **local** `src/components/Icon.tsx` with the glyphs its raw spans use (union superset = 61 names; add what's referenced), then clear its ~33 raw `material-icons` spans (24 in `Explore.tsx`) per its rubric's `icon-atom` criterion. The `@rc/ui` bump to the full 61-name union + tag is a **parallel/optional** step (robotics_career imports the local Icon, not `@rc/ui`'s, so it isn't a blocker). Deferred with 4b (robotics_career deprioritized).
+
+### Pass 4a outcomes (2026-07-15, executed)
+
+explore_floor slice complete; all gates green (lint · typecheck · **82 unit** · **3 E2E**; **`design-reviewer` PASS** on both rubrics from a full live walk). Caelan chose the **faithful** CTA path (the shared button, accepting the lighter 14px-medium type over the old 16px-bold). The review caught + we fixed one latent p2: `CtaButton size="md"` used `text-label` (a dashboard-theme token absent here) → changed to `text-small`; latent only (no `md` call sites).
+
+- **New `src/components/CtaButton.tsx`** — the code mirror of the ecosystem CtaButton set (`color` gold/teal/outline × `size` lg/md, `rounded-md` **8px** = the D-043 value, `h-control-lg/md`, `font-body font-medium`, built-in icon gap). Retires the Phase-0 `Button` placeholder for the primary CTAs (`Button` stays only for the out-of-scope `/select` screen). Exported from the barrel.
+- **Routed through CtaButton:** Landing "Start" (`gold/lg`, §8 #2), flow "Continue" (`gold/lg`, §8 #4), the two rail CTAs — role-overview + job-overview (`teal/lg w-full`, §8 #5; standardized to the 36px lg height rather than the Figma instance's 54px, since that height override was a Figma-frame concession with no code reflow equivalent).
+- **Inline normalizations:** guest pill → "G" initial-avatar (`AppHeader`, §8 #1); compare Education bullets faint→muted (`CompareColumn`, §8 #3); set-as-target pill `px-space-4`→`px-space-3` (`JobOverview`, §8 #6).
+- **No-op:** §8 #7 (RoleTab inactive underline) was **already** `border-transparent` in `RoleTabs.tsx` — the Figma master converged to the code, nothing to change.
+- **Orphans deleted:** `ProgressBar.tsx` + `SegmentedControl.tsx` + their barrel exports (0 call sites).
+- **Not done (deferred tail, per §8 note):** the two Flow **Back** buttons stay as-is — already reasonable ghost controls; the §8 note itself defers them "to keep scope tight." A future `CtaButton Outline` candidate.
+
+**Come-back flags (do not lose):**
+- **robotics_career** — 4b nav auth states + 4c icon spans + the deferred **button convergence** (light scope now; `GoldButton`/`GoldPill`/`OutlinePill` → `CtaButton`/`PillButton` later, registry §6). Caelan: low priority "right now."
+- **Dashboard nav slice** — gated on the Phase-5 branch settling; **re-check with Caelan next session** whether it's done.
+- **CardHead / DEF-012 code side** (SponsoredCard rebuilds a raw card head) → folds into **conditional Pass 5** (dashboard file) if not already covered there.
+- **Two unpublished tokens** (`--color-text-subtle` #595959, `--color-white`) — reopened by Caelan (was "keep, no publish", §8 token decision). No other active Figma-library work is outstanding, so publishing `#595959` as a library primitive + confirming `--color-white` is **clear** — but it's a shared-library write + a **Caelan republish**, so it's staged, not executed. Fold into the next DS-library republish.
