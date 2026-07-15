@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-07-15
+
+### L-011 — Mirroring a component across repos: map its token classes to the *consuming* repo's theme; Tailwind v4 drops unknown utilities silently
+- **Context:** Pass-4a (D-049) built explore_floor's `CtaButton` as a code mirror of career_dashboard's, copying its `sizeClasses`. The `md` size carried `text-label` — a real token in the dashboard's `@theme` but **absent from explore_floor's type scale** (h1–h5 / body / small / overline). Tailwind v4 emits no error for an unknown utility; it just produces no CSS, so a `size="md"` button would render with inherited font-size and no scale line-height. It was latent (no `md` call site; all four CTAs use `lg` → the valid `text-small`), so lint + typecheck + unit + E2E all stayed green — **only the `design-reviewer` visual pass caught it**. Fix: `text-label` → `text-small`. This is D-050's per-repo-mirror model biting in miniature: the ecosystem repos share a Figma tier but keep divergent code token vocabularies.
+- **Do:** When porting a component into another repo, diff every token/utility class against the **target** repo's `globals.css` `@theme` block before trusting the copy — don't assume shared class names resolve. Because Tailwind v4 fails silently and typecheck/lint can't see it, **run the design-review/visual gate** on cross-repo mirrors; a screenshot is the only cheap detector of a dropped utility. This class of silent drift will recur in Pass 4b/4c (dashboard + robotics_career code alignment). Related: [[D-050]] (code stays per-repo-aligned), the Pass-4a session note.
+
 ## 2026-07-05
 
 ### L-010 — Building Figma variant sets over existing instances: `combineAsVariants` resets sizing, and imported variables hide from `getLocalVariablesAsync`
