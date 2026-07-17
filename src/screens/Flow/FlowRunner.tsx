@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Icon, SceneBackground, SceneCharacter } from '@/components';
-import { SCENE_BACKGROUNDS, SCENE_BUBBLES, SCENE_CHARACTERS } from '@/data/sceneBackgrounds';
+import { CHARACTER_SCENE_VARIATIONS, LANDING_BG, SCENE_BACKGROUNDS, SCENE_BUBBLES, sceneCharacterSrc } from '@/data/sceneBackgrounds';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
 
@@ -38,21 +38,26 @@ export function FlowRunner() {
     setSceneExiting(false);
   }, [stepIndex, scenePhase]);
   const answers = useSessionStore((s) => s.state.answers);
+  const characterId = useSessionStore((s) => s.state.characterId);
   const recordAnswer = useSessionStore((s) => s.recordAnswer);
   const advanceStep = useSessionStore((s) => s.advanceStep);
   const completeFlow = useSessionStore((s) => s.completeFlow);
   const goBack = useSessionStore((s) => s.goBack);
 
   // Navigation is declarative off currentScreen so it can't race the store updates:
-  // completing the flow sets 'results' (→ /results); a refresh resets the store (→ Landing).
+  // completing the flow sets 'loading' (→ /loading), then results (→ /results).
   const active = currentScreen === 'flow';
   useEffect(() => {
     if (currentScreen === 'results') {
       navigate('/results');
+    } else if (currentScreen === 'loading') {
+      navigate('/loading');
+    } else if (active && !characterId) {
+      navigate('/character', { replace: true });
     } else if (!active) {
       navigate('/', { replace: true });
     }
-  }, [currentScreen, active, navigate]);
+  }, [currentScreen, active, characterId, navigate]);
 
   if (!active) return null;
 
@@ -81,15 +86,15 @@ export function FlowRunner() {
   // always the scene intro behind, and any step past the first has a previous step on the stack.
   const canGoBack = (step.type === 'scene' && scenePhase === 'rating') || history.length > 0;
 
-  // Every step top-anchors (justify-start under the header), matching the reference. Pinning the
-  // card's top makes a step swap a clean horizontal slide and never re-centers a tall (rating-phase)
-  // block against a short (intro) one — the scene→scene "lurch/reset". The liked scene "slide
-  // upward" is produced inside SceneSortView by a shrinking spacer (the reference's qSpacer), not by
-  // flex-centering, so both the lurch fix and the morph hold together.
-
-  // Resolve scene visual assets for the current step (undefined on MC steps → fade out).
-  const backgroundSrc = step.type === 'scene' ? SCENE_BACKGROUNDS[step.id] : undefined;
-  const characterSrc = step.type === 'scene' ? SCENE_CHARACTERS[step.id] : undefined;
+  // Intro MC steps center in the viewport; scenes stay top-anchored so the Continue→rating
+  // morph and scene→scene transitions don't lurch (the slide-up comes from SceneSortView's spacer).
+  const isMc = step.type === 'mc';
+  const backgroundSrc =
+    step.type === 'scene' ? SCENE_BACKGROUNDS[step.id] : step.type === 'mc' ? LANDING_BG : undefined;
+  const backgroundOverlay = step.type === 'mc' ? 'landing' : 'scene';
+  const characterSrc =
+    step.type === 'scene' && characterId ? sceneCharacterSrc(step.id, characterId) : undefined;
+  const characterVariations = characterId ? CHARACTER_SCENE_VARIATIONS[characterId] : undefined;
   const bubbleSrc = step.type === 'scene' ? SCENE_BUBBLES[step.id] : undefined;
   const rating = scenePhase === 'rating';
   // Separate flag for the character: false while sceneExiting so the character slides
@@ -104,11 +109,13 @@ export function FlowRunner() {
   const cardShift = characterSrc && rating && !reduce ? -304 : 0;
 
   return (
-    <>
-    <SceneBackground src={backgroundSrc} />
-    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} sceneId={step.type === 'scene' ? step.id : undefined} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} />
+    <div className="relative flex min-h-0 flex-1 flex-col">
+    <SceneBackground src={backgroundSrc} overlay={backgroundOverlay} />
+    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} sceneId={step.type === 'scene' ? step.id : undefined} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} variations={characterVariations} />
     <motion.main
-      className="relative z-20 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-start p-space-5 pt-space-7"
+      className={`relative z-20 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center p-space-5 ${
+        isMc ? 'justify-center' : 'justify-start pt-space-7'
+      }`}
       initial={false}
       animate={{ x: cardShift }}
       transition={{ duration: durations.glide, ease: easings.soft }}
@@ -172,6 +179,6 @@ export function FlowRunner() {
         </button>
       )}
     </motion.main>
-    </>
+    </div>
   );
 }

@@ -1,0 +1,28 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 138.701 98.1791" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ARM 1">
+<rect id="Rectangle 34" x="101.976" y="2.02469" width="9.29318" height="35.3961" rx="1.55785" transform="rotate(90 101.976 2.02469)" fill="white"/>
+<rect id="Rectangle 35" x="101.962" y="19.6126" width="9.29318" height="35.3961" rx="1.55785" transform="rotate(90 101.962 19.6126)" fill="white"/>
+<rect id="Rectangle 38" x="81.4759" y="24.4873" width="9.29318" height="17.7664" rx="1.55785" transform="rotate(-180 81.4759 24.4873)" fill="white"/>
+<rect id="Rectangle 36" x="110.449" y="12.461" width="6.1499" height="20.4997" rx="1.55785" transform="rotate(90 110.449 12.461)" fill="url(#paint0_linear_0_23)"/>
+<rect id="Rectangle 37" x="96.1673" y="25.8539" width="2.32329" height="20.6363" rx="1.16165" transform="rotate(-180 96.1673 25.8539)" fill="white"/>
+<rect id="Rectangle 39" x="114.966" y="5.82315" width="9.0005" height="1.03852" transform="rotate(90 114.966 5.82315)" fill="white"/>
+<rect id="Rectangle 40" x="117.735" y="5.82315" width="9.0005" height="1.03852" transform="rotate(90 117.735 5.82315)" fill="white"/>
+<rect id="Rectangle 41" width="9.0005" height="1.03852" transform="matrix(-3.26082e-08 -1 -1 3.26082e-08 114.966 25.7282)" fill="white"/>
+<rect id="Rectangle 42" width="9.0005" height="1.03852" transform="matrix(-3.26082e-08 -1 -1 3.26082e-08 117.735 25.7281)" fill="white"/>
+<circle id="Ellipse 32" cx="111.324" cy="15.6185" r="7.2357" transform="rotate(45 111.324 15.6185)" fill="white"/>
+<ellipse id="Ellipse 33" cx="111.404" cy="15.6984" rx="4.86149" ry="4.74843" transform="rotate(45 111.404 15.6984)" fill="#E7E7E7"/>
+<circle id="Ellipse 34" cx="64.1879" cy="15.2626" r="13.1881" transform="rotate(90 64.1879 15.2626)" fill="white"/>
+<path id="Rectangle 43" d="M137.499 10.6879L136.887 13.1219C136.887 13.1219 130.266 8.81881 125.456 7.66C120.87 6.55526 113.386 7.21329 113.386 7.21329L114.526 2.68101C114.526 2.68101 122.135 1.47423 126.653 2.89842C131.626 4.46633 137.499 10.6879 137.499 10.6879Z" fill="white"/>
+<path id="Rectangle 44" d="M137.119 21.2772L136.512 18.842C136.512 18.842 129.883 23.1321 125.07 24.2814C120.483 25.3771 113 24.7043 113 24.7043L114.131 29.2388C114.131 29.2388 121.738 30.4606 126.258 29.0453C131.235 27.4872 137.119 21.2772 137.119 21.2772Z" fill="white"/>
+<rect id="Rectangle 45" x="6.03586" y="45.0393" width="14.9951" height="49.9178" transform="rotate(-15 6.03586 45.0393)" fill="white"/>
+<rect id="Rectangle 46" x="10.3554" y="0.842046" width="25.2799" height="49.9178" rx="5.15634" transform="rotate(11.9728 10.3554 0.842046)" fill="white"/>
+<ellipse id="Ellipse 35" cx="50.5278" cy="92.9505" rx="31.0753" ry="5.22854" fill="white"/>
+<rect id="Rectangle 463" x="58.1659" y="9.84213" width="9.88298" height="32.1658" rx="4.94149" transform="rotate(90 58.1659 9.84213)" fill="white"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_23" x1="113.524" y1="12.461" x2="113.524" y2="32.9606" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E7E7E7"/>
+<stop offset="0.5" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>

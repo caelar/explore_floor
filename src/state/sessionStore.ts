@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { defaultFlowId, flows } from '@/data';
-import type { BucketId, CategoryId, LandingConditionId, SessionState } from '@/data/types';
+import type { BucketId, CategoryId, CharacterId, LandingConditionId, SessionState } from '@/data/types';
 import { calculateCategoryScores } from '@/lib';
 
 // The single session store (DATA_MODEL §17). Store actions are the ONLY place that touches
@@ -25,7 +25,8 @@ interface SessionStore {
   state: SessionState;
   flowId: LandingConditionId;
   selectFlow: (id: LandingConditionId) => void;
-  startSession: () => void;
+  /** Arm the narrative flow with a character pick and enter the step runner. */
+  startSession: (characterId: CharacterId) => void;
   recordAnswer: (stepId: string, choiceId: string) => void;
   /** Move the runner cursor forward: to a branch target by step id, or to the next step.
    *  Pushes the current step onto `history` and resets the scene cursor for the new step. */
@@ -38,15 +39,20 @@ interface SessionStore {
   /** Reverse one step of the flow: previous choice → scene intro → previous step (re-entering a
    *  prior scene at its last choice). Branch-aware via `history`; a no-op at the very first step. */
   goBack: () => void;
-  completeFlow: () => void; // triggers category scoring
+  completeFlow: () => void; // triggers category scoring → loading interstitial
+  /** After the loading screen animation completes, route to results. */
+  finishLoading: () => void;
   /** DEV ONLY: seed a plausible completed run and jump to results, skipping the quiz. Wired to a
    *  dev-only control on Landing; remove before ship (VISUAL_REARCHITECTURE.md Phase G). */
   devSeedResults: () => void;
+  /** DEV ONLY: seed a completed run and land on the loading interstitial. */
+  devSeedLoading: () => void;
   reset: () => void;
 }
 
 const createInitialState = (): SessionState => ({
   currentScreen: 'landing',
+  characterId: null,
   stepIndex: 0,
   history: [],
   scenePhase: 'intro',
@@ -55,6 +61,42 @@ const createInitialState = (): SessionState => ({
   statementBuckets: {},
   categoryResult: null,
 });
+
+/** DEV ONLY: believable completed-run seed shared by the skip shortcuts on Landing. */
+function buildDevSeedState(screen: 'loading' | 'results'): SessionState {
+  const flow = flows[defaultFlowId];
+  const answers: Record<string, string> = {};
+  const statementBuckets: Record<string, BucketId> = {};
+  const winners: CategoryId[] = ['specialist', 'integrator', 'technician'];
+  let sceneN = 0;
+  for (const step of flow.steps) {
+    if (step.type === 'mc') {
+      const pick =
+        step.choices.find((c) => c.categories.includes('specialist')) ?? step.choices[0];
+      answers[step.id] = pick.id;
+    } else {
+      const winner = winners[sceneN % winners.length];
+      sceneN += 1;
+      for (const choice of step.choices) {
+        statementBuckets[choice.id] =
+          choice.category === winner
+            ? 'thats-me'
+            : choice.category === 'technician'
+              ? 'maybe'
+              : 'not-me';
+      }
+    }
+  }
+  const categoryResult = calculateCategoryScores(flow, answers, statementBuckets);
+  return {
+    ...createInitialState(),
+    characterId: 'girl',
+    answers,
+    statementBuckets,
+    categoryResult,
+    currentScreen: screen,
+  };
+}
 
 export const useSessionStore = create<SessionStore>((set, get) => {
   const activeFlow = () => {
@@ -68,7 +110,8 @@ export const useSessionStore = create<SessionStore>((set, get) => {
 
     selectFlow: (id) => set({ flowId: id }),
 
-    startSession: () => set({ state: { ...createInitialState(), currentScreen: 'flow' } }),
+    startSession: (characterId) =>
+      set({ state: { ...createInitialState(), characterId, currentScreen: 'flow' } }),
 
     recordAnswer: (stepId, choiceId) =>
       set((store) => ({
@@ -117,7 +160,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
         if (nextIndex >= flow.steps.length) {
           const categoryResult = calculateCategoryScores(flow, store.state.answers, statementBuckets);
           return {
-            state: { ...store.state, statementBuckets, categoryResult, currentScreen: 'results' },
+            state: { ...store.state, statementBuckets, categoryResult, currentScreen: 'loading' },
           };
         }
         return {
@@ -171,46 +214,15 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           store.state.answers,
           store.state.statementBuckets,
         );
-        return { state: { ...store.state, categoryResult, currentScreen: 'results' } };
+        return { state: { ...store.state, categoryResult, currentScreen: 'loading' } };
       }),
 
-    devSeedResults: () =>
-      set(() => {
-        const flow = flows[defaultFlowId];
-        const answers: Record<string, string> = {};
-        const statementBuckets: Record<string, BucketId> = {};
-        // Rotate which role "wins" each scene for a believable, non-degenerate spread.
-        const winners: CategoryId[] = ['specialist', 'integrator', 'technician'];
-        let sceneN = 0;
-        for (const step of flow.steps) {
-          if (step.type === 'mc') {
-            const pick =
-              step.choices.find((c) => c.categories.includes('specialist')) ?? step.choices[0];
-            answers[step.id] = pick.id;
-          } else {
-            const winner = winners[sceneN % winners.length];
-            sceneN += 1;
-            for (const choice of step.choices) {
-              statementBuckets[choice.id] =
-                choice.category === winner
-                  ? 'thats-me'
-                  : choice.category === 'technician'
-                    ? 'maybe'
-                    : 'not-me';
-            }
-          }
-        }
-        const categoryResult = calculateCategoryScores(flow, answers, statementBuckets);
-        return {
-          state: {
-            ...createInitialState(),
-            answers,
-            statementBuckets,
-            categoryResult,
-            currentScreen: 'results',
-          },
-        };
-      }),
+    finishLoading: () =>
+      set((store) => ({ state: { ...store.state, currentScreen: 'results' } })),
+
+    devSeedResults: () => set({ state: buildDevSeedState('results') }),
+
+    devSeedLoading: () => set({ state: buildDevSeedState('loading') }),
 
     // Replaces only `state` — flowId is intentionally preserved (see header comment).
     reset: () => set({ state: createInitialState() }),

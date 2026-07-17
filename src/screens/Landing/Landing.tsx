@@ -6,16 +6,15 @@ import { roleSelectLanding } from '@/data';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
 
-// Landing: a type-led dark hero (D-029, Phase A — the line-art scene hint was retired with the
-// conveyor concept). Motion owns the content entrance; there's no scene engine here anymore.
-// For the virtual test round the on-screen controls are stripped to a single Start CTA, so a tester
-// has no option but to begin the narrative quiz. The condition-switcher and the dev skip-to-results
-// UI were removed, but their capabilities stay intact (the `selectFlow` store action, the `/select`
-// route, and `devSeedResults` still exist) — the CTA still routes by condition, so restoring the
-// switcher later re-enables the 'select' arm with no other change.
+import { LandingBackground } from './LandingBackground';
+
+const LOGO = `${import.meta.env.BASE_URL}rc_logo_white_text.png`;
+
+// Landing hero (Figma 1367:312): factory-floor illustration, centered logo + headline + CTA.
+
 export function Landing() {
   const navigate = useNavigate();
-  const startSession = useSessionStore((s) => s.startSession);
+  const devSeedLoading = useSessionStore((s) => s.devSeedLoading);
   const flowId = useSessionStore((s) => s.flowId);
   const flow = useFlow();
   const landingCopy = flowId === 'select' ? roleSelectLanding : flow.landingCopy;
@@ -26,24 +25,38 @@ export function Landing() {
       navigate('/select');
       return;
     }
-    startSession();
-    navigate('/flow');
+    navigate('/character');
+  };
+
+  const devToLoading = () => {
+    devSeedLoading();
+    navigate('/loading');
   };
 
   return (
-    <main className="mx-auto flex min-h-full max-w-lg flex-col items-center justify-center gap-space-6 px-space-4 py-space-7 text-center">
+    <main className="relative flex flex-1 flex-col overflow-hidden">
+      <LandingBackground />
+
       <motion.div
-        className="flex flex-col items-center gap-space-4"
+        className="relative z-10 mx-auto flex w-full max-w-[729px] flex-1 flex-col items-center justify-center gap-space-4 px-space-4 py-space-7 text-center"
         initial={reduce ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: durations.glide, ease: easings.soft }}
       >
-        <p className="text-overline text-text-on-dark-faint">{landingCopy.overline}</p>
+        <img src={LOGO} alt="RoboticsCareer.org" className="h-10 w-auto shrink-0" />
         <h1 className="font-heading text-h1 text-text-on-dark">{landingCopy.heading}</h1>
         <p className="max-w-md text-body text-text-on-dark-muted">{landingCopy.description}</p>
-        <Button onClick={begin} data-testid="start-cta">
+        <Button onClick={begin} variant="hero" data-testid="start-cta">
           {landingCopy.cta}
         </Button>
+        <button
+          type="button"
+          onClick={devToLoading}
+          data-testid="dev-skip-to-loading"
+          className="font-body text-small text-text-on-dark-faint underline transition-colors hover:text-text-on-dark"
+        >
+          Dev: skip to loading
+        </button>
       </motion.div>
     </main>
   );

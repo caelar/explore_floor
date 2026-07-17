@@ -97,6 +97,9 @@
   --spacing-space-5: 32px;
   --spacing-space-6: 48px;
   --spacing-space-7: 64px;
+  --spacing-cta-x: 30px; /* Figma 1368:450 — landing hero CTA horizontal padding */
+  --spacing-job-stat: 25px; /* Figma 1386:494 — job-overview salary/education stat box padding */
+  --min-height-job-stat: 148px; /* Figma 1386:494 — job-overview stat box height */
   --spacing-container-px: 16px; /* horizontal page padding */
   --spacing-section-py: 48px; /* vertical section padding */
   --spacing-nav: 60px; /* app top-nav height (real RC TopNav); the results sheet sizes off it */
@@ -117,6 +120,7 @@
   --radius-sm: 6px; /* kit Refined (was 4px) */
   --radius-md: 8px; /* inputs / answer + rating rows (mockup 8px) */
   --radius-lg: 16px; /* dark quiz cards — question + scene-context surfaces (mockup 14–16px); D-029 Phase B */
+  --radius-cta: 20px; /* Figma 1368:450 — landing hero CTA */
   --radius-full: 9999px;
 
   /* ---- Shadow / elevation — kit soft tiers (DEF-013 R1; replaces the Material triple-stacks) ---- */
@@ -216,6 +220,37 @@
   *:focus-visible {
     outline: 2px solid var(--color-text-on-dark);
     outline-offset: 2px;
+  }
+
+  /* Pointer on every interactable affordance. Utility classes (e.g. cursor-grab on drag cards /
+     the career-map pan layer) override this in the utilities layer. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  a[href],
+  summary,
+  label[for],
+  [role='tab']:not([aria-disabled='true']),
+  [role='menuitem'],
+  [role='menuitemradio'] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  /* Career map hub hit targets — no focus box around the role circle (Figma 1296:1661). */
+  .map-hub-label:focus,
+  .map-hub-label:focus-visible {
+    outline: none;
+  }
+
+  /* Career map job hit targets — no focus box on the selected orb (Figma 1349:312). */
+  .map-job-hit,
+  .map-job-hit:focus,
+  .map-job-hit:focus-visible {
+    outline: none !important;
   }
 
   /* Material Icons ligature rendering. Usage: <span class="material-icons">bolt</span>,

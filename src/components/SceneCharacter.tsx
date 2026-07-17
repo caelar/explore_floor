@@ -19,6 +19,8 @@ interface SceneCharacterProps {
    *  bounce and cycle the thought bubble's symbol on every new question. */
   choiceIndex: number;
   reduce: boolean;
+  /** Bounce-pose pool for the picked character; defaults to the girl variations. */
+  variations?: readonly string[];
 }
 
 // Choreography (all delays measured from when visible=true, i.e. Continue press):
@@ -44,12 +46,13 @@ const CHAR_CONTAINER_WIDTH = CHAR_IMG_WIDTH;
 // How long after a new choice appears before the re-bounce fires.
 const REBOUNCE_DELAY = 0.15; // seconds
 
-function pickNextVariation(previous: string | undefined): string {
-  const pool = CHARACTER_VARIATIONS.filter((v) => v !== previous);
-  return pool[Math.floor(Math.random() * pool.length)];
+function pickNextVariation(previous: string | undefined, pool: readonly string[]): string {
+  const options = pool.filter((v) => v !== previous);
+  if (options.length === 0) return pool[0] ?? previous ?? '';
+  return options[Math.floor(Math.random() * options.length)];
 }
 
-export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, reduce }: SceneCharacterProps) {
+export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, reduce, variations = CHARACTER_VARIATIONS }: SceneCharacterProps) {
   // Default pose on entrance; each bounce swaps to a random variation.
   const [displayedSrc, setDisplayedSrc] = useState(src);
   const previousPoseRef = useRef<string | undefined>(src);
@@ -74,7 +77,7 @@ export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, 
     const delay = choiceIndex === 0 ? BOUNCE_DELAY : REBOUNCE_DELAY;
 
     const switchTimer = setTimeout(() => {
-      const next = pickNextVariation(previousPoseRef.current);
+      const next = pickNextVariation(previousPoseRef.current, variations);
       previousPoseRef.current = next;
       setDisplayedSrc(next);
     }, delay * 1000);
@@ -93,7 +96,7 @@ export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, 
     }
 
     return () => clearTimeout(switchTimer);
-  }, [visible, choiceIndex, reduce, animateBounce, src]);
+  }, [visible, choiceIndex, reduce, animateBounce, src, variations, charRef]);
 
   if (!src) return null;
 
