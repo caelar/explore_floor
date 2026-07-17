@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import { SparkleStar } from '@/components';
 import { ROLE_ACCENT } from '@/components/categoryAccent';
-import { MAP_JOB_GLOW_HEX } from '@/data/careerMapArt';
 import { roleDetails } from '@/data';
+import { MAP_JOB_GLOW_HEX } from '@/data/careerMapArt';
 import type { Job } from '@/data/types';
-import { buildJobTrajectory, trajectoryRungY, type TrajectoryRung } from '@/lib/jobTrajectory';
+import { buildJobTrajectory, type TrajectoryRung,trajectoryRungY } from '@/lib/jobTrajectory';
 
 import { CareerMapOrbGlow } from './CareerMapOrbGlow';
 import { fill } from './copy';

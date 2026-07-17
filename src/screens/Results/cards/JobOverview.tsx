@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Icon } from '@/components/Icon';
 import { bridgePrograms, fitNarrative } from '@/data';
-import { JOB_LEVEL_LABELS, type Job, ResultsCardsCopy, RoleDetail } from '@/data/types';
+import { type Job, JOB_LEVEL_LABELS, ResultsCardsCopy, RoleDetail } from '@/data/types';
 
 import { BridgeProgramRow } from './BridgeProgramRow';
 import { Chip } from './Chip';
