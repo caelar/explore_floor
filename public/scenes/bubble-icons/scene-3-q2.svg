@@ -1,0 +1,35 @@
+<svg width="100" height="100" viewBox="0 0 220 188.889" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<g id="Group 22">
+<rect id="Rectangle 420" x="83.333" y="147.778" width="52.2222" height="36.6667" fill="url(#paint0_linear_0_1)"/>
+<rect id="Rectangle 419" x="0" y="116.667" width="220" height="35.5556" rx="2.22222" fill="url(#paint1_linear_0_1)"/>
+<g id="Frame 22">
+<g clip-path="url(#clip0_0_1)">
+<rect x="5.55566" y="5.55554" width="208.889" height="122.222" rx="2.22222" fill="#1E1E1E"/>
+<rect id="Rectangle 418" x="91.1855" y="1.28723" width="147.778" height="188.266" transform="rotate(-28.3031 91.1855 1.28723)" fill="url(#paint2_linear_0_1)"/>
+<path id="Ellipse 82" d="M119.822 23.721C121.038 24.101 122.03 25.38 122.686 27.64C123.335 29.878 123.611 32.943 123.502 36.637C123.285 44.018 121.532 53.791 118.283 64.197C115.034 74.604 110.914 83.639 106.894 89.832C104.881 92.932 102.91 95.296 101.103 96.766C99.278 98.251 97.734 98.739 96.518 98.36C95.303 97.98 94.311 96.7 93.655 94.441C93.006 92.203 92.728 89.137 92.837 85.443C93.055 78.063 94.809 68.289 98.058 57.883C101.307 47.476 105.425 38.442 109.446 32.248C111.458 29.149 113.431 26.785 115.238 25.315C117.063 23.829 118.607 23.342 119.822 23.721Z" stroke="#FF59CD"/>
+<path id="Ellipse 83" d="M73.142 46.155C73.235 45.922 73.495 45.672 74.092 45.48C74.682 45.29 75.515 45.187 76.587 45.185C78.726 45.181 81.695 45.578 85.292 46.345C92.479 47.876 102.084 50.861 112.399 54.939C122.714 59.018 131.764 63.409 138.055 67.207C141.203 69.107 143.64 70.847 145.198 72.313C145.979 73.047 146.516 73.692 146.817 74.234C147.121 74.782 147.141 75.144 147.049 75.377C146.957 75.61 146.695 75.86 146.098 76.052C145.508 76.242 144.675 76.345 143.603 76.347C141.464 76.351 138.496 75.955 134.899 75.188C127.712 73.657 118.106 70.672 107.791 66.594C97.476 62.515 88.427 58.124 82.136 54.327C78.987 52.426 76.55 50.685 74.992 49.219C74.211 48.484 73.674 47.84 73.373 47.298C73.069 46.749 73.05 46.388 73.142 46.155Z" stroke="#FFF459"/>
+<path id="Vector 92" d="M102 47C102 47 98.984 54.528 97.5 59.5C96.863 61.633 96 65 96 65" stroke="#FF59CD"/>
+<circle id="Ellipse 81" cx="109.5" cy="61.5" r="41" stroke="#31CCF1" stroke-width="3"/>
+</g>
+<rect x="2.77789" y="2.77776" width="214.444" height="127.778" rx="5" stroke="#D7D5D5" stroke-width="5.55556"/>
+</g>
+<rect id="Rectangle 421" x="83.334" y="183.333" width="52.2222" height="5.55556" fill="#959393"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="110" y1="190" x2="110" y2="135" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="1" stop-color="#737373"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1" x1="0" y1="134.444" x2="220" y2="134.444" gradientUnits="userSpaceOnUse">
+<stop stop-color="#B7B7B7"/>
+<stop offset="1" stop-color="#D9D9D9"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_1" x1="165.074" y1="1.28723" x2="165.074" y2="189.553" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7B7979"/>
+<stop offset="0.418269" stop-color="#262626" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="clip0_0_1">
+<rect x="5.55566" y="5.55554" width="208.889" height="122.222" rx="2.22222" fill="white"/>
+</clipPath>
+</defs>
+</svg>

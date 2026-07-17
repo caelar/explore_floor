@@ -317,6 +317,7 @@ export const narrativeFlow: CategoryFlow = {
         responsibilitiesHeading: 'What you’ll do',
         overviewBack: 'Back to {role} careers',
         setTargetCta: 'Set as target role',
+        currentTargetCta: 'Current target role',
         overviewTabs: ['Job overview', 'Skills & competencies', 'How you fit'],
         jobSkillsHeading: 'Skills for this job',
         closeGapHeading: 'How to close the gap',
@@ -324,6 +325,7 @@ export const narrativeFlow: CategoryFlow = {
           'Training programs that build the skills and credentials this path asks for.',
         youAsHeading: 'You as a {noun}',
         trajectoryHeading: 'Where this can lead',
+        trajectoryCrossRole: '{role} path',
       },
     },
     sheet: {

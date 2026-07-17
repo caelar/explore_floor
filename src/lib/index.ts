@@ -1,5 +1,36 @@
-export type { BubbleLayout } from './bubbleLayout';
 export { BUBBLE_VIEW, bubbleLayout, bubbleRadius } from './bubbleLayout';
+export type { CareerMapEdge, CareerMapEdgeLayout, CareerMapJobLayout, CareerMapRoleLayout, CareerMapZoom, MapBounds, MapCamera, MapPhase } from './careerMapLayout';
+export {
+  careerMapAllJobNodes,
+  careerMapCamera,
+  careerMapCameraForJob,
+  careerMapCameraForPhase,
+  careerMapCirclesFitViewport,
+  careerMapClampCamera,
+  careerMapClusterBounds,
+  careerMapConnectedEdgePath,
+  careerMapContentBounds,
+  careerMapEdgeGapViewBox,
+  careerMapEdgeLayouts,
+  careerMapEdges,
+  careerMapFitScale,
+  careerMapJobNodes,
+  careerMapJobs,
+  careerMapMinScaleForBounds,
+  careerMapPanLimits,
+  careerMapPointInBounds,
+  careerMapRemapCameraForViewportResize,
+  careerMapRoles,
+  careerMapScreenToViewBox,
+  careerMapZoom,
+  jobMapPosition,
+  MAP_JOB_LABEL,
+  MAP_RANK_CLUSTERS,
+  MAP_VIEW,
+  mapRankCluster,
+  orthogonalEdge,
+  roleRadius,
+} from './careerMapLayout';
 export type { CategoryContribution, CategoryContributions } from './categoryBreakdown';
 export { categoryContributions } from './categoryBreakdown';
 export { calculateCategoryScores, computeCategoryMax, MAYBE_WEIGHT } from './categoryScoring';
@@ -11,6 +42,7 @@ export type {
   ConstellationOptions,
 } from './constellationLayout';
 export { CONSTELLATION_VIEW, constellationLayout } from './constellationLayout';
+export { buildJobTrajectory, jobById, jobMapLocation } from './jobTrajectory';
 export * from './motion';
 export type { Point } from './nodeLayout';
 export { CATEGORY_ANGLES, fanPoints, polarPoint, radarPoints } from './nodeLayout';

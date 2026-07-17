@@ -2,78 +2,97 @@ import { useState } from 'react';
 
 import { Icon } from '@/components/Icon';
 import { bridgePrograms, fitNarrative } from '@/data';
-import type { Job, ResultsCardsCopy, RoleDetail } from '@/data/types';
+import { JOB_LEVEL_LABELS, type Job, ResultsCardsCopy, RoleDetail } from '@/data/types';
 
 import { BridgeProgramRow } from './BridgeProgramRow';
 import { Chip } from './Chip';
 import { fill } from './copy';
+import { JobEducationStat, JobSalaryStat } from './JobOverviewStats';
 import { ResultsPanel } from './ResultsPanel';
-import { StatBox } from './StatBox';
 import { TrajectoryViz } from './TrajectoryViz';
 
-// Screen 7 of the mockup's results system (D-029 Phase F): the standalone job-overview page. Lives
-// in the same rounded scroll panel as the cards (ResultsPanel) with its own control bar — a Back to
-// the job overlay and an inert "Set as target role" pill (chrome only, no real wiring per scope).
-// Three tabs: the job overview, skills + competencies + bridge programs, and a "how you fit"
-// trajectory. Local tab state (the cards' nav.activeTab is the cards' 2-tab cursor, not this).
+// Job description card on the career map (Figma 1386:494). Three tabs — job overview, skills and
+// competencies, how you fit — with per-job copy from jobs.ts and role-level stats from roleDetails.
 
 interface JobOverviewProps {
   copy: ResultsCardsCopy;
   detail: RoleDetail;
   job: Job;
   onBack: () => void;
+  embedded?: boolean;
+  onNavigateToJob?: (jobId: string) => void;
+  isTargetRole?: boolean;
+  onSetTargetRole?: () => void;
 }
 
-export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
+export function JobOverview({
+  copy,
+  detail,
+  job,
+  onBack,
+  embedded = false,
+  onNavigateToJob,
+  isTargetRole = false,
+  onSetTargetRole,
+}: JobOverviewProps) {
   const explore = copy.explore;
   const [tab, setTab] = useState(0);
   const programs = bridgePrograms[detail.categoryId];
+  const salaryMedian = job.salaryMedian ?? detail.salaryMedian;
+  const educationCredential = job.education ?? detail.educationShort;
+  const educationSubline = job.education ? undefined : detail.educationSubline;
+  const roleNoun = job.roleNoun ?? job.title;
 
-  // Control bar mirrors the role screens: the primary nav (here, Back) sits on the RIGHT, with the
-  // inert "Set as target role" chrome on the left (Caelan's call — diverges from the mockup's
-  // left-back layout for cross-screen consistency).
   const controlBar = (
     <>
-      {/* Inert chrome (no real "set target" action in scope). */}
-      <span
+      <button
+        type="button"
         data-testid="set-target"
-        className="inline-flex h-control-lg items-center gap-space-1 rounded-full bg-arm-gold px-space-3 font-heading text-body font-bold text-near-black"
+        aria-pressed={isTargetRole}
+        onClick={() => onSetTargetRole?.()}
+        disabled={!onSetTargetRole}
+        className={`inline-flex h-control-lg items-center gap-space-1 rounded-full px-space-4 font-heading text-body font-medium transition-colors ${
+          isTargetRole
+            ? 'bg-arm-gold text-text-default'
+            : 'bg-text-subtle text-arm-gold hover:bg-text-subtle/90'
+        }`}
       >
-        <Icon name="star" size={18} />
-        {explore.setTargetCta}
-      </span>
-      {/* Right-positioned, so the affordance points right (onward to the role's careers), matching
-          the other "Explore … →" controls rather than a left-back chevron on the right edge. */}
+        <Icon
+          name="star"
+          size={18}
+          className={isTargetRole ? 'text-text-default' : 'text-arm-gold'}
+        />
+        {isTargetRole ? explore.currentTargetCta : explore.setTargetCta}
+      </button>
       <button
         type="button"
         onClick={onBack}
         data-testid="job-overview-back"
-        className="inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border px-space-3 font-body text-body text-text-on-dark transition-colors hover:bg-glass-fill"
+        aria-label={fill(explore.overviewBack, { role: detail.roleName })}
+        className="inline-flex size-6 items-center justify-center text-text-on-dark transition-colors hover:text-text-on-dark-muted"
       >
-        {fill(explore.overviewBack, { role: detail.roleName })}
-        <Icon name="arrow-r" size={18} />
+        <Icon name="close" size={24} />
       </button>
     </>
   );
 
   return (
-    <ResultsPanel controlBar={controlBar}>
+    <ResultsPanel controlBar={controlBar} variant={embedded ? 'embedded' : 'floating'}>
       <div className="mx-auto flex w-full max-w-results flex-col gap-space-5" data-testid="job-overview">
         <header>
           <p className="font-body text-small text-text-on-dark-faint">
             {fill(explore.jobEyebrow, { role: detail.roleName })}
           </p>
-          {/* Title + tier pill in a justify-between row (reference parity): the level pill on the
-              right lightly reinforces the rung framing (Entry level / Mid level / Planning). */}
-          <div className="mt-space-1 flex items-start justify-between gap-space-3">
-            <h1 className="font-heading text-h2 text-text-on-dark">{job.title}</h1>
-            <span className="mt-space-1 shrink-0 rounded-full border border-glass-border bg-glass-fill px-space-3 py-space-1 font-body text-small text-text-on-dark-muted">
-              {detail.tierLabel}
-            </span>
-          </div>
+          <h1 className="mt-space-1 font-heading text-h2 text-text-on-dark">{job.title}</h1>
+          <span
+            className="mt-space-2 inline-flex rounded-full border border-glass-border bg-glass-fill px-space-4 py-space-2 font-body text-small text-text-on-dark-muted"
+            data-testid="job-level-pill"
+          >
+            {JOB_LEVEL_LABELS[job.seniority]}
+          </span>
         </header>
 
-        <div className="flex gap-space-5 border-b border-glass-border" role="tablist">
+        <div className="flex w-full justify-between border-b border-glass-border" role="tablist">
           {explore.overviewTabs.map((label, i) => {
             const active = tab === i;
             return (
@@ -84,10 +103,10 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
                 aria-selected={active}
                 onClick={() => setTab(i)}
                 data-testid={`job-overview-tab-${i}`}
-                className={`-mb-px border-b-2 pb-space-3 font-heading text-body font-bold transition-colors ${
+                className={`-mb-px border-b-2 pb-space-3 text-body transition-colors ${
                   active
-                    ? 'border-text-on-dark text-text-on-dark'
-                    : 'border-transparent text-text-on-dark-faint hover:text-text-on-dark-muted'
+                    ? 'border-text-on-dark font-heading font-bold text-text-on-dark'
+                    : 'border-transparent font-body font-normal text-text-on-dark-faint hover:text-text-on-dark-muted'
                 }`}
               >
                 {label}
@@ -103,16 +122,12 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
               <p className="mt-space-2 font-body text-body text-text-on-dark-muted">{job.summary}</p>
             </section>
             <div className="flex flex-col gap-space-3 sm:flex-row">
-              <StatBox label={copy.salaryLabel}>
-                <p className="font-heading text-h4 text-text-on-dark">
-                  {job.salaryMedian ?? detail.salaryMedian}
-                </p>
-              </StatBox>
-              {/* Education matches the salary box: one bold line (role-level educationShort, since
-                  jobs in a path share a tier) rather than the multi-line bulleted list. */}
-              <StatBox label={copy.educationLabel}>
-                <p className="font-heading text-h4 text-text-on-dark">{detail.educationShort}</p>
-              </StatBox>
+              <JobSalaryStat label={copy.salaryLabel} median={salaryMedian} />
+              <JobEducationStat
+                label={copy.educationLabel}
+                credential={educationCredential}
+                subline={educationSubline}
+              />
             </div>
             <section>
               <h2 className="font-heading text-h5 text-text-on-dark">{explore.responsibilitiesHeading}</h2>
@@ -144,9 +159,11 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
             </section>
             <section>
               <h2 className="font-heading text-h5 text-text-on-dark">{explore.jobSkillsHeading}</h2>
-              <div className="mt-space-3 flex flex-wrap gap-space-1">
+              <div className="mt-space-3 flex flex-wrap gap-space-2">
                 {job.skills.map((skill) => (
-                  <Chip key={skill}>{skill}</Chip>
+                  <Chip key={skill} variant="job">
+                    {skill}
+                  </Chip>
                 ))}
               </div>
             </section>
@@ -166,16 +183,26 @@ export function JobOverview({ copy, detail, job, onBack }: JobOverviewProps) {
           <div className="flex flex-col gap-space-5">
             <section>
               <h2 className="font-heading text-h5 text-text-on-dark">
-                {fill(explore.youAsHeading, { noun: job.roleNoun ?? job.title })}
+                {fill(explore.youAsHeading, { noun: roleNoun })}
               </h2>
               <p className="mt-space-2 font-body text-body text-text-on-dark-muted">
-                {fill(fitNarrative[detail.categoryId], { noun: job.roleNoun ?? job.title })}
+                {fill(fitNarrative[detail.categoryId], { noun: roleNoun })}
               </p>
             </section>
             <section>
               <h2 className="font-heading text-h5 text-text-on-dark">{explore.trajectoryHeading}</h2>
               <div className="mt-space-3">
-                <TrajectoryViz category={detail.categoryId} />
+                <TrajectoryViz
+                  job={job}
+                  crossRoleLabel={explore.trajectoryCrossRole}
+                  onSelectJob={
+                    onNavigateToJob
+                      ? (target) => {
+                          if (target.id !== job.id) onNavigateToJob(target.id);
+                        }
+                      : undefined
+                  }
+                />
               </div>
             </section>
           </div>

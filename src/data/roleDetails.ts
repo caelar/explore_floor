@@ -127,6 +127,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
       'You kept choosing to write code and dig into hard problems. That’s the heart of being a Specialist.',
     education: "Bachelor's Degree (required) or Master's Degree (sometimes preferred)",
     educationShort: "Bachelor's",
+    educationSubline: "(Master's may be preferred)",
     educationLevel: 2,
     commonJobTitles: [
       'Robotics Specialist',
@@ -180,6 +181,7 @@ export const roleDetails: Record<CategoryId, RoleDetail> = {
       'You kept choosing to plan ahead and lead the group. That’s the heart of being an Integrator.',
     education: "Bachelor's Degree (required) or Master's Degree (sometimes preferred)",
     educationShort: "Bachelor's",
+    educationSubline: "(Master's may be preferred)",
     educationLevel: 2,
     commonJobTitles: [
       'Robotics Integrator',

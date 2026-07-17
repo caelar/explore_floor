@@ -1,0 +1,34 @@
+<svg width="100" height="100" viewBox="0 0 220 188.889" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<g id="Group 22">
+<rect id="Rectangle 420" x="83.334" y="147.778" width="52.2222" height="36.6667" fill="url(#paint0_linear_0_1)"/>
+<rect id="Rectangle 419" x="0" y="116.667" width="220" height="35.5556" rx="2.22222" fill="url(#paint1_linear_0_1)"/>
+<g id="Frame 22">
+<g clip-path="url(#clip0_0_1)">
+<rect x="5.55566" y="5.55554" width="208.889" height="122.222" rx="2.22222" fill="#1E1E1E"/>
+<rect id="Rectangle 418" x="91.1855" y="1.28723" width="147.778" height="188.266" transform="rotate(-28.3031 91.1855 1.28723)" fill="url(#paint2_linear_0_1)"/>
+<g id="code_xml_24dp_000000_FILL0_wght400_GRAD0_opsz24 1">
+<path id="Vector" d="M86.208 81.754L66 61.546L86.208 41.337L71.867 46.996L57.418 61.546L71.867 76.096L86.208 81.754ZM104.194 95.092L96.515 92.667L116.723 28L124.402 30.425L104.194 95.092ZM134.708 81.754L129.05 76.096L143.499 61.546L129.05 46.996L134.708 41.337L154.917 61.546L134.708 81.754Z" fill="#2BCE32"/>
+</g>
+</g>
+<rect x="2.77789" y="2.77776" width="214.444" height="127.778" rx="5" stroke="#D7D5D5" stroke-width="5.55556"/>
+</g>
+<rect id="Rectangle 421" x="83.334" y="183.333" width="52.2222" height="5.55556" fill="#959393"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="110" y1="190" x2="110" y2="135" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="1" stop-color="#737373"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1" x1="0" y1="134.444" x2="220" y2="134.444" gradientUnits="userSpaceOnUse">
+<stop stop-color="#B7B7B7"/>
+<stop offset="1" stop-color="#D9D9D9"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_1" x1="165.074" y1="1.28723" x2="165.074" y2="189.553" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7B7979"/>
+<stop offset="0.418269" stop-color="#262626" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="clip0_0_1">
+<rect x="5.55566" y="5.55554" width="208.889" height="122.222" rx="2.22222" fill="white"/>
+</clipPath>
+</defs>
+</svg>

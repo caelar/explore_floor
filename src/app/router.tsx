@@ -1,8 +1,10 @@
 import { createHashRouter } from 'react-router-dom';
 
 import { AppLayout } from '@/app/AppLayout';
+import { CharacterSelect } from '@/screens/CharacterSelect';
 import { FlowRunner } from '@/screens/Flow';
 import { Landing } from '@/screens/Landing';
+import { LoadingScreen } from '@/screens/Loading';
 import { Results } from '@/screens/Results';
 import { RoleSelect } from '@/screens/Select';
 
@@ -16,7 +18,9 @@ export const router = createHashRouter([
     element: <AppLayout />,
     children: [
       { path: '/', element: <Landing /> },
+      { path: '/character', element: <CharacterSelect /> },
       { path: '/flow', element: <FlowRunner /> },
+      { path: '/loading', element: <LoadingScreen /> },
       { path: '/results', element: <Results /> },
       { path: '/select', element: <RoleSelect /> },
     ],

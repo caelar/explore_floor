@@ -59,9 +59,10 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  // The Landing is narrative-only now (the flow switcher UI was removed for the virtual test round);
-  // the Start CTA goes straight into the narrative flow.
+  // Landing → character pick → flow.
   await page.getByTestId('start-cta').click();
+  await expect(page).toHaveURL(/\/character$/);
+  await page.getByTestId('character-select-girl').click();
   await expect(page).toHaveURL(/\/flow$/);
 
   // Intro questions. Q0 (experience) is a new unscored question shown first under the
@@ -158,45 +159,39 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await page.getByTestId('compare-back').click();
   await expect(page.getByTestId('role-name')).toHaveText(leftRole);
 
-  // Map (D-029 Phase E): the control opens the ambient bubble map; the three roles render as
-  // bubbles sized by match %. The bubbles float continuously (no reduced motion here), so clicks
-  // are forced past Playwright's element-stability wait.
+  // Career map (D-029 Phase E/F unified): the control opens the zoomable map; three role bubbles
+  // sized by match %. Tapping a bubble zooms into that role's jobs; tapping a job opens JobOverview
+  // in the side panel (same cards as before).
   await page.getByTestId('open-map').click();
   await expect(page.getByTestId('results-map')).toBeVisible();
   for (const category of ['technician', 'specialist', 'integrator'] as const) {
     await expect(page.getByTestId(`map-bubble-${category}`)).toBeVisible();
   }
 
-  // Constellation (D-029 Phase F): tapping a bubble now dives into that role's job constellation
-  // (not its card — that was Phase E's interim). The center names the role; the side panel shows
-  // the role summary + its jobs.
+  // Role zoom: tapping the top-match bubble stays on the map and reveals job nodes + labels.
   await page.getByTestId(`map-bubble-${expected.ranking[0]}`).click({ force: true });
-  await expect(page.getByTestId('results-constellation')).toBeVisible();
-  await expect(page.getByTestId('constellation-center')).toContainText(topRole);
-  await expect(page.getByTestId('job-side-panel')).toBeVisible();
+  await expect(page.getByTestId('career-map-field')).toBeVisible();
+  await expect(page.getByTestId('map-back-overview')).toBeVisible();
 
-  // A constellation node opens the job overlay (the node floats, so force the click); the panel
-  // body swaps to that job. Its "Job overview" opens the full job page with three tabs.
+  // Job select: opens JobOverview directly in the left panel (no intermediate job overlay).
   const topJob = jobs[expected.ranking[0]][0];
-  await page.getByTestId(`constellation-node-${topJob.id}`).click({ force: true });
-  await expect(page.getByTestId('job-side-panel')).toContainText(`Job in ${topRole}`);
-  await expect(page.getByTestId('job-side-panel')).toContainText(topJob.title);
-  await page.getByTestId('job-overview-cta').click();
+  await page.getByTestId(`career-map-job-${topJob.id}`).click({ force: true });
+  await expect(page.getByTestId('career-map-job-panel')).toBeVisible();
   await expect(page.getByTestId('job-overview')).toContainText(topJob.title);
+  await expect(page.getByTestId('job-overview')).toContainText(`Job in ${topRole}`);
   await page.getByTestId('job-overview-tab-1').click();
   await expect(page.getByRole('heading', { name: /Competencies/ })).toBeVisible();
   await page.getByTestId('job-overview-tab-2').click();
   await expect(page.getByTestId('trajectory')).toBeVisible();
 
-  // Back chain: job overview → job overlay → constellation; then "Role overview" routes to the
-  // role's cards and marks fromMap, so the cards now offer a forward "Explore {role} careers"
-  // pill that dives back into that role's job constellation.
+  // Back chain: job overview → role zoom → map overview; reload cards for retake.
   await page.getByTestId('job-overview-back').click();
-  await expect(page.getByTestId('job-side-panel')).toBeVisible();
-  await page.getByTestId('job-panel-back').click();
-  await page.getByTestId('role-overview-cta').click();
+  await expect(page.getByTestId('career-map-job-panel')).not.toBeVisible();
+  await expect(page.getByTestId('map-back-overview')).toBeVisible();
+  await page.getByTestId('map-back-overview').click();
+  await expect(page.getByTestId('career-map-field')).toBeVisible();
+  await page.getByTestId('map-back-cards').click();
   await expect(page.getByTestId('role-name')).toHaveText(topRole);
-  await expect(page.getByTestId('explore-role')).toBeVisible();
 
   // "Retake quiz" returns to Landing, ready to start over (the only control is the Start CTA).
   await page.getByTestId('retake').click();

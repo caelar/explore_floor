@@ -57,6 +57,8 @@ export interface RoleDetail {
    *  parity — the rail shows a short value like "High school / GED" / "Bachelor's", not the full
    *  multi-line list the role/job tabs use). */
   educationShort: string;
+  /** Optional second line on job-overview education stat boxes, e.g. "(Master's may be preferred)". */
+  educationSubline?: string;
   /** Education ladder for the screener fit line (D-020): 0 = HS/GED, 2 = bachelor's+
    *  (level 1, an associate/cert, has no role in the three-role model but stays a valid
    *  user-appetite rung). Compared against the user's stated school appetite. */
@@ -78,6 +80,15 @@ export interface RoleDetail {
 /** Icon key for a bridge-training program row (mapped to a Material ligature in the UI). */
 export type BridgeProgramIcon = 'mechatronics' | 'systems' | 'certification' | 'controls';
 
+/** Seniority within a job's career path — shown as the level pill on the job-overview header. */
+export type JobSeniority = 'entry' | 'mid' | 'senior';
+
+export const JOB_LEVEL_LABELS: Record<JobSeniority, string> = {
+  entry: 'Entry level',
+  mid: 'Mid level',
+  senior: 'Senior level',
+};
+
 /** A bridge-training program on the results card's "How to bridge the gap" list.
  *  PLACEHOLDER content pending ARM sourcing (docs/reference/Job_Program_Data_Request.md). */
 export interface BridgeProgram {
@@ -98,6 +109,8 @@ export interface Job {
   categoryId: CategoryId;
   /** Display title, drawn from / consistent with the role's commonJobTitles. */
   title: string;
+  /** Entry / mid / senior within this job's career track (job-overview level pill). */
+  seniority: JobSeniority;
   /** One plain-voice line on what this person does day to day. ⚠️ PLACEHOLDER. */
   summary: string;
   /** ~3 "What you'll do" bullets. ⚠️ PLACEHOLDER. */
@@ -111,6 +124,21 @@ export interface Job {
   salaryMedian?: string;
   /** Optional per-job education override; defaults to roleDetails[categoryId].education. */
   education?: string;
+  /** Career-progression ladder for the job-overview "Where this can lead" viz (Figma 1362:405).
+   *  `prior` is the rung below (earlier step); omitted when this job is the entry rung on its path.
+   *  `next` is the rung above; omitted when this job is the top rung on its path. References are
+   *  other featured job ids and may cross technician / specialist / integrator tiers. */
+  trajectory: JobTrajectory;
+}
+
+/** A single rung on a job's career-progression ladder — always another featured job id. */
+export interface JobTrajectoryRef {
+  jobId: string;
+}
+
+export interface JobTrajectory {
+  prior?: JobTrajectoryRef;
+  next?: JobTrajectoryRef;
 }
 
 // ---------- Flow (study instrument — DATA_MODEL §17) ----------
@@ -252,13 +280,16 @@ export interface ResultsExploreCopy {
   responsibilitiesHeading: string; // job "What you'll do"
   // job overview page (view: 'job-overview')
   overviewBack: string; // control-bar back → job overlay
-  setTargetCta: string; // inert "Set as target role" pill
+  setTargetCta: string; // "Set as target role" pill (default)
+  currentTargetCta: string; // "Current target role" pill (selected)
   overviewTabs: string[]; // [overview, skills & competencies, how you fit]
   jobSkillsHeading: string; // per-job skills section
   closeGapHeading: string; // bridge-programs section
   closeGapSubtitle: string;
   youAsHeading: string; // "You as a {noun}"
   trajectoryHeading: string; // career-trajectory mini-viz heading
+  /** Subline when a ladder rung sits in a different ARM role tier, e.g. "Technician path". */
+  trajectoryCrossRole: string; // "{role} path"
 }
 
 /** Copy for the ambient bubble-map results view (D-029 Phase E): the glass intro card + its
@@ -327,8 +358,13 @@ export interface CategoryResult {
 
 // ---------- Runtime ----------
 
+/** Player avatar picked on the character screen (Figma 1369:452) before the quiz starts. */
+export type CharacterId = 'girl' | 'boy';
+
 export interface SessionState {
-  currentScreen: 'landing' | 'flow' | 'results';
+  currentScreen: 'landing' | 'flow' | 'loading' | 'results';
+  /** Set when the user picks on /character; required before /flow runs. */
+  characterId: CharacterId | null;
   stepIndex: number; // cursor into the active flow's steps
   /** Back-stack of visited step indices (newest last), so Back can reverse a branch the
    *  forward path took (Q1 "No" skips Q2). Within-step position is `scenePhase`/`choiceIndex`. */

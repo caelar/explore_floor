@@ -74,12 +74,14 @@ const cardsCopyFixture: ResultsCardsCopy = {
     responsibilitiesHeading: 'do',
     overviewBack: 'back',
     setTargetCta: 'set target',
+    currentTargetCta: 'current target',
     overviewTabs: ['overview', 'skills', 'fit'],
     jobSkillsHeading: 'job skills',
     closeGapHeading: 'close gap',
     closeGapSubtitle: 'sub',
     youAsHeading: 'You as a {noun}',
     trajectoryHeading: 'where this leads',
+    trajectoryCrossRole: '{role} path',
   },
 };
 

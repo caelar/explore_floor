@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 import { CtaButton, Icon } from '@/components';
 import { SORT_BUCKETS } from '@/data/flows/buckets';
-import type { SceneStep } from '@/data/types';
-import { durations, easings, typeScale } from '@/lib';
+import type { BucketId, SceneStep } from '@/data/types';
+import { durations, durationsMs, easings, typeScale } from '@/lib';
 import { useSessionStore } from '@/state';
 
 import { BucketSort } from './BucketSort';
@@ -14,6 +15,10 @@ interface SceneSortViewProps {
   sceneNumber: number;
   sceneTotal: number;
   reduce: boolean;
+  /** Called immediately when the user rates the LAST choice of this scene — before the store
+   *  advances the step. Lets the parent start the character exit animation while the step
+   *  change is still pending. */
+  onBeforeLastChoice?: () => void;
 }
 
 // A narrative scene as a sort (D-018), re-skinned dark for step 8 (D-029 Phase B). The mockup's
@@ -29,12 +34,44 @@ interface SceneSortViewProps {
 // Choice buckets reuse the shared statementBuckets slice (keyed by choice id) via `rateChoice`, so
 // scoring reads them exactly like statement buckets. When the last choice lands, the store advances
 // the flow (or finishes it). The runner keys this view by step id, so it remounts per scene.
-export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSortViewProps) {
+export function SceneSortView({ step, sceneNumber, sceneTotal, reduce, onBeforeLastChoice }: SceneSortViewProps) {
   const scenePhase = useSessionStore((s) => s.state.scenePhase);
   const choiceIndex = useSessionStore((s) => s.state.choiceIndex);
   const statementBuckets = useSessionStore((s) => s.state.statementBuckets);
   const startScene = useSessionStore((s) => s.startScene);
   const rateChoice = useSessionStore((s) => s.rateChoice);
+
+  // Pending timer for the delayed rateChoice on the last scene choice. We hold a ref so
+  // we can cancel it if the user presses Back before it fires.
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cancel any in-flight exit timer if the user navigates back within the scene
+  // (scenePhase reverts to 'intro', or choiceIndex steps back).
+  useEffect(() => {
+    if (exitTimerRef.current !== null) {
+      clearTimeout(exitTimerRef.current);
+      exitTimerRef.current = null;
+    }
+  }, [scenePhase, choiceIndex]);
+
+  useEffect(() => () => {
+    if (exitTimerRef.current !== null) clearTimeout(exitTimerRef.current);
+  }, []);
+
+  // Intercept the last choice: signal the parent (character exit) then delay the
+  // actual store advance so the exit animation has time to finish.
+  const handleRate = (id: string, bucket: BucketId) => {
+    const isLast = choiceIndex === step.choices.length - 1;
+    if (isLast && !reduce) {
+      onBeforeLastChoice?.();
+      exitTimerRef.current = setTimeout(() => {
+        exitTimerRef.current = null;
+        rateChoice(id, bucket);
+      }, durationsMs.glide + 50); // 450ms — just after the character exit finishes
+    } else {
+      rateChoice(id, bucket);
+    }
+  };
 
   const rating = scenePhase === 'rating';
   // Snaps under reduced motion; otherwise the card compress + reveal share the soft glide.
@@ -67,7 +104,7 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
         animate={{ padding: rating ? 24 : 32 }}
         transition={morph}
       >
-        <p className="text-small text-text-on-dark-faint" data-testid="scene-progress">
+        <p className="text-small text-text-on-dark" data-testid="scene-progress">
           Scene {sceneNumber} of {sceneTotal}
         </p>
         <div className="border-t border-glass-border-soft" />
@@ -126,7 +163,7 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce }: SceneSo
               buckets={SORT_BUCKETS}
               reduce={reduce}
               bucketOf={(id) => statementBuckets[id]}
-              onRate={rateChoice}
+              onRate={handleRate}
               cardTestId="scene-card"
             />
           </motion.div>
