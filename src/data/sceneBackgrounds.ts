@@ -6,8 +6,9 @@ import type { CharacterId } from './types';
 // Add a new entry here when a scene's background image is ready; scenes without
 // an entry fall back to the dark canvas background.
 
-/** Figma 1368:314 — factory-floor illustration shared by Landing + intro MC steps. */
-export const LANDING_BG = '/explore_floor/scenes/landing-bg.png';
+/** Figma 1368:314 — factory-floor illustration shared by Landing + intro MC steps.
+ *  Backgrounds ship as WebP (CM-18): the PNG exports weighed ~34MB total, ~650KB after. */
+export const LANDING_BG = '/explore_floor/scenes/landing-bg.webp';
 
 /** Figma 1369:452 — portrait art on the choose-character cards. */
 export const CHARACTER_SELECT_ART: Record<CharacterId, string> = {
@@ -48,13 +49,13 @@ export function sceneCharacterSrc(_sceneId: string, characterId: CharacterId): s
 }
 
 export const SCENE_BACKGROUNDS: Record<string, string> = {
-  'n-s1': '/explore_floor/scenes/scene-1.png',
-  'n-s2': '/explore_floor/scenes/scene-2.png',
-  'n-s3': '/explore_floor/scenes/scene-3.png',
-  'n-s4': '/explore_floor/scenes/scene-4.png',
-  'n-s5': '/explore_floor/scenes/scene-5.png',
-  'n-s6': '/explore_floor/scenes/scene-6.png',
-  'n-s7': '/explore_floor/scenes/scene-7.png',
+  'n-s1': '/explore_floor/scenes/scene-1.webp',
+  'n-s2': '/explore_floor/scenes/scene-2.webp',
+  'n-s3': '/explore_floor/scenes/scene-3.webp',
+  'n-s4': '/explore_floor/scenes/scene-4.webp',
+  'n-s5': '/explore_floor/scenes/scene-5.webp',
+  'n-s6': '/explore_floor/scenes/scene-6.webp',
+  'n-s7': '/explore_floor/scenes/scene-7.webp',
 };
 
 // Legacy per-scene map (girl default). FlowRunner resolves via sceneCharacterSrc instead.

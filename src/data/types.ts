@@ -255,6 +255,9 @@ export interface ResultsCardsCopy {
   recommendation: CompareRecommendationCopy;
   // --- Map (Phase E) ---
   backToMap: string; // cards control bar (after a map dive): "Back to the map"
+  /** Map overview exit — leaves the map for the results cards, so the label names the
+   *  destination honestly (CM-09): "Back to your results", never "Back to {role}". */
+  backToResults: string;
   /** Cards control bar, when reached via the map path: "Explore {role} careers" → that role's
    *  constellation (Phase G; replaces the old "Back to the map" back-action). */
   exploreRoleCta: string;

@@ -9,7 +9,7 @@ import { Icon } from './Icon';
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-40 h-nav shrink-0 border-b border-glass-border bg-near-black">
-      <div className="flex h-full w-full items-center gap-space-3 px-space-3">
+      <div className="mx-auto flex h-full max-w-lg items-center gap-space-3 px-space-3">
         <Link
           to="/"
           aria-label="RoboticsCareer.org home"

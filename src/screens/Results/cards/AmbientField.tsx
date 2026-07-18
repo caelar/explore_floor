@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 
 import type { CategoryId } from '@/data/types';
-import { durations, easings } from '@/lib';
+import { breathe, durations, easings } from '@/lib';
 
 // The atmospheric layer behind the results bubble map (D-029 Phase E): large, heavily-blurred,
 // role-tinted orbs that slowly breathe. Purely decorative (aria-hidden, pointer-events-none) — it
@@ -11,20 +11,18 @@ import { durations, easings } from '@/lib';
 // Reduced motion pins each orb at a constant opacity and size (no pulse). When a map role/job is
 // focused, all orbs ease toward that role's accent hue.
 
-/** Slow ambient breathe — off the UI motion scale (multi-second decorative loop). */
-const AMBIENT_BREATHE_S = 18;
+/** Focus color shift — a one-shot ease, not a breathe loop, so it stays local. */
 const AMBIENT_COLOR_SHIFT_S = 1.4;
 const AMBIENT_OPACITY: [number, number] = [0.04, 0.11];
-const AMBIENT_SIZE_PULSE_S = 23;
 const AMBIENT_SIZE_PULSE = {
   x: [0.96, 1.05] as [number, number],
   y: [0.94, 1.06] as [number, number],
 };
 
 const ROLE_AMBIENT_COLOR: Record<CategoryId, string> = {
-  technician: '#ffb81c',
-  specialist: '#117289',
-  integrator: '#bf5309',
+  technician: 'var(--color-role-technician)',
+  specialist: 'var(--color-role-specialist)',
+  integrator: 'var(--color-role-integrator)',
 };
 
 interface Orb {
@@ -91,21 +89,21 @@ export function AmbientField({ reduce, focusCategory = null }: AmbientFieldProps
               ? { duration: 0 }
               : {
                   opacity: {
-                    duration: AMBIENT_BREATHE_S,
+                    duration: breathe.orb,
                     delay: i * 2.4,
                     repeat: Infinity,
                     repeatType: 'mirror',
                     ease: 'easeInOut',
                   },
                   scaleX: {
-                    duration: AMBIENT_SIZE_PULSE_S,
+                    duration: breathe.orbPulse,
                     delay: i * 2.1 + 0.6,
                     repeat: Infinity,
                     repeatType: 'mirror',
                     ease: 'easeInOut',
                   },
                   scaleY: {
-                    duration: AMBIENT_SIZE_PULSE_S + 4,
+                    duration: breathe.orbPulse + 4,
                     delay: i * 2.1,
                     repeat: Infinity,
                     repeatType: 'mirror',

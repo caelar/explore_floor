@@ -58,6 +58,7 @@ const cardsCopyFixture: ResultsCardsCopy = {
     closeEqualBarrier: '{high}',
   },
   backToMap: 'back to map',
+  backToResults: 'back to your results',
   exploreRoleCta: 'Explore {role} careers',
   map: {
     title: 'your results',

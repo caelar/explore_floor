@@ -301,6 +301,7 @@ export const narrativeFlow: CategoryFlow = {
           'These two are close. {high} edges ahead, but either one is a solid place to start.',
       },
       backToMap: 'Back to the map',
+      backToResults: 'Back to your results',
       exploreRoleCta: 'Explore {role} careers',
       map: {
         title: 'Your Results',

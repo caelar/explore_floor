@@ -30,7 +30,10 @@ export const durationsMs = {
  * Each consumer adds its own small per-index/per-rank increment + stagger delay on top of the base.
  */
 export const breathe = {
-  orb: 7,
+  /** Ambient orb opacity breathe — retimed from 7s by the career-map rework (slower, subtler). */
+  orb: 18,
+  /** Ambient orb size pulse (scaleX/scaleY run offset from each other for drift). */
+  orbPulse: 23,
   bubble: 5,
   node: 4,
   sparkle: 2.4,

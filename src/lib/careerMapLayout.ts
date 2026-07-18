@@ -30,6 +30,9 @@ export interface CareerMapJobLayout {
   cx: number;
   cy: number;
   r: number;
+  /** Label-anchor nudge in viewBox units (CM-08) — moves the title, not the orb or its edges. */
+  labelDx?: number;
+  labelDy?: number;
 }
 
 export interface CareerMapEdgeLayout extends MapEdgeArt {
@@ -146,6 +149,8 @@ export function careerMapJobs(
     cx: job.cx,
     cy: job.cy,
     r,
+    labelDx: job.labelDx,
+    labelDy: job.labelDy,
   }));
 }
 

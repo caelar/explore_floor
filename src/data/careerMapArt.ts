@@ -75,6 +75,10 @@ export interface MapHubArt {
 export interface MapJobArt {
   cx: number;
   cy: number;
+  /** Optional label-anchor nudge in viewBox units (CM-08) — shifts the job title away from a
+   *  dashed edge without moving the orb or its edge geometry. */
+  labelDx?: number;
+  labelDy?: number;
 }
 
 export interface MapEdgeArt {

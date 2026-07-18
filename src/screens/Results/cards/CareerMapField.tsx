@@ -269,16 +269,16 @@ export function CareerMapField({
     [ranking, phase, viewport, activeCategory, selectedJob],
   );
 
-  const cancelCameraAnimation = () => {
+  const cancelCameraAnimation = useCallback(() => {
     cameraAnimRef.current.forEach((ctrl) => ctrl.stop());
     cameraAnimRef.current = [];
-  };
+  }, []);
 
-  const notifyExplore = () => {
+  const notifyExplore = useCallback(() => {
     if (phase !== 'overview' || exploredRef.current) return;
     exploredRef.current = true;
     onExplore?.();
-  };
+  }, [phase, onExplore]);
 
   const handleMapBackgroundClick = useCallback(
     (clientX: number, clientY: number) => {
@@ -334,7 +334,7 @@ export function CareerMapField({
       animate(scale, target.scale, { duration: cameraDuration, ease: easings.soft, onComplete: onAxisDone }),
     ];
     return cancelCameraAnimation;
-  }, [phaseCamera, reduce, phase, selectedJob, x, y, scale, onCameraTransitionEnd]);
+  }, [phaseCamera, reduce, phase, selectedJob, x, y, scale, onCameraTransitionEnd, cancelCameraAnimation]);
 
   useEffect(() => {
     const el = viewportRef.current;
@@ -367,7 +367,7 @@ export function CareerMapField({
 
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [scale, x, y, minZoom, maxZoom, applyFreeCamera, phase, onExplore]);
+  }, [scale, x, y, minZoom, maxZoom, applyFreeCamera, cancelCameraAnimation, notifyExplore]);
 
   const edgeGapVb = useMemo(
     () => careerMapEdgeGapViewBox(viewport.width, cameraScale, 1),
@@ -773,10 +773,14 @@ export function CareerMapField({
                 style={{
                   fontSize: jobRatio ? jobRatio * orbDiameterPx : undefined,
                   lineHeight: lineRatio ? `${lineRatio * orbDiameterPx}px` : undefined,
-                  left: xPct(node.cx - labelHalfWidthVb),
-                  top: yPct(node.cy + node.r + labelGap),
+                  left: xPct(node.cx + (node.labelDx ?? 0) - labelHalfWidthVb),
+                  top: yPct(node.cy + node.r + labelGap + (node.labelDy ?? 0)),
                   width: xPct(labelHalfWidthVb * 2),
                   color: MAP_ROLE_COLOR[node.category],
+                  // Dashed edges pass under some labels (CM-08) — a canvas-colored halo keeps the
+                  // type legible without a collision engine.
+                  textShadow:
+                    '0 0 2px var(--color-near-black), 0 0 5px var(--color-near-black), 0 0 9px var(--color-near-black), 0 0 14px var(--color-near-black)',
                 }}
               >
                 {job.title}

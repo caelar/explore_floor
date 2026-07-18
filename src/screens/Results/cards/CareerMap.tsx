@@ -7,7 +7,6 @@ import type { CategoryId, CategoryWeights, Job, ResultsCardsCopy, ResultsMapCopy
 import { durations, easings, jobMapLocation, type MapPhase } from '@/lib';
 
 import { CareerMapField } from './CareerMapField';
-import { fill } from './copy';
 import { JobOverview } from './JobOverview';
 
 // Unified zoomable career map: full-bleed infinite canvas with overlay chrome (intro card,
@@ -125,7 +124,7 @@ export function CareerMap({
     phase === 'overview' ? (
       <button type="button" onClick={onBackToCards} data-testid="map-back-cards" className={backRow}>
         <Icon name="chevron-l" size={18} />
-        {fill(cardsCopy.backToRole, { role: detail.roleName })}
+        {cardsCopy.backToResults}
       </button>
     ) : phase === 'role' ? (
       <button type="button" onClick={onBackToOverview} data-testid="map-back-overview" className={backRow}>

@@ -7,7 +7,8 @@ Created 2026-07-17 from Caelan's visual review plus a code trace of `origin/care
 ## Where things stand
 
 - `origin/visuals` and `origin/career-map` share the scene-visuals commits; `career-map` adds the map commit on top. Merging `career-map` brings both.
-- The reconciled trial merge lives on local branch **`career-map-merge`** (currently checked out in this repo). All gates pass on it: lint clean (one warning, CM-15), typecheck clean, 107/107 unit tests, 4/4 Playwright specs.
+- The reconciled trial merge lives on local branch **`career-map-merge`** (currently checked out in this repo). All gates pass on it: lint clean (zero warnings), typecheck clean, 107/107 unit tests, 4/4 Playwright specs.
+- **Pass 0 landed (2026-07-17):** CM-04, CM-08 (halo; nudges assessed unnecessary, see item), CM-09 (copy portion), CM-14, CM-15, CM-17, CM-18 all closed on `career-map-merge`, gates re-run green.
 - Conflict reconciliation already applied there: main's componentization kept (control-height tokens, directional step slide, `max-w-read`), Kayla's features kept, plus an eslint import-sort autofix. One deliberate exception is logged as CM-04 (header) and one as CM-16 (hero button).
 - Original main is viewable side by side via the scratchpad worktree (detached at `1a0fbad`).
 
@@ -45,9 +46,10 @@ A bare text button at the bottom of an illustrated scene has no surface. Give it
 
 ### B. System consistency
 
-**CM-04 (M) The header went full-bleed.**
+**CM-04 (M) The header went full-bleed.** ☑ **Done (Pass 0).**
 Kayla removed `mx-auto max-w-lg` (1248px column) from AppHeader, so logo and profile hug the viewport edges. The constrained container was a purposeful decision and mirrors the dashboard repo's TopNav; the prototypes need to match each other above all.
 *Resolve:* code pass, revert to the constrained container. Mention to Kayla (it also silently diverges from the shared TopNav master in Figma).
+*Landed:* `mx-auto max-w-lg` restored on the AppHeader container; her inner search wrapper kept (centers identically once the column is capped). The mention-to-Kayla item stays open under Team discussion.
 
 ### C. Map information design
 
@@ -63,15 +65,17 @@ Labels are zoom-driven (`jobLabelOpacityFromZoom`), a nice flourish in theory, b
 Any pan or zoom-in fires `notifyExplore` which dismisses the intro card; it only resets when the phase re-enters overview. The card houses the instructions, so one over-excited scroll and a new user is lost. Working direction (first pass, to refine): the card collapses into a persistent **?** pill rather than vanishing, so there's always a way back to the directions; optionally one settle-based re-expand at overview zoom (camera idle for a beat, still near fit-zoom, nothing selected), capped at once so it never nags; never re-block the map at role/job zoom.
 *Resolve:* short design discussion in session, then code pass.
 
-**CM-08 (L, but we care) Labels collide with dashed edges.**
+**CM-08 (L, but we care) Labels collide with dashed edges.** ☑ **Done (Pass 0) — halo only; nudges judged unnecessary.**
 "Assembly Operator" has an edge running through it. Fixed art plus fixed label anchors, no collision handling.
 *Resolve:* code pass. Dark halo/scrim behind label text so edges passing underneath stop fighting the type, plus nudge the worst anchors in `careerMapArt.ts`. No collision engine needed.
+*Landed:* near-black halo (4-layer text-shadow, token-bound) on every job label. Surveyed all three clusters at role zoom: exactly two slots have an edge bisecting their label (`second.jobs[0]`, `third.jobs[2]` — both a vertical segment entering the orb from below). The halo hides the line completely behind the text in both, and a nudge big enough to clear it (~55vb) would detach the label from its orb, so no nudges applied. `labelDx`/`labelDy` plumbing exists in `careerMapArt.ts` → `careerMapLayout` → the label span if the board review overrules this.
 
 ### D. Map navigation and wayfinding
 
-**CM-09 (H) The back control changes label, meaning, and mechanic per phase.**
+**CM-09 (H) The back control changes label, meaning, and mechanic per phase.** ◐ **Copy portion done (Pass 0); affordance rework waits on the CM-10/11 board.**
 Overview shows "Back to {role}" which actually exits to the results cards; role zoom shows "Back to the map"; job zoom has no back control at all (the panel's X does it). "Back to Integrator" reads like a zoom action, not an exit.
 *Resolve:* code pass. Stable exit affordance with honest copy ("Back to your results"), a separate phase-local back, both on a platter consistent with the DS. Feeds the boards for CM-10/11.
+*Landed so far:* new `backToResults` copy key ("Back to your results") on the overview exit control, replacing the misleading "Back to {role}". Platter + stable exit/phase-back split still open.
 
 **CM-10 (H) Role zoom lost all persistent context.**
 The old constellation kept a side panel mounted: role name and summary (where you are), the job list (what you can do next), and a way back. The new role zoom is orbs in space with a floating text link. The old convention was better wayfinding, and the map can keep its continuous-space feel while regaining it.
@@ -91,11 +95,11 @@ The user doesn't know what the map is yet. The real progression is: you're looki
 
 ### E. Technical debt from the merge trial
 
-**CM-14 (M)** `narrative.spec.ts` job-orb click is a race: `click({ force: true })` can fire mid-camera-zoom and miss (observed once, passed on rerun). Wait for the zoom to settle before clicking.
-**CM-15 (L)** `CareerMapField.tsx:370` has a `react-hooks/exhaustive-deps` warning (`notifyExplore`).
+**CM-14 (M)** ☑ **Done (Pass 0).** `narrative.spec.ts` job-orb click is a race: `click({ force: true })` can fire mid-camera-zoom and miss (observed once, passed on rerun). Wait for the zoom to settle before clicking. *Landed:* a `cameraSettled` helper (bounding-box stable across two 200ms polls) now guards both the role-bubble click (the map opens with an entrance glide too) and the job-orb click.
+**CM-15 (L)** ☑ **Done (Pass 0).** `CareerMapField.tsx:370` has a `react-hooks/exhaustive-deps` warning (`notifyExplore`). *Landed:* `notifyExplore` + `cancelCameraAnimation` memoized with `useCallback`, effect deps corrected; lint is zero-warning.
 **CM-16 (M)** Kayla's `hero` Button variant (20px radius pill, Figma 1368:450) vs the shared `CtaButton` (D-049). The trial merge kept hers on the redesigned landing. Needs a componentization-registry ruling: new CtaButton variant, or a one-off with a logged reason.
-**CM-17 (L)** `AmbientField` reintroduces local breathe constants where main had tokenized `breathe` in `motion.ts`, and hardcodes the three role accent hexes. Rebind to tokens.
-**CM-18 (M)** Asset weight: `scene-1.png` is 12.9MB (others ~3MB), `landing-bg.png` 3.2MB. Compress before merge.
+**CM-17 (L)** ☑ **Done (Pass 0).** `AmbientField` reintroduces local breathe constants where main had tokenized `breathe` in `motion.ts`, and hardcodes the three role accent hexes. Rebind to tokens. *Landed:* loop durations tokenized (`breathe.orb` retimed 7→18 per her feel, new `breathe.orbPulse` 23); colors rebound to `var(--color-role-*)` (the focus color shift still animates — verified in-browser). The 1.4s focus shift stays local as a one-shot transition, not a breathe loop.
+**CM-18 (M)** ☑ **Done (Pass 0).** Asset weight: `scene-1.png` is 12.9MB (others ~3MB), `landing-bg.png` 3.2MB. Compress before merge. *Landed:* all 7 scene backgrounds + landing-bg converted to WebP q85 (scene-1 first downscaled 2880→1440 to match the set); ~34MB → ~650KB total, paths updated in `sceneBackgrounds.ts` only, renders verified in-browser.
 **CM-19 (M)** No docs trail on Kayla's branches: no D-entries, STATUS untouched, and `/character` + `/loading` are new screens that per the repo's hard rule need flagging against PRD.md. Log the decisions when this lands.
 
 ---
@@ -117,7 +121,7 @@ HTML canvas boards or Claude Design, decide at session start. Each board ends in
 
 ## Session plan (next chat)
 
-- **Pass 0, quick wins (code only, no design ambiguity):** CM-04 header revert, CM-08 label halo, CM-09 copy fix on the exit control, CM-14 spec fix, CM-15 lint warning, CM-17 token rebind, CM-18 compression. All on `career-map-merge`.
+- **Pass 0, quick wins (code only, no design ambiguity):** ☑ **done 2026-07-17** — CM-04 header revert, CM-08 label halo, CM-09 copy fix on the exit control, CM-14 spec fix, CM-15 lint warning, CM-17 token rebind, CM-18 compression. All on `career-map-merge`, gates green (lint zero-warning, typecheck, 107 unit, 4/4 E2E).
 - **Pass 1, boards:** build the three boards, review with Caelan, record decisions per item.
 - **Pass 2, apply decisions:** CM-01/02/03 surface system, CM-05/06/07 map information design, CM-10/11/12/13 wayfinding.
 - **Pass 3, close:** full gates, `/design-review` rubric pass, D-entries + STATUS + this ledger ticked, then merge `career-map-merge` to main and hand Kayla the summary.

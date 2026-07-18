@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator,test } from '@playwright/test';
 
 import { narrativeFlow } from '../../src/data/flows/narrativeFlow';
 import { jobs } from '../../src/data/jobs';
@@ -35,6 +35,24 @@ for (const id of sceneIds) {
     sceneBuckets[choice.id] = choice.category === 'specialist' ? 'thats-me' : 'not-me';
   }
 }
+
+/** Wait until the locator's bounding box is stable across two polls. The map's camera glide
+ *  moves hit targets, and a force-click fired mid-glide lands on stale coordinates (CM-14). */
+const cameraSettled = async (locator: Locator) => {
+  let prev = '';
+  await expect
+    .poll(
+      async () => {
+        const box = await locator.boundingBox();
+        const next = JSON.stringify(box);
+        const stable = box !== null && next === prev;
+        prev = next;
+        return stable;
+      },
+      { intervals: [200], timeout: 5000 },
+    )
+    .toBe(true);
+};
 
 const mcLabel = (stepId: string): string => {
   const step = narrativeFlow.steps.find((s) => s.id === stepId);
@@ -169,13 +187,19 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   }
 
   // Role zoom: tapping the top-match bubble stays on the map and reveals job nodes + labels.
-  await page.getByTestId(`map-bubble-${expected.ranking[0]}`).click({ force: true });
+  // The map opens with an entrance camera glide, so let the bubble settle before clicking.
+  const topBubble = page.getByTestId(`map-bubble-${expected.ranking[0]}`);
+  await cameraSettled(topBubble);
+  await topBubble.click({ force: true });
   await expect(page.getByTestId('career-map-field')).toBeVisible();
   await expect(page.getByTestId('map-back-overview')).toBeVisible();
 
   // Job select: opens JobOverview directly in the left panel (no intermediate job overlay).
+  // The role-zoom glide moves the orb, so wait for the camera to land first (CM-14).
   const topJob = jobs[expected.ranking[0]][0];
-  await page.getByTestId(`career-map-job-${topJob.id}`).click({ force: true });
+  const topJobOrb = page.getByTestId(`career-map-job-${topJob.id}`);
+  await cameraSettled(topJobOrb);
+  await topJobOrb.click({ force: true });
   await expect(page.getByTestId('career-map-job-panel')).toBeVisible();
   await expect(page.getByTestId('job-overview')).toContainText(topJob.title);
   await expect(page.getByTestId('job-overview')).toContainText(`Job in ${topRole}`);
