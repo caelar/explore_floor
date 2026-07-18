@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-07-18
+
+### L-012 — A spec that queries before its subject mounts passes vacuously; assert list sizes, not just list contents
+- **Context:** `map-debug.spec.ts` had been green through every career-map pass while asserting **nothing**: it ran its `page.evaluate` immediately after clicking into the map, before the entrance animation mounted the hub labels and edges, so `labels` and `edgeGaps` were always empty and both assertion `for` loops iterated zero times. The verifier even printed the tell (`"labelCount": 0`) on every run without anyone reading it as a failure, because the suite reported PASS. The geometry it was meant to guard (CM-05's %-sized hubs, CM-08's label bounds) went entirely unchecked until Pass 3 added `waitForSelector` on the reveal plus `expect(labelCount).toBe(3)` — at which point the assertions ran for real and, luckily, held.
+- **Do:** Any test whose assertions live inside a loop over a queried collection must also assert the collection's expected size — an empty list makes the loop body unreachable and the test permanently green. When the subject mounts via animation/entrance, `waitFor` the elements themselves, not the click that triggers them. Debug output a gate prints but nothing asserts (`labelCount: 0`) is a smell: either assert it or delete it.
+
 ## 2026-07-15
 
 ### L-011 — Mirroring a component across repos: map its token classes to the *consuming* repo's theme; Tailwind v4 drops unknown utilities silently
