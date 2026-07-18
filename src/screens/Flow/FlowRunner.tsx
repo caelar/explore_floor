@@ -178,13 +178,14 @@ export function FlowRunner() {
 
       {/* Persistent, centered Back — the top research-gap fix (users had no way back). Reverses one
           step of the flow: previous choice → scene intro → previous step (branch-aware via history),
-          with prior picks pre-lit so a revisit reads as "here's what you chose". */}
+          with prior picks pre-lit so a revisit reads as "here's what you chose". Sits on a small
+          glass platter so it holds its own surface over the scene illustrations (CM-03). */}
       {canGoBack && (
         <button
           type="button"
           data-testid="flow-back"
           onClick={goBack}
-          className="absolute bottom-space-4 left-1/2 flex -translate-x-1/2 items-center gap-space-1 text-small font-medium text-text-on-dark transition-colors hover:text-text-on-dark-muted"
+          className="absolute bottom-space-4 left-1/2 flex h-control-lg -translate-x-1/2 items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 text-small font-medium text-text-on-dark backdrop-blur-panel transition-colors hover:text-text-on-dark-muted"
         >
           <Icon name="arrow-l" size={20} />
           Back

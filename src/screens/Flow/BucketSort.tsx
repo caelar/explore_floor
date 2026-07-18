@@ -101,7 +101,7 @@ export function BucketSort({
               initial="initial"
               animate="animate"
               exit="exit"
-              className="rounded-lg border border-glass-border bg-glass-fill p-space-4"
+              className="rounded-lg border border-glass-border bg-glass-fill-strong p-space-4 backdrop-blur-panel"
             >
               {/* Body token (16px / Montserrat 700 — the only loaded heading face; a 600 request
                   resolved to it anyway): small enough that every scene choice label fits on
@@ -130,7 +130,7 @@ export function BucketSort({
               className={`w-full rounded-md border px-space-4 py-space-3 text-left font-body text-body transition-colors disabled:pointer-events-none ${
                 isLit
                   ? 'border-arm-gold bg-arm-gold text-near-black'
-                  : 'border-glass-border bg-glass-fill text-text-on-dark hover:border-arm-gold hover:bg-arm-gold hover:text-near-black'
+                  : 'border-glass-border bg-glass-fill-strong text-text-on-dark backdrop-blur-panel hover:border-arm-gold hover:bg-arm-gold hover:text-near-black'
               }`}
             >
               {bucket.label}

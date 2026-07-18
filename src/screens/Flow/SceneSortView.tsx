@@ -99,7 +99,7 @@ export function SceneSortView({ step, sceneNumber, sceneTotal, reduce, onBeforeL
           element with no `initial` snaps to the right phase on mount (Back re-entry) and only
           animates when scenePhase changes (the Continue press). */}
       <motion.div
-        className="flex flex-col gap-space-3 rounded-lg border border-glass-border bg-glass-fill"
+        className="flex flex-col gap-space-3 rounded-lg border border-glass-border bg-glass-fill-strong backdrop-blur-panel"
         initial={false}
         animate={{ padding: rating ? 24 : 32 }}
         transition={morph}
