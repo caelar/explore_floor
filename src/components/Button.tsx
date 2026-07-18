@@ -10,15 +10,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 // Tokens only — no literals. Phase 0 styling is intentionally plain; the real button
 // variants come from the Figma foundation set in Phase 1+.
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-arm-gold text-near-black hover:bg-arm-gold-soft',
-  neutral: 'border border-border-default bg-bg text-text-default hover:bg-bg-section',
-  ghost: 'bg-transparent text-text-muted hover:text-text-default',
+  primary: 'cursor-pointer rounded-md px-space-4 py-space-2 font-body text-body bg-arm-gold text-near-black hover:bg-arm-gold-soft',
+  neutral: 'cursor-pointer rounded-md px-space-4 py-space-2 font-body text-body border border-border-default bg-bg text-text-default hover:bg-bg-section',
+  ghost: 'cursor-pointer rounded-md px-space-4 py-space-2 font-body text-body bg-transparent text-text-muted hover:text-text-default',
 };
 
 export function Button({ variant = 'primary', className = '', children, ...rest }: ButtonProps) {
   return (
     <button
-      className={`rounded-md px-space-4 py-space-2 font-body text-body transition-colors ${VARIANTS[variant]} ${className}`}
+      className={`transition-colors ${VARIANTS[variant]} ${className}`}
       {...rest}
     >
       {children}

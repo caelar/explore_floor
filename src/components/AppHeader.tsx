@@ -23,15 +23,17 @@ export function AppHeader() {
         </Link>
 
         {/* Centered scoped search — placeholder chrome (no backend per scope). */}
-        <div className="mx-auto flex h-control-xl w-full max-w-[440px] items-center gap-space-1 rounded-md border border-glass-border bg-glass-fill px-space-2">
-          <Icon name="search" size={16} className="shrink-0 text-text-on-dark-faint" />
-          <input
-            type="search"
-            aria-label="Search"
-            placeholder="Search roles, jobs, and programs"
-            className="w-full bg-transparent font-body text-small text-text-on-dark placeholder:text-text-on-dark-faint focus:outline-none"
-          />
-          <Icon name="sliders" size={16} className="shrink-0 text-text-on-dark-faint" />
+        <div className="flex min-w-0 flex-1 justify-center">
+          <div className="flex h-control-xl w-full max-w-[440px] items-center gap-space-1 rounded-md border border-glass-border bg-glass-fill px-space-2">
+            <Icon name="search" size={16} className="shrink-0 text-text-on-dark-faint" />
+            <input
+              type="search"
+              aria-label="Search"
+              placeholder="Search roles, jobs, and programs"
+              className="w-full bg-transparent font-body text-small text-text-on-dark placeholder:text-text-on-dark-faint focus:outline-none"
+            />
+            <Icon name="sliders" size={16} className="shrink-0 text-text-on-dark-faint" />
+          </div>
         </div>
 
         {/* Profile pill — no auth; a generic account stub for chrome fidelity. */}

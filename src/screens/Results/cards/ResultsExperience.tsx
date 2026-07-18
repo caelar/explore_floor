@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Icon } from '@/components/Icon';
 import { jobs, roleDetails } from '@/data';
@@ -9,11 +9,8 @@ import { deriveScreenerProfile, screenerFitLines } from '@/lib/screenerFit';
 import { useFlow, useSessionStore } from '@/state';
 
 import { AmbientField } from './AmbientField';
+import { CareerMap } from './CareerMap';
 import { CompareView } from './CompareView';
-import { fill } from './copy';
-import { JobOverview } from './JobOverview';
-import { ResultsConstellation } from './ResultsConstellation';
-import { ResultsMap } from './ResultsMap';
 import { ResultsPanel } from './ResultsPanel';
 import { RoleHero } from './RoleHero';
 import { RoleTabs } from './RoleTabs';
@@ -26,13 +23,19 @@ import { useResultsNav } from './useResultsNav';
 // internal view; those screens land in Phases D/E, so they show a "coming next" stub for now.
 export function ResultsExperience() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const reduce = !!useReducedMotion();
+  const fromLoading = !!(location.state as { fromLoading?: boolean } | null)?.fromLoading;
   const flow = useFlow();
   const categoryResult = useSessionStore((s) => s.state.categoryResult);
   const answers = useSessionStore((s) => s.state.answers);
   const statementBuckets = useSessionStore((s) => s.state.statementBuckets);
   const reset = useSessionStore((s) => s.reset);
-  const nav = useResultsNav(categoryResult?.ranking.length ?? 0);
+  const nav = useResultsNav(
+    categoryResult?.ranking.length ?? 0,
+    searchParams.has('map') ? 'map' : 'cards',
+  );
 
   if (!categoryResult) {
     return (
@@ -71,6 +74,12 @@ export function ResultsExperience() {
     transition: { duration: reduce ? 0 : durations.snap, ease: easings.soft },
   };
 
+  const screenEntrance = {
+    initial: reduce || !fromLoading ? false : { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: reduce ? durations.instant : durations.glide, ease: easings.soft },
+  };
+
   const pill =
     'inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border px-space-3 font-body text-body text-text-on-dark transition-colors hover:bg-glass-fill';
 
@@ -80,19 +89,7 @@ export function ResultsExperience() {
         <Icon name="compare" size={19} />
         {cards.compareCta}
       </button>
-      {nav.fromMap ? (
-        // Reached cards via the map → constellation → "Role overview" path: the forward action dives
-        // back into THIS role's job constellation (matches the mockup's "Explore {role} careers").
-        <button
-          type="button"
-          onClick={() => nav.openConstellation(nav.roleIndex)}
-          data-testid="explore-role"
-          className={pill}
-        >
-          {fill(cards.exploreRoleCta, { role: detail.roleName })}
-          <Icon name="arrow-r" size={18} />
-        </button>
-      ) : nav.atEnd ? (
+      {nav.atEnd ? (
         <button
           type="button"
           onClick={() => nav.setView('map')}
@@ -111,25 +108,24 @@ export function ResultsExperience() {
     </>
   );
 
-  // Clicking the gutter around the cards panel navigates to the map — or back to the constellation if
-  // the user dived in from there (reference parity: a full-bleed click layer sits behind the panel).
-  const gutterToConstellation = nav.fromMap;
-  const onGutterClick = gutterToConstellation
-    ? () => nav.openConstellation(nav.roleIndex)
-    : () => nav.setView('map');
-  const gutterLabel = gutterToConstellation
-    ? fill(cards.exploreRoleCta, { role: detail.roleName })
-    : cards.mapCta;
+  // Clicking the gutter around the cards panel opens the map (reference parity: a full-bleed
+  // click layer sits behind the panel).
+  const onGutterClick = () => nav.setView('map');
+  const gutterLabel = cards.mapCta;
+
+  const mapFocusCategory =
+    nav.view === 'map' && nav.mapPhase !== 'overview' ? ranking[nav.roleIndex] : null;
 
   // One viewport-height canvas with a SHARED AmbientField behind every view, so the cards / compare /
   // job-overview panels float over the same orb background as the map + constellation (each panel is
   // translucent glass; the full-bleed views render their content directly over the field).
   return (
-    <main
+    <motion.main
       className="relative h-[calc(100dvh-var(--spacing-nav))] w-full overflow-hidden"
       data-testid="results"
+      {...screenEntrance}
     >
-      <AmbientField reduce={reduce} />
+      <AmbientField reduce={reduce} focusCategory={mapFocusCategory} />
       <AnimatePresence mode="wait" initial={false}>
         {nav.view === 'cards' ? (
           <motion.div key="cards" className="absolute inset-0" {...fade}>
@@ -193,49 +189,30 @@ export function ResultsExperience() {
               reduce={reduce}
             />
           </motion.div>
-        ) : nav.view === 'selected' || nav.view === 'job' ? (
-          // selected + job share one mounted shell, so the constellation never remounts between
-          // them — only the side panel's body swaps (see ResultsConstellation / JobSidePanel).
-          <motion.div key="constellation" className="absolute inset-0" {...fade}>
-            <ResultsConstellation
-              copy={cards}
-              detail={detail}
-              rank={nav.roleIndex}
-              pct={pct}
-              jobs={jobs[role]}
-              view={nav.view}
-              selectedJob={nav.selectedJob}
-              ranking={ranking}
-              matchPercentages={categoryResult.matchPercentages}
-              reduce={reduce}
-              onOpenJob={nav.openJob}
-              onBackToMap={() => nav.setView('map')}
-              onBackToConstellation={nav.backToConstellation}
-              onRoleOverview={nav.roleOverview}
-              onOpenJobOverview={nav.openJobOverview}
-            />
-          </motion.div>
-        ) : nav.view === 'job-overview' ? (
-          <motion.div key="job-overview" className="absolute inset-0" {...fade}>
-            <JobOverview
-              copy={cards}
-              detail={detail}
-              job={jobs[role][nav.selectedJob ?? 0]}
-              onBack={nav.backToJob}
-            />
-          </motion.div>
         ) : (
           <motion.div key="map" className="absolute inset-0" {...fade}>
-            <ResultsMap
+            <CareerMap
               copy={cards.map}
+              cardsCopy={cards}
               ranking={ranking}
               matchPercentages={categoryResult.matchPercentages}
+              phase={nav.mapPhase}
+              roleIndex={nav.roleIndex}
+              detail={detail}
+              jobs={jobs[role]}
+              selectedJob={nav.selectedJob}
               reduce={reduce}
-              onDive={nav.openConstellation}
+              onSelectRole={nav.openConstellation}
+              onSelectJob={nav.openJob}
+              onBackToOverview={nav.backToMapOverview}
+              onBackToRole={nav.backToConstellation}
+              onBackToCards={() => nav.setView('cards')}
+              targetJobId={nav.targetJobId}
+              onSetTargetJob={nav.setTargetJob}
             />
           </motion.div>
         )}
       </AnimatePresence>
-    </main>
+    </motion.main>
   );
 }

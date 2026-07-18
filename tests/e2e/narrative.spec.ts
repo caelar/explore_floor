@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator,test } from '@playwright/test';
 
 import { narrativeFlow } from '../../src/data/flows/narrativeFlow';
 import { jobs } from '../../src/data/jobs';
@@ -36,6 +36,24 @@ for (const id of sceneIds) {
   }
 }
 
+/** Wait until the locator's bounding box is stable across two polls. The map's camera glide
+ *  moves hit targets, and a force-click fired mid-glide lands on stale coordinates (CM-14). */
+const cameraSettled = async (locator: Locator) => {
+  let prev = '';
+  await expect
+    .poll(
+      async () => {
+        const box = await locator.boundingBox();
+        const next = JSON.stringify(box);
+        const stable = box !== null && next === prev;
+        prev = next;
+        return stable;
+      },
+      { intervals: [200], timeout: 5000 },
+    )
+    .toBe(true);
+};
+
 const mcLabel = (stepId: string): string => {
   const step = narrativeFlow.steps.find((s) => s.id === stepId);
   if (step?.type !== 'mc') throw new Error(`bad step ${stepId}`);
@@ -59,9 +77,10 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  // The Landing is narrative-only now (the flow switcher UI was removed for the virtual test round);
-  // the Start CTA goes straight into the narrative flow.
+  // Landing → character pick → flow.
   await page.getByTestId('start-cta').click();
+  await expect(page).toHaveURL(/\/character$/);
+  await page.getByTestId('character-select-girl').click();
   await expect(page).toHaveURL(/\/flow$/);
 
   // Intro questions. Q0 (experience) is a new unscored question shown first under the
@@ -158,45 +177,63 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await page.getByTestId('compare-back').click();
   await expect(page.getByTestId('role-name')).toHaveText(leftRole);
 
-  // Map (D-029 Phase E): the control opens the ambient bubble map; the three roles render as
-  // bubbles sized by match %. The bubbles float continuously (no reduced motion here), so clicks
-  // are forced past Playwright's element-stability wait.
+  // Career map (D-029 Phase E/F unified): the control opens the zoomable map; three role bubbles
+  // sized by match %. Tapping a bubble zooms into that role's jobs; tapping a job opens JobOverview
+  // in the side panel (same cards as before).
   await page.getByTestId('open-map').click();
   await expect(page.getByTestId('results-map')).toBeVisible();
   for (const category of ['technician', 'specialist', 'integrator'] as const) {
     await expect(page.getByTestId(`map-bubble-${category}`)).toBeVisible();
   }
 
-  // Constellation (D-029 Phase F): tapping a bubble now dives into that role's job constellation
-  // (not its card — that was Phase E's interim). The center names the role; the side panel shows
-  // the role summary + its jobs.
-  await page.getByTestId(`map-bubble-${expected.ranking[0]}`).click({ force: true });
-  await expect(page.getByTestId('results-constellation')).toBeVisible();
-  await expect(page.getByTestId('constellation-center')).toContainText(topRole);
-  await expect(page.getByTestId('job-side-panel')).toBeVisible();
+  // Intro card → "?" pill (CM-07): the directions carry the job-dots line, collapse into a
+  // persistent pill on the first explore gesture, and the pill re-expands them on demand.
+  await expect(page.getByTestId('career-map-intro')).toBeVisible();
+  await expect(page.getByTestId('career-map-intro')).toContainText('small dots');
+  await page.getByTestId('career-map-field').hover();
+  await page.mouse.wheel(0, -300);
+  await expect(page.getByTestId('career-map-intro')).not.toBeVisible();
+  await expect(page.getByTestId('career-map-intro-pill')).toBeVisible();
+  await page.getByTestId('career-map-intro-pill').click();
+  await expect(page.getByTestId('career-map-intro')).toBeVisible();
+  await page.getByTestId('career-map-intro-dismiss').click();
+  await expect(page.getByTestId('career-map-intro-pill')).toBeVisible();
 
-  // A constellation node opens the job overlay (the node floats, so force the click); the panel
-  // body swaps to that job. Its "Job overview" opens the full job page with three tabs.
+  // Role zoom: tapping the top-match bubble stays on the map; the floating context panel
+  // (CM-10) mounts once the camera lands, showing the role body with the jobs-in-path list.
+  // The map opens with an entrance camera glide, so let the bubble settle before clicking.
+  const topBubble = page.getByTestId(`map-bubble-${expected.ranking[0]}`);
+  await cameraSettled(topBubble);
+  await topBubble.click({ force: true });
+  await expect(page.getByTestId('career-map-field')).toBeVisible();
+  await expect(page.getByTestId('map-context-panel')).toBeVisible();
+  await expect(page.getByTestId('map-panel-role')).toContainText(topRole);
+  await expect(page.getByTestId('map-panel-role')).toContainText('Jobs in this path');
+
+  // Job select: the panel persists and its body swaps to the full three-tab job content.
+  // The role-zoom glide moves the orb, so wait for the camera to land first (CM-14).
   const topJob = jobs[expected.ranking[0]][0];
-  await page.getByTestId(`constellation-node-${topJob.id}`).click({ force: true });
-  await expect(page.getByTestId('job-side-panel')).toContainText(`Job in ${topRole}`);
-  await expect(page.getByTestId('job-side-panel')).toContainText(topJob.title);
-  await page.getByTestId('job-overview-cta').click();
+  const topJobOrb = page.getByTestId(`career-map-job-${topJob.id}`);
+  await cameraSettled(topJobOrb);
+  await topJobOrb.click({ force: true });
   await expect(page.getByTestId('job-overview')).toContainText(topJob.title);
+  await expect(page.getByTestId('job-overview')).toContainText(`Job in ${topRole}`);
   await page.getByTestId('job-overview-tab-1').click();
   await expect(page.getByRole('heading', { name: /Competencies/ })).toBeVisible();
   await page.getByTestId('job-overview-tab-2').click();
   await expect(page.getByTestId('trajectory')).toBeVisible();
 
-  // Back chain: job overview → job overlay → constellation; then "Role overview" routes to the
-  // role's cards and marks fromMap, so the cards now offer a forward "Explore {role} careers"
-  // pill that dives back into that role's job constellation.
-  await page.getByTestId('job-overview-back').click();
-  await expect(page.getByTestId('job-side-panel')).toBeVisible();
-  await page.getByTestId('job-panel-back').click();
-  await page.getByTestId('role-overview-cta').click();
+  // Back chain (CM-09): the panel-header back reads the role name at job zoom (→ role body),
+  // then "All paths" at role zoom (→ overview); the persistent exit platter leaves to cards.
+  await expect(page.getByTestId('map-panel-back')).toContainText(topRole);
+  await page.getByTestId('map-panel-back').click();
+  await expect(page.getByTestId('map-panel-role')).toBeVisible();
+  await expect(page.getByTestId('map-panel-back')).toContainText('All paths');
+  await page.getByTestId('map-panel-back').click();
+  await expect(page.getByTestId('map-context-panel')).not.toBeVisible();
+  await expect(page.getByTestId('career-map-field')).toBeVisible();
+  await page.getByTestId('map-back-cards').click();
   await expect(page.getByTestId('role-name')).toHaveText(topRole);
-  await expect(page.getByTestId('explore-role')).toBeVisible();
 
   // "Retake quiz" returns to Landing, ready to start over (the only control is the Start CTA).
   await page.getByTestId('retake').click();

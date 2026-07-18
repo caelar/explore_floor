@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 
 // The results sheet: a centered, internally-scrolling translucent panel that floats over the shared
-// AmbientField (so cards / compare / job-overview share the constellation's orb background). A sticky
-// glass header (the control bar) pins a constant gap below the nav; the body scrolls up under it, the
-// blur showing the content behind. The body fills to the viewport while there's more to read; only at
-// the end does it scroll up to reveal the rounded bottom, which rests with a matching bottom gap.
+// AmbientField (so cards / compare share the same orb background). A sticky glass header (the
+// control bar) pins a constant gap below the nav; the body scrolls up under it, the blur showing
+// the content behind. The body fills to the viewport while there's more to read; only at the end
+// does it scroll up to reveal the rounded bottom, which rests with a matching bottom gap.
 //
 // The centering column is pointer-events-none except the panel itself, so on the cards view clicks in
 // the side gutters / the top-gap strip fall THROUGH to the gutter-nav layer behind it (reference

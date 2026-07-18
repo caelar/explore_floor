@@ -146,6 +146,9 @@ describe('§17 cross-flow invariants', () => {
     };
     const allIds: string[] = [];
     for (const category of CATEGORIES) {
+      for (const job of jobs[category]) allIds.push(job.id);
+    }
+    for (const category of CATEGORIES) {
       const roleJobs = jobs[category];
       expect(roleJobs.length, category).toBe(expectedCounts[category]);
       for (const job of roleJobs) {
@@ -160,7 +163,16 @@ describe('§17 cross-flow invariants', () => {
         if (job.roleNoun !== undefined) expect(job.roleNoun.trim(), job.id).not.toBe('');
         if (job.salaryMedian !== undefined) expect(job.salaryMedian.trim(), job.id).not.toBe('');
         if (job.education !== undefined) expect(job.education.trim(), job.id).not.toBe('');
-        allIds.push(job.id);
+        expect(job.trajectory, job.id).toBeDefined();
+        expect(['entry', 'mid', 'senior'], `${job.id} seniority`).toContain(job.seniority);
+        if (job.trajectory.prior) {
+          expect(allIds.includes(job.trajectory.prior.jobId), `${job.id} prior`).toBe(true);
+          expect(job.trajectory.prior.jobId, `${job.id} prior self`).not.toBe(job.id);
+        }
+        if (job.trajectory.next) {
+          expect(allIds.includes(job.trajectory.next.jobId), `${job.id} next`).toBe(true);
+          expect(job.trajectory.next.jobId, `${job.id} next self`).not.toBe(job.id);
+        }
       }
     }
     expect(new Set(allIds).size, 'job ids unique across roles').toBe(allIds.length);

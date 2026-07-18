@@ -2,23 +2,27 @@
 
 **Read this first.** Live snapshot of where the build is. Updated as acceptance criteria clear (by `/phase-check` or by hand). Keep this a snapshot: session-by-session detail lives in the `sessions/` notes, linked below, not inline here.
 
-- **Last updated:** 2026-07-17
-- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17; D-027/D-028): a branching 6-question intro, 7 bucket-sort scenes, and the dark 5-screen **role-cards results** scoring ARM's three roles, plus the `/select` comparator. The dark re-architecture + polish are complete (D-029/D-030/D-031). Work lands on `main`. Gates green: lint, typecheck, **82 unit**, **3 E2E**; both design rubrics PASS.
+- **Last updated:** 2026-07-18
+- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
-- **Open items:** catalogued in the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md` (ARM/Fivestar post-handoff content + our pre-handoff cleanup), `DESIGN_SYSTEM_RUN.md` (the `rc-design-system` build), and `DEFERRED_DIRECTIONS.md` (v4 polish + open scoring calls).
-- **Next up:** the **componentization run's core is DONE** — Passes 0–4 all ☑ (D-042–D-052; ledger `COMPONENTIZATION_RUN.md`); **no Figma-leads-code divergence survives the run**. Remaining: the **conditional Pass 5** (dashboard file — Caelan: a later session) + the registry-§6 "later" items (robotics_career buttons, optional `@rc/ui` Icon bump). The **ecosystem run** (D-035) lacks only its **stretch pass**. All feeds the **late-July client handoff** (`HANDOFF_GUIDE.md`); neither run is a handoff gate.
-- **Awaiting Caelan (pushes):** explore_floor `main` needs a push (the D-052 close-out commits). career_dashboard is **fully landed**. robotics_career's **`refine/phase-2-loop` is 4 ahead** (3 older docs commits + the 4b/4c landing `33e0ba5`) — push when ready. Direct `git push` is denied to the agent. DS-library republish **current (2026-07-05, through Pass 1b); none pending**.
+- **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`. Review team items (CM-02, CM-04 mention, screener content) ride with the Kayla summary (`Capstone/Handoff/Career_Map_Merge_Summary_for_Kayla.md`).
+- **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
+- **Awaiting Caelan (pushes):** explore_floor `main` (now incl. D-053) and robotics_career `refine/phase-2-loop` (`33e0ba5`) need pushes; `git push` stays denied to the agent. Also restart the Playwright MCP browser (the review pass left a Vite-reload filter in it).
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
 
 Newest first; full detail lives in each note.
 
-- 2026-07-17 · D-052 · componentization **Pass 4 complete** — robotics_career 4b tail + 4c: shared dark `TopNav` (auth in/out) + Icon union; no divergence survives the run; gates + review green; `33e0ba5` awaits Caelan's push → [note](./sessions/2026-07-17-componentization-pass-4-complete.md)
-- 2026-07-17 · D-051 · componentization **4b dashboard portion done** — CtaButton radius landed + TopNav a verified no-op; dashboard gates + review green (its D-062) → [note](./sessions/2026-07-17-componentization-pass-4b-dashboard.md)
+- 2026-07-18 · D-053/D-054/D-055 · career-map review **Pass 3 done — MERGED to `main`** — CM-16 PillButton ruling, orphan chain deleted, docs reconciled, design-review PASS (6/7 p2 fixed), ledger CLOSED, Kayla summary staged → [note](./sessions/2026-07-18-career-map-pass-3-close.md)
+- 2026-07-18 · career-map review **Pass 2 done** — glass + map information design + floating-panel wayfinding landed, boards deleted; resume at Pass 3 → [note](./sessions/2026-07-18-career-map-pass-2.md)
+- 2026-07-17 · career-map review **Pass 0 + Pass 1 done** — quick wins landed, boards built + decided; resume at Pass 2 → [note](./sessions/2026-07-17-career-map-pass-0-1.md)
+- 2026-07-17 · Kayla's **career-map branch reviewed** — trial merge green on `career-map-merge`; merge HELD behind `CAREER_MAP_REVIEW.md` (CM-01..19) → [note](./sessions/2026-07-17-career-map-branch-review.md)
+- 2026-07-17 · D-052 · componentization **Pass 4 complete** — robotics_career 4b tail + 4c; gates + review green; `33e0ba5` awaits push → [note](./sessions/2026-07-17-componentization-pass-4-complete.md)
+- 2026-07-17 · D-051 · componentization **4b dashboard portion done** — radius landed, TopNav a no-op; gates + review green → [note](./sessions/2026-07-17-componentization-pass-4b-dashboard.md)
 - 2026-07-15 · D-049 · componentization Pass 4 pre-flight + sliced (4a/4b/4c); **4a — explore_floor done**, all gates green → [note](./sessions/2026-07-15-componentization-pass-4a-explore-floor.md)
-- 2026-07-08 · D-048 · componentization Pass 3: Captures file swapped to shared DS instances (10 nav + 37 forms; 5 local masters + Light nav retired) → [note](./sessions/2026-07-08-componentization-pass-3-captures-file.md)
-- 2026-07-05 · D-047 · componentization Pass 2b: quiz tail closed — icon-pill/CTA swaps + SignalBar/RoleTab/CompareTargetMenu masters + StatBox Compact → [note](./sessions/2026-07-05-componentization-pass-2b-quiz-tail.md)
+- 2026-07-08 · D-048 · componentization Pass 3: Captures file swapped to shared DS instances → [note](./sessions/2026-07-08-componentization-pass-3-captures-file.md)
+- 2026-07-05 · D-047 · componentization Pass 2b: quiz tail closed → [note](./sessions/2026-07-05-componentization-pass-2b-quiz-tail.md)
 - 2026-07-05 · D-046 · componentization Pass 1b: PillButton + CtaButton icon slots (additive, token-bound), verified non-breaking → [note](./sessions/2026-07-05-componentization-pass-1b-icon-slot.md)
 - 2026-07-05 · D-045 · componentization Pass 2 (partial): quiz `Components` page + 5 local masters + shared TopNav/CtaButton swaps → [note](./sessions/2026-07-05-componentization-pass-2-quiz-file.md)
 - 2026-07-04 · D-043/D-044 · Pass 1 shared tier built (TopNav mega set reshaped, PillButton, form family) + 3 dashboard boards swapped to In+On → [note](./sessions/2026-07-04-pass-1-shared-tier-and-dashboard-swaps.md)

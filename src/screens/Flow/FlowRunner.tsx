@@ -1,8 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Icon } from '@/components';
+import { Icon, SceneBackground, SceneCharacter } from '@/components';
+import { CHARACTER_SCENE_VARIATIONS, LANDING_BG, SCENE_BACKGROUNDS, SCENE_BUBBLES, sceneCharacterSrc } from '@/data/sceneBackgrounds';
 import { durations, easings } from '@/lib';
 import { useFlow, useSessionStore } from '@/state';
 
@@ -23,24 +24,41 @@ export function FlowRunner() {
   const currentScreen = useSessionStore((s) => s.state.currentScreen);
   const stepIndex = useSessionStore((s) => s.state.stepIndex);
   const scenePhase = useSessionStore((s) => s.state.scenePhase);
+  const choiceIndex = useSessionStore((s) => s.state.choiceIndex);
   const history = useSessionStore((s) => s.state.history);
   const lastDirection = useSessionStore((s) => s.state.lastDirection);
+
+  // True while the character is sliding out BEFORE the store advances to the next step.
+  // Kept local (not in the store) because it's a pure presentation concern: it only
+  // affects visibility of the character and thought bubble, not scoring or navigation.
+  const [sceneExiting, setSceneExiting] = useState(false);
+
+  // Reset the flag whenever the step or phase actually changes (covers both the normal
+  // advance and any goBack path that reverts scenePhase or stepIndex).
+  useEffect(() => {
+    setSceneExiting(false);
+  }, [stepIndex, scenePhase]);
   const answers = useSessionStore((s) => s.state.answers);
+  const characterId = useSessionStore((s) => s.state.characterId);
   const recordAnswer = useSessionStore((s) => s.recordAnswer);
   const advanceStep = useSessionStore((s) => s.advanceStep);
   const completeFlow = useSessionStore((s) => s.completeFlow);
   const goBack = useSessionStore((s) => s.goBack);
 
   // Navigation is declarative off currentScreen so it can't race the store updates:
-  // completing the flow sets 'results' (→ /results); a refresh resets the store (→ Landing).
+  // completing the flow sets 'loading' (→ /loading), then results (→ /results).
   const active = currentScreen === 'flow';
   useEffect(() => {
     if (currentScreen === 'results') {
       navigate('/results');
+    } else if (currentScreen === 'loading') {
+      navigate('/loading');
+    } else if (active && !characterId) {
+      navigate('/character', { replace: true });
     } else if (!active) {
       navigate('/', { replace: true });
     }
-  }, [currentScreen, active, navigate]);
+  }, [currentScreen, active, characterId, navigate]);
 
   if (!active) return null;
 
@@ -82,14 +100,40 @@ export function FlowRunner() {
         : { opacity: 0, x: -40 * d, transition: { duration: durations.snap, ease: easings.soft } },
   };
 
-  // Every step top-anchors (justify-start under the header), matching the reference. Pinning the
-  // card's top makes a step swap a clean horizontal slide and never re-centers a tall (rating-phase)
-  // block against a short (intro) one — the scene→scene "lurch/reset". The liked scene "slide
-  // upward" is produced inside SceneSortView by a shrinking spacer (the reference's qSpacer), not by
-  // flex-centering, so both the lurch fix and the morph hold together.
+  // Intro MC steps center in the viewport; scenes stay top-anchored so the Continue→rating
+  // morph and scene→scene transitions don't lurch (the slide-up comes from SceneSortView's spacer).
+  const isMc = step.type === 'mc';
+  const backgroundSrc =
+    step.type === 'scene' ? SCENE_BACKGROUNDS[step.id] : step.type === 'mc' ? LANDING_BG : undefined;
+  const backgroundOverlay = step.type === 'mc' ? 'landing' : 'scene';
+  const characterSrc =
+    step.type === 'scene' && characterId ? sceneCharacterSrc(step.id, characterId) : undefined;
+  const characterVariations = characterId ? CHARACTER_SCENE_VARIATIONS[characterId] : undefined;
+  const bubbleSrc = step.type === 'scene' ? SCENE_BUBBLES[step.id] : undefined;
+  const rating = scenePhase === 'rating';
+  // Separate flag for the character: false while sceneExiting so the character slides
+  // out before the step advances. cardShift keeps using `rating` (unchanged by sceneExiting)
+  // so the card holds its shifted position until the step actually changes.
+  const characterVisible = rating && !sceneExiting;
+
+  // When the character is visible, shift the quiz card left so the two sit side-by-side.
+  // -304px aligns the glass card's visible left edge with the RC logo's left edge in the nav
+  // on a 1280px desktop viewport (natural centered position = (1280-672)/2 = 304px; 304-304 = 0px
+  // outer edge, plus the 32px p-space-5 padding inside = 32px glass edge = logo left edge).
+  const cardShift = characterSrc && rating && !reduce ? -304 : 0;
 
   return (
-    <main className="relative mx-auto flex w-full max-w-read flex-1 flex-col items-center justify-start p-space-5 pt-space-7">
+    <div className="relative flex min-h-0 flex-1 flex-col">
+    <SceneBackground src={backgroundSrc} overlay={backgroundOverlay} />
+    <SceneCharacter src={characterSrc} bubbleSrc={bubbleSrc} sceneId={step.type === 'scene' ? step.id : undefined} visible={characterVisible} choiceIndex={choiceIndex} reduce={reduce} variations={characterVariations} />
+    <motion.main
+      className={`relative z-20 mx-auto flex w-full max-w-read flex-1 flex-col items-center p-space-5 ${
+        isMc ? 'justify-center' : 'justify-start pt-space-7'
+      }`}
+      initial={false}
+      animate={{ x: cardShift }}
+      transition={{ duration: durations.glide, ease: easings.soft }}
+    >
       <AnimatePresence mode="wait" custom={dir}>
         <motion.div
           key={step.id}
@@ -126,6 +170,7 @@ export function FlowRunner() {
               sceneNumber={sceneSteps.findIndex((s) => s.id === step.id) + 1}
               sceneTotal={sceneSteps.length}
               reduce={reduce}
+              onBeforeLastChoice={() => setSceneExiting(true)}
             />
           )}
         </motion.div>
@@ -133,18 +178,20 @@ export function FlowRunner() {
 
       {/* Persistent, centered Back — the top research-gap fix (users had no way back). Reverses one
           step of the flow: previous choice → scene intro → previous step (branch-aware via history),
-          with prior picks pre-lit so a revisit reads as "here's what you chose". */}
+          with prior picks pre-lit so a revisit reads as "here's what you chose". Sits on a small
+          glass platter so it holds its own surface over the scene illustrations (CM-03). */}
       {canGoBack && (
         <button
           type="button"
           data-testid="flow-back"
           onClick={goBack}
-          className="absolute bottom-space-4 left-1/2 flex -translate-x-1/2 items-center gap-space-1 text-small font-medium text-text-on-dark-faint transition-colors hover:text-text-on-dark"
+          className="absolute bottom-space-4 left-1/2 flex h-control-lg -translate-x-1/2 items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 text-small font-medium text-text-on-dark backdrop-blur-panel transition-colors hover:text-text-on-dark-muted"
         >
           <Icon name="arrow-l" size={20} />
           Back
         </button>
       )}
-    </main>
+    </motion.main>
+    </div>
   );
 }

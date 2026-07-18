@@ -1,4 +1,4 @@
-import type { CategoryId, Job } from './types';
+import type { CategoryId, Job, JobSeniority } from './types';
 
 // Featured jobs per role for the Phase F results constellation + job-overview (DATA_MODEL §17).
 // The constellation places these at the four corners around the role center (reference layout);
@@ -12,6 +12,16 @@ import type { CategoryId, Job } from './types';
 // project voice, NOT vetted ARM content. Salary + education stay role-level (no per-job override),
 // matching the mockup. Real per-job detail is requested from ARM in
 // docs/reference/Job_Program_Data_Request.md; swap it in when it lands — the shape stays the same.
+//
+// `trajectory` ladders (prior / next job ids) are authored progression paths for the job-overview
+// "Where this can lead" viz — real job titles, may cross technician / specialist / integrator tiers.
+// `seniority` is the job's level pill (entry / mid / senior) within its ARM role tier.
+
+const SENIORITY = {
+  entry: 'entry',
+  mid: 'mid',
+  senior: 'senior',
+} as const satisfies Record<string, JobSeniority>;
 
 export const jobs: Record<CategoryId, Job[]> = {
   technician: [
@@ -19,6 +29,7 @@ export const jobs: Record<CategoryId, Job[]> = {
       id: 'technician-robot-operator',
       categoryId: 'technician',
       title: 'Robot Operator',
+      seniority: SENIORITY.mid,
       summary:
         "You're the person who keeps the robots running on the floor all shift. You power up the cells, load the parts they need, and watch the screens for trouble. When something stalls, you're the first one in to clear it, and a smooth run is on you.",
       responsibilities: [
@@ -38,11 +49,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Shop safety',
       ],
       roleNoun: 'robot operator',
+      trajectory: {
+        prior: { jobId: 'technician-entry-level-robotics' },
+        next: { jobId: 'technician-robotics-maintenance-technician' },
+      },
     },
     {
       id: 'technician-entry-level-robotics',
       categoryId: 'technician',
       title: 'Entry Level Robotics',
+      seniority: SENIORITY.entry,
       summary:
         "This is your way into robotics work, with no experience needed on day one. You shadow a lead operator, learn how each cell runs, and pick up the safety habits that keep everyone in one piece. Every shift you get a little more hands-on.",
       responsibilities: [
@@ -62,11 +78,13 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Quick learning',
       ],
       roleNoun: 'robotics operator',
+      trajectory: { next: { jobId: 'technician-robot-operator' } },
     },
     {
       id: 'technician-assembly-operator',
       categoryId: 'technician',
       title: 'Assembly Operator',
+      seniority: SENIORITY.entry,
       summary:
         "You work right next to the robots, putting parts together and checking that each one fits and looks right. The robot handles the heavy, repeating moves, and you make the calls a machine can't. Nothing leaves your station unless it's built the way it should be.",
       responsibilities: [
@@ -86,13 +104,13 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Steady pace',
       ],
       roleNoun: 'assembly operator',
+      trajectory: { next: { jobId: 'technician-robot-operator' } },
     },
     {
-      // 4th featured Technician job (the constellation shows 4 per role). Added so Technician matches
-      // the 4-node ring; title from ARM's common Technician titles, content PLACEHOLDER for ARM.
       id: 'technician-robotics-maintenance-technician',
       categoryId: 'technician',
       title: 'Robotics Maintenance Technician',
+      seniority: SENIORITY.senior,
       summary:
         "You're the one who keeps the robots healthy so the line never stops for long. You run the routine checkups, swap worn parts before they fail, and chase down the cause when a cell goes down. When the floor needs a fix fast, they call you.",
       responsibilities: [
@@ -112,14 +130,18 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Shop safety',
       ],
       roleNoun: 'robotics maintenance technician',
+      trajectory: {
+        prior: { jobId: 'technician-robot-operator' },
+        next: { jobId: 'specialist-robotics-specialist' },
+      },
     },
   ],
   specialist: [
     {
       id: 'specialist-robotics-specialist',
       categoryId: 'specialist',
-      // Distinct from the "Specialist" role center so the constellation doesn't read role == job.
       title: 'Robotics Programmer',
+      seniority: SENIORITY.entry,
       summary:
         "You're the one who makes a robotic cell actually work the way it should. You set it up, program the moves, and fine-tune it until it hits cycle time without dropping quality. When the floor team hits a problem they can't crack, they come to you.",
       responsibilities: [
@@ -139,11 +161,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Operator training',
       ],
       roleNoun: 'robotics programmer',
+      trajectory: {
+        prior: { jobId: 'technician-robot-operator' },
+        next: { jobId: 'specialist-robotics-engineer' },
+      },
     },
     {
       id: 'specialist-robotics-engineer',
       categoryId: 'specialist',
       title: 'Robotics Engineer',
+      seniority: SENIORITY.senior,
       summary:
         "You design robotic systems from a blank page, deciding how a robot reaches, grips, and gets the job done. You sketch the mechanics, pick the parts, and write the control code that brings it to life. Then you build a prototype and prove it works before it ever hits the floor.",
       responsibilities: [
@@ -163,11 +190,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Design testing',
       ],
       roleNoun: 'robotics engineer',
+      trajectory: {
+        prior: { jobId: 'specialist-robotics-specialist' },
+        next: { jobId: 'integrator-robotic-integration-design-engineer' },
+      },
     },
     {
       id: 'specialist-mechatronics-engineer',
       categoryId: 'specialist',
       title: 'Mechatronics Engineer',
+      seniority: SENIORITY.mid,
       summary:
         "You live where the machine, the wiring, and the code all meet. Your job is to blend the mechanical parts, the electronics, and the software so a robotic system runs like one machine instead of three. When something breaks across that line, you're the one who can trace it.",
       responsibilities: [
@@ -187,11 +219,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Cross-system debugging',
       ],
       roleNoun: 'mechatronics engineer',
+      trajectory: {
+        prior: { jobId: 'technician-robotics-maintenance-technician' },
+        next: { jobId: 'specialist-robotics-engineer' },
+      },
     },
     {
       id: 'specialist-automation-engineer',
       categoryId: 'specialist',
       title: 'Automation Engineer',
+      seniority: SENIORITY.mid,
       summary:
         "You take steps people used to do by hand and turn them into systems that run on their own. You plan the process, program the controllers, and wire up the equipment so the line keeps moving without someone babysitting it. Then you measure the results and push the throughput higher.",
       responsibilities: [
@@ -211,6 +248,10 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Data analysis',
       ],
       roleNoun: 'automation engineer',
+      trajectory: {
+        prior: { jobId: 'specialist-robotics-specialist' },
+        next: { jobId: 'integrator-robotics-integrator' },
+      },
     },
   ],
   integrator: [
@@ -218,6 +259,7 @@ export const jobs: Record<CategoryId, Job[]> = {
       id: 'integrator-robotics-integrator',
       categoryId: 'integrator',
       title: 'Robotics Integrator',
+      seniority: SENIORITY.senior,
       summary:
         "You bring a whole automation project together from a pile of separate parts. Robots, conveyors, controls, and software all have to act as one system, and you're the person who plans that and makes it real. You own it from the first layout to the day it hits the numbers the plant needs.",
       responsibilities: [
@@ -237,11 +279,13 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Vendor coordination',
       ],
       roleNoun: 'robotics integrator',
+      trajectory: { prior: { jobId: 'integrator-robotic-integration-design-engineer' } },
     },
     {
       id: 'integrator-robotic-integration-design-engineer',
       categoryId: 'integrator',
       title: 'Robotic Integration Design Engineer',
+      seniority: SENIORITY.mid,
       summary:
         "You draw the plan for an automated work center before anyone picks up a tool. You lay out where every robot and conveyor sits, check the reach and the timing, and model it in simulation so the pieces line up the first time. Get this right and the build goes smooth; miss it and the floor pays for it.",
       responsibilities: [
@@ -261,11 +305,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Cycle-time analysis',
       ],
       roleNoun: 'robotic integration design engineer',
+      trajectory: {
+        prior: { jobId: 'specialist-robotics-engineer' },
+        next: { jobId: 'integrator-robotics-integrator' },
+      },
     },
     {
       id: 'integrator-robotics-software-integrator',
       categoryId: 'integrator',
       title: 'Robotics Software Integrator',
+      seniority: SENIORITY.mid,
       summary:
         "You write and connect the software that lets every machine in an automated system work as a team. Each robot and controller speaks its own language, and your job is to get them sharing data and staying in sync. When the whole line has to move as one, the code making that happen is yours.",
       responsibilities: [
@@ -285,11 +334,16 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Logging and tracing',
       ],
       roleNoun: 'robotics software integrator',
+      trajectory: {
+        prior: { jobId: 'integrator-robotics-application-development-engineer' },
+        next: { jobId: 'integrator-robotics-integrator' },
+      },
     },
     {
       id: 'integrator-robotics-application-development-engineer',
       categoryId: 'integrator',
       title: 'Robotics Application Development Engineer',
+      seniority: SENIORITY.entry,
       summary:
         "You build the software that tells an automated system exactly what to do for one specific job. You take a plan and a customer's process and turn them into a working application the robots can run. Every plant is a little different, so a lot of the work is making the software fit theirs.",
       responsibilities: [
@@ -309,6 +363,10 @@ export const jobs: Record<CategoryId, Job[]> = {
         'Post-launch support',
       ],
       roleNoun: 'robotics application developer',
+      trajectory: {
+        prior: { jobId: 'specialist-robotics-specialist' },
+        next: { jobId: 'integrator-robotics-software-integrator' },
+      },
     },
   ],
 };

@@ -4,8 +4,8 @@ import type { CategoryId } from '@/data/types';
 //
 // ⚠️ PLACEHOLDER content. The fit narratives are plausible stand-ins authored in the project voice,
 // NOT vetted ARM content. Real per-role detail is requested from ARM in
-// docs/reference/Job_Program_Data_Request.md; swap it in when it lands, the shape stays. (The "where
-// this can lead" trajectory now reads from the three real roles in roleDetails — see TrajectoryViz.)
+// docs/reference/Job_Program_Data_Request.md; swap it in when it lands, the shape stays. Career
+// progression ladders live on each Job in jobs.ts (see TrajectoryViz).
 
 /** 2nd-person, encouraging "You as a {noun}" narrative for the job-overview "How you fit" tab.
  *  May include the literal token `{noun}` (the UI fills it with the job's roleNoun). PLACEHOLDER. */

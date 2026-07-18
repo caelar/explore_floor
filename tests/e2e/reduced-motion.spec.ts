@@ -52,8 +52,9 @@ test('narrative flow works under prefers-reduced-motion', async ({ page }) => {
   page.on('pageerror', (err) => consoleErrors.push(err.message));
 
   await page.goto('/');
-  // Landing is narrative-only now (switcher UI removed) — Start goes straight into the flow.
   await page.getByTestId('start-cta').click();
+  await expect(page).toHaveURL(/\/character$/);
+  await page.getByTestId('character-select-girl').click();
   await expect(page).toHaveURL(/\/flow$/);
 
   // Intro questions (Q1 = No branches over Q2, so "How long?" never shows).
@@ -82,18 +83,18 @@ test('narrative flow works under prefers-reduced-motion', async ({ page }) => {
   await page.getByTestId('role-next').click();
   await expect(page.getByTestId('role-name')).toHaveText('Integrator');
 
-  // The map + constellation render without motion and a dive still works (D-029 Phase E/F): with
-  // reduced motion the bubbles and nodes are static, so normal clicks land. Open the map, tap the
-  // top-match bubble to dive into its constellation, then open a job overlay.
+  // The unified career map renders without motion; role zoom and the floating context panel
+  // (CM-10) still work — role body at role zoom, job body after an orb click.
   await page.getByTestId('open-map').click();
   await expect(page.getByTestId('results-map')).toBeVisible();
   await expect(page.getByTestId('map-bubble-specialist')).toBeVisible();
   await page.getByTestId('map-bubble-specialist').click();
-  await expect(page.getByTestId('results-constellation')).toBeVisible();
-  await expect(page.getByTestId('constellation-center')).toContainText('Specialist');
+  await expect(page.getByTestId('career-map-field')).toBeVisible();
+  await expect(page.getByTestId('map-context-panel')).toBeVisible();
+  await expect(page.getByTestId('map-panel-back')).toBeVisible();
   const firstJob = jobs.specialist[0];
-  await page.getByTestId(`constellation-node-${firstJob.id}`).click();
-  await expect(page.getByTestId('job-side-panel')).toContainText('Job in Specialist');
+  await page.getByTestId(`career-map-job-${firstJob.id}`).click();
+  await expect(page.getByTestId('map-context-panel')).toContainText('Job in Specialist');
 
   expect(consoleErrors, `console errors:\n${consoleErrors.join('\n')}`).toEqual([]);
 });

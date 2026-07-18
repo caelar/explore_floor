@@ -33,7 +33,7 @@ export function RoleDetailSheet({
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center p-space-4">
       <motion.div
-        className="absolute inset-0 bg-near-black/40"
+        className="absolute inset-0 cursor-pointer bg-near-black/40"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

@@ -1,43 +1,62 @@
-import { Fragment } from 'react';
+import { AnimatePresence, useReducedMotion } from 'motion/react';
+import { useState } from 'react';
 
 import { SparkleStar } from '@/components';
 import { ROLE_ACCENT } from '@/components/categoryAccent';
 import { roleDetails } from '@/data';
-import type { CategoryId } from '@/data/types';
+import { MAP_JOB_GLOW_HEX } from '@/data/careerMapArt';
+import type { Job } from '@/data/types';
+import { buildJobTrajectory, type TrajectoryRung,trajectoryRungY } from '@/lib/jobTrajectory';
 
-// "Where this can lead" on the job-overview "How you fit" tab. A role-tier GROWTH LADDER — ARM's
-// three published roles stacked low→high (Technician → Specialist → Integrator) — so the page reads
-// "this is a starting place, not an end": the current tier is lit, the climb above it glows in the
-// role accent ("room to grow"), and a per-tier role count hints that each rung holds many jobs to
-// explore. Restores the liked "move through the roles" read and matches the constellation's sparkle /
-// dashed-line language. Static (reduced-motion safe). Replaces the old job-branch diamond + its
-// purple handoff gradient with the current orb-style, role-tinted background.
+import { CareerMapOrbGlow } from './CareerMapOrbGlow';
+import { fill } from './copy';
+
+// "Where this can lead" on the job-overview "How you fit" tab. A per-job career ladder built from
+// featured job titles in jobs.ts — entry / mid / senior steps within and across ARM tiers. Cross-tier
+// rungs show a "{role} path" subline so the jump is visible. Unselected rungs are clickable to pan
+// the map to that job and open its overview panel; hover reuses CareerMapOrbGlow from the map.
 
 const PANEL_W = 636;
 const PANEL_H = 430;
-const NODE = 64; // node diameter (px); r = 32
-const CX = 150; // node column x (labels run to the right)
-const LABEL_X = CX + NODE / 2 + 22;
-
-// Top → bottom = highest tier first. The role you're viewing is the lit "current" rung; rungs above
-// it are the climb ahead (accent), rungs below are the foundation (dimmed).
-const TIERS: CategoryId[] = ['integrator', 'specialist', 'technician'];
-const CY: Record<number, number> = { 0: 84, 1: 215, 2: 346 };
+const NODE = 64;
+const NODE_R = NODE / 2;
+const CX = 150;
+const LABEL_X = CX + NODE_R + 22;
 
 const xPct = (v: number) => `${(v / PANEL_W) * 100}%`;
 const yPct = (v: number) => `${(v / PANEL_H) * 100}%`;
 
-export function TrajectoryViz({ category }: { category: CategoryId }) {
-  const accent = ROLE_ACCENT[category];
-  const currentIndex = TIERS.indexOf(category);
-  const accentSoftVar = `var(--color-role-${category}-soft)`;
+function rungCaption(
+  rung: TrajectoryRung,
+  crossRoleTemplate: string,
+): string | null {
+  if (rung.kind === 'current') return "You're here";
+  if (rung.crossCategory) {
+    return fill(crossRoleTemplate, { role: roleDetails[rung.job.categoryId].roleName });
+  }
+  return null;
+}
+
+export function TrajectoryViz({
+  job,
+  crossRoleLabel,
+  onSelectJob,
+}: {
+  job: Job;
+  crossRoleLabel: string;
+  onSelectJob?: (job: Job) => void;
+}) {
+  const reduce = !!useReducedMotion();
+  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null);
+  const rungs = buildJobTrajectory(job);
+  const accent = ROLE_ACCENT[job.categoryId];
+  const yPositions = rungs.map((_, i) => trajectoryRungY(rungs.length, i));
+  const hoveredIndex = hoveredJobId ? rungs.findIndex((r) => r.job.id === hoveredJobId) : -1;
+  const hoveredRung = hoveredIndex >= 0 ? rungs[hoveredIndex] : null;
 
   return (
     <div
       className="relative mx-auto w-full overflow-hidden rounded-lg border border-glass-border-soft"
-      // Role-tinted glow rising from the bottom (where "you are now") over a subtle glass base —
-      // echoes the constellation's role-center glow and the shared orb field; replaces the old
-      // purple handoff gradient. accent.glow is already a low-alpha rgb(...) value.
       style={{
         maxWidth: PANEL_W,
         aspectRatio: `${PANEL_W} / ${PANEL_H}`,
@@ -51,19 +70,18 @@ export function TrajectoryViz({ category }: { category: CategoryId }) {
         preserveAspectRatio="none"
         aria-hidden
       >
-        {/* connectors between consecutive rungs; the climb above the current tier glows in the role
-            accent ("room to grow"), the foundation below stays neutral grey */}
-        {[0, 1].map((i) => {
-          const lit = i < currentIndex;
+        {yPositions.slice(0, -1).map((yTop, i) => {
+          const yBottom = yPositions[i + 1];
+          const aboveCurrent = rungs[i].kind === 'next';
           return (
             <line
-              key={i}
+              key={`${rungs[i].job.id}-${rungs[i + 1].job.id}`}
               x1={CX}
-              y1={CY[i] + NODE / 2}
+              y1={yTop + NODE_R}
               x2={CX}
-              y2={CY[i + 1] - NODE / 2}
-              stroke={lit ? accentSoftVar : 'var(--color-constellation-line)'}
-              strokeOpacity={lit ? 0.85 : 0.32}
+              y2={yBottom - NODE_R}
+              stroke={aboveCurrent ? `var(--color-role-${job.categoryId}-soft)` : 'var(--color-constellation-line)'}
+              strokeOpacity={aboveCurrent ? 0.85 : 0.32}
               strokeWidth={1.5}
               strokeDasharray="6 6"
             />
@@ -71,69 +89,112 @@ export function TrajectoryViz({ category }: { category: CategoryId }) {
         })}
       </svg>
 
-      {TIERS.map((tier, i) => {
-        const detail = roleDetails[tier];
-        const isCurrent = i === currentIndex;
-        const isClimb = i < currentIndex; // a rung above the current one
-        const starTone = isCurrent
-          ? accent.textSoft
-          : isClimb
-            ? 'text-text-on-dark'
-            : 'text-text-on-dark-faint';
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        viewBox={`0 0 ${PANEL_W} ${PANEL_H}`}
+        aria-hidden
+      >
+        <AnimatePresence>
+          {hoveredRung && hoveredRung.kind !== 'current' && (
+            <CareerMapOrbGlow
+              key={hoveredRung.job.id}
+              cx={CX}
+              cy={yPositions[hoveredIndex]}
+              baseR={NODE_R}
+              glow={MAP_JOB_GLOW_HEX[hoveredRung.job.categoryId]}
+              reduce={reduce}
+            />
+          )}
+        </AnimatePresence>
+      </svg>
+
+      {rungs.map((rung, i) => {
+        const isCurrent = rung.kind === 'current';
+        const isNext = rung.kind === 'next';
+        const isHovered = hoveredJobId === rung.job.id;
+        const caption = rungCaption(rung, crossRoleLabel);
+        const interactive = !isCurrent && onSelectJob != null;
+        const selectJob = () => onSelectJob?.(rung.job);
+        const rowTop = yPct(yPositions[i]);
+
+        const nodeStyle = {
+          width: NODE,
+          height: NODE,
+          background: isCurrent ? `var(--color-role-${job.categoryId})` : 'var(--color-glass-fill)',
+          border: `2px solid ${
+            isCurrent
+              ? `var(--color-role-${job.categoryId})`
+              : isHovered
+                ? `var(--color-role-${rung.job.categoryId}-soft)`
+                : isNext
+                  ? 'rgba(255, 255, 255, 0.7)'
+                  : 'rgba(255, 255, 255, 0.25)'
+          }`,
+          boxShadow: isCurrent ? `0 0 24px ${accent.glow}` : undefined,
+        };
+
+        const labelBody = (
+          <>
+            <span
+              className={`font-heading text-body font-bold ${
+                isCurrent ? accent.textSoft : 'text-text-on-dark-muted'
+              }`}
+            >
+              {rung.job.title}
+            </span>
+            {caption ? (
+              <span className="font-body text-small text-text-on-dark-faint">{caption}</span>
+            ) : null}
+          </>
+        );
+
         return (
-          <Fragment key={tier}>
-            {/* node */}
+          <div
+            key={rung.job.id}
+            className="absolute right-0 left-0"
+            style={{ top: rowTop, height: NODE, transform: 'translateY(-50%)' }}
+            onMouseEnter={interactive ? () => setHoveredJobId(rung.job.id) : undefined}
+            onMouseLeave={
+              interactive
+                ? () => setHoveredJobId((current) => (current === rung.job.id ? null : current))
+                : undefined
+            }
+          >
+            {interactive ? (
+              <button
+                type="button"
+                data-testid={`trajectory-job-${rung.job.id}`}
+                aria-label={`View ${rung.job.title}`}
+                onClick={selectJob}
+                onFocus={() => setHoveredJobId(rung.job.id)}
+                onBlur={() => setHoveredJobId((current) => (current === rung.job.id ? null : current))}
+                className="absolute inset-0 cursor-pointer border-0 bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-arm-teal-soft"
+              />
+            ) : null}
             <div
-              className="absolute grid place-items-center rounded-full"
+              className="pointer-events-none absolute grid place-items-center rounded-full"
               style={{
                 left: xPct(CX),
-                top: yPct(CY[i]),
-                width: NODE,
-                height: NODE,
+                top: '50%',
                 transform: 'translate(-50%, -50%)',
-                background: isCurrent ? `var(--color-role-${tier})` : 'var(--color-glass-fill)',
-                border: `2px solid ${
-                  isCurrent
-                    ? `var(--color-role-${tier})`
-                    : isClimb
-                      ? 'rgba(255, 255, 255, 0.7)'
-                      : 'rgba(255, 255, 255, 0.25)'
-                }`,
-                boxShadow: isCurrent ? `0 0 24px ${accent.glow}` : undefined,
+                ...nodeStyle,
               }}
             >
               <SparkleStar
                 size={26}
-                className={isCurrent ? accent.onAccent : starTone}
+                className={isCurrent ? accent.onAccent : 'text-text-on-dark-faint'}
                 style={{
                   filter: isCurrent ? `drop-shadow(0 0 6px ${accent.glow})` : undefined,
                 }}
               />
             </div>
-
-            {/* label: role name + a "you're here" / role-count caption (breadth cue) */}
             <div
-              className="absolute flex flex-col gap-space-0"
-              style={{ left: xPct(LABEL_X), top: yPct(CY[i]), transform: 'translate(0, -50%)' }}
+              className="pointer-events-none absolute flex max-w-[calc(100%-180px)] flex-col gap-space-0"
+              style={{ left: xPct(LABEL_X), top: '50%', transform: 'translateY(-50%)' }}
             >
-              <span
-                className={`font-heading text-body font-bold ${
-                  isCurrent
-                    ? accent.textSoft
-                    : isClimb
-                      ? 'text-text-on-dark'
-                      : 'text-text-on-dark-muted'
-                }`}
-              >
-                {detail.roleName}
-              </span>
-              <span className="font-body text-small text-text-on-dark-faint">
-                {isCurrent
-                  ? "You're here"
-                  : `${detail.commonJobTitles.length} roles to explore`}
-              </span>
+              {labelBody}
             </div>
-          </Fragment>
+          </div>
         );
       })}
     </div>

@@ -66,7 +66,7 @@ export function MCQuestion({
 
   return (
     <div className="flex w-full flex-col gap-space-4">
-      <div className="flex flex-col gap-space-3 rounded-lg border border-glass-border bg-glass-fill p-space-5">
+      <div className="flex flex-col gap-space-3 rounded-lg border border-glass-border bg-glass-fill-strong p-space-5 backdrop-blur-panel">
         <p className="text-small text-text-on-dark-faint">
           Question {questionNumber} of {questionTotal}
         </p>
@@ -100,7 +100,7 @@ export function MCQuestion({
               className={`w-full rounded-md border px-space-4 py-space-3 text-left font-body text-body transition-colors disabled:pointer-events-none ${
                 isPicked
                   ? 'border-arm-gold bg-arm-gold text-near-black'
-                  : 'border-glass-border bg-glass-fill text-text-on-dark hover:border-arm-gold hover:bg-arm-gold hover:text-near-black'
+                  : 'border-glass-border bg-glass-fill-strong text-text-on-dark backdrop-blur-panel hover:border-arm-gold hover:bg-arm-gold hover:text-near-black'
               }`}
             >
               {choice.label}
