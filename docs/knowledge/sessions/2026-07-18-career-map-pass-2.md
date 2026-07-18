@@ -1,0 +1,27 @@
+# 2026-07-18 — Career-map review: Pass 2, board decisions applied
+
+## Resume here
+
+- **State:** still on **`career-map-merge`**, merge still HELD. Pass 2 is **done**: all three board decisions applied across four commits (`96fdca3` glass, `9b420da` map overview, `b10231d` wayfinding, plus the cleanup/docs commit). The `/boards` bench and the orphaned constellation code are deleted. Gates green at every commit: lint zero-warning, typecheck, **106/106 unit** (the constellation suite retired with its subject), **4/4 E2E**.
+- **Next action:** run **Pass 3** (close): `/design-review` rubric pass, D-entries — the CM-12 panel-only decision, the CM-16 hero-button registry ruling, the `/character` + `/loading` new-screen flags per the PRD hard rule — then STATUS, the ledger's remaining opens, merge `career-map-merge` to `main`, and the summary for Kayla. Also `/revise-doc` the docs that still describe the constellation/job-page architecture (the `scene-motion` skill's SVG note, DATA_MODEL/PRD explore-view references).
+- **Open holds:** CM-16 (Pass 3), CM-19 (Pass 3), CM-02 team-discussion items unchanged. Nothing pushed; direct push stays denied.
+
+## What we did
+
+**Pass 2a — glass (CM-01/03, commit `96fdca3`).** Per board decision 1, no new token tier: `--color-glass-fill-strong` raised 0.06 → 0.1, tuned live at the `/boards` bench over scene + landing art, so every panel-glass consumer moved together (CharacterSelect actually improves — it sits over the factory too). The MC question card, answer rows, scene-context card, and bucket rows adopt `bg-glass-fill-strong` + `backdrop-blur-panel`; selected stays solid gold. The flow Back button gained a rounded glass platter.
+
+**Pass 2b — map overview (CM-05/06/07, commit `9b420da`).** Hubs are area-true `r = k·√pct` (`careerMapHubRadius`: 40% anchors the Figma hero radius, floor at the small-hub radius, cap 100), so ties render equal by construction; percentages thread the whole bounds/camera chain. Edge paths re-trim their hub-side endpoints onto the live radius — including dropping art corners a grown hub swallows (the second/third clusters have a corner only ~80vb out, inside any hub above ~59%). Job dots dim to 0.25 at overview, brighten on the label zoom ramp or on hover/keyboard-focus with a name reveal; the hubs got the mockup's distinct glyphs (arm / code / clipboard). The intro card gained the dots line and a dismiss X, collapses to a persistent "?" pill, and re-offers itself once per map visit on a near-fit camera settle (2.5s idle within 1.25× fit; skipped under reduced motion).
+
+**Pass 2c — wayfinding (CM-09..13, commit `b10231d`).** CM-12 resolved **panel-only** (Caelan: no more usability sessions), so no full job page. The field is now truly full-bleed; `MapContextPanel` floats at role + job zoom with margin on all sides — role body revived from the old `JobSidePanel` rail, job body = Kayla's full three-tab content (`JobOverview` renamed `MapPanelJob`, footer CTAs dropped, reflowed for the 460px panel; TrajectoryViz verified at that width). The camera fits content into the pane the panel leaves free (`careerMapPaneRect` + `careerMapCameraForBoundsInPane`; the old single-purpose pane function and the whole mid-zoom viewport-remap apparatus deleted — they existed only because the docked lane resized the field). Wayfinding is two stable affordances: the persistent "Back to your results" exit platter (every phase) and the panel-header phase-local back with a per-level kicker. Beats differentiate: tighter job framing, sibling orbs + labels recede at job zoom, camera-settle now fires per phase so the panel mounts when each glide lands. CM-13 copy reframes roles-then-jobs ("Skip to your career map", "Your career map", the tap-a-path hint). Nav lost `fromMap`/`roleOverview`/`openJobOverview`/`backToJob` and the legacy view values. All Motion; GSAP untouched.
+
+**Cleanup.** `/boards` + `src/screens/Boards/` deleted (glass tune settled first), plus `JobSidePanel`, `ResultsConstellation`, `ConstellationField`, `ConstellationNode`, `constellationLayout` + its test, the `--container-constellation`/`--container-job-panel` tokens, and `ResultsPanel`'s `embedded` variant. `--color-constellation-line` survives (TrajectoryViz's ladder connector) with an updated comment. `ResultsMap.tsx` (the old bubble map) is pre-existing orphaned legacy, left for a Pass 3 call.
+
+## Verification
+
+Live-driven at 1280 / 1024 / 375: glass legibility over both background families, three distinct hub glyphs render from the self-hosted font, %-sized orbs (64/36/18 spread), dim → hover reveal, pill collapse/expand/settle-once (including the cap and the near-fit decline when zoomed past 1.25× fit), the full back chain, mobile bottom sheet with the cluster fitted above it. E2E specs updated: narrative covers card → pill → re-expand and the new panel back chain; reduced-motion asserts the panel; map-debug reads hub radii from the DOM instead of fixed constants.
+
+## Notes for Pass 3
+
+- The Motion "animate opacity from undefined" console warnings on map SVG orbs are pre-existing (the `initial={false}` + SVG-attr idiom); the new dim/sibling values follow the same pattern. Zero console errors throughout.
+- `map-debug.spec.ts` has always evaluated before the entrance reveals labels, so its label assertions run on an empty list — a pre-existing weakness worth a look if it's kept.
+- The docs sweep (constellation references) is queued in the ledger's Pass 3 line.

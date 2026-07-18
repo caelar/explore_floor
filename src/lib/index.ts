@@ -38,12 +38,6 @@ export { categoryContributions } from './categoryBreakdown';
 export { calculateCategoryScores, computeCategoryMax, MAYBE_WEIGHT } from './categoryScoring';
 export type { CompareRecommendation, RecommendationVariant } from './compareRecommendation';
 export { COMPARE_CLOSE_THRESHOLD,compareRecommendation } from './compareRecommendation';
-export type {
-  ConstellationLayout,
-  ConstellationNodeLayout,
-  ConstellationOptions,
-} from './constellationLayout';
-export { CONSTELLATION_VIEW, constellationLayout } from './constellationLayout';
 export { buildJobTrajectory, jobById, jobMapLocation } from './jobTrajectory';
 export * from './motion';
 export type { Point } from './nodeLayout';

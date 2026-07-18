@@ -1,7 +1,6 @@
 import { createHashRouter } from 'react-router-dom';
 
 import { AppLayout } from '@/app/AppLayout';
-import { BoardsScreen } from '@/screens/Boards/BoardsScreen';
 import { CharacterSelect } from '@/screens/CharacterSelect';
 import { FlowRunner } from '@/screens/Flow';
 import { Landing } from '@/screens/Landing';
@@ -24,9 +23,6 @@ export const router = createHashRouter([
       { path: '/loading', element: <LoadingScreen /> },
       { path: '/results', element: <Results /> },
       { path: '/select', element: <RoleSelect /> },
-      // Dev-only workshop route for the career-map review boards (CAREER_MAP_REVIEW.md).
-      // Not a product screen; deleted with src/screens/Boards once the decisions land.
-      ...(import.meta.env.DEV ? [{ path: '/boards', element: <BoardsScreen /> }] : []),
     ],
   },
 ]);
