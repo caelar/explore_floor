@@ -20,7 +20,7 @@ The dashboard already invented the model: real published component sets in the D
 | 2 | Interest Quiz file — local components + instance swaps | ☑ 2026-07-05 (D-045 + **D-047**) — Pass 2: `Components` page + 5 local masters + shared nav ×9 / CtaButton ×1. **Pass 2b (D-047): tail closed** — results icon-pill/CTA swaps ×7 onto the icon-slotted shared sets, + 3 net-new masters (`SignalBar` / `RoleTab` / `CompareTargetMenu`) + `StatBox Size=Compact`; 20 instances, all frames pixel-faithful, masters token-clean. Outcomes below. |
 | 3 | Captures file — swap to library instances where promoted | ☑ 2026-07-08 (D-048) — 10 nav + 37 form instances swapped to shared DS instances; 5 form masters + `State=Light` nav variant retired; Landing OverHero kept local; all frames pixel-faithful bar the sanctioned nav divergence. Outcomes below. |
 | 4 | Code alignment — **sliced into 4a/4b/4c** (D-049); hops repos | ☑ **complete 2026-07-17** — 4a explore_floor (07-15); 4b dashboard (D-051) + **4b robotics_career tail + 4c Icon union (D-052 / robotics_career D-011)**, all gates + focused design reviews green. **No Figma-leads-code divergence survives the run.** |
-| 5 | (Conditional) Dashboard file reconciliation | ☐ — Caelan: a later session |
+| 5 | (Conditional) Dashboard file reconciliation | ☐ — **queued for post-presentation wrap-up** (Caelan, 2026-07-17): stays deferred until after the Tue 2026-07-21 presentation, then runs when he asks "what's left to wrap up" — logged in `REMAINING_WORK.md` § wrap-up queue |
 
 Core order 0 → 1 → 2 → 3; Pass 4 can interleave any time after Pass 1's rulings are built. Minimum worthwhile cut if the pre-handoff window tightens: **Passes 0–2** (registry + shared tier + a componentized Interest Quiz file).
 
