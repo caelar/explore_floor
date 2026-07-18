@@ -190,7 +190,7 @@ export function CareerMap({
                   data-testid="career-map-intro-dismiss"
                   aria-label={copy.hideDirections}
                   onClick={collapseIntro}
-                  className="pointer-events-auto absolute right-space-2 top-space-2 flex h-6 w-6 items-center justify-center rounded-full text-text-on-dark-faint transition-colors hover:text-text-on-dark"
+                  className="pointer-events-auto absolute right-space-2 top-space-2 flex size-control-sm items-center justify-center rounded-full text-text-on-dark-faint transition-colors hover:text-text-on-dark"
                 >
                   <Icon name="x" size={16} />
                 </button>
@@ -206,7 +206,7 @@ export function CareerMap({
             <motion.div
               key="map-intro-pill"
               {...introFade}
-              className="absolute inset-x-space-3 top-space-3 flex justify-center"
+              className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6 md:pt-0"
             >
               <button
                 type="button"

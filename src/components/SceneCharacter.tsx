@@ -87,7 +87,7 @@ export function SceneCharacter({ src, bubbleSrc, sceneId, visible, choiceIndex, 
         charRef.current,
         { y: [0, -12, 0, -6, 0, -3, 0] },
         {
-          duration: 0.7,
+          duration: durations.pour,
           ease: easings.soft,
           times: [0, 0.15, 0.35, 0.5, 0.65, 0.8, 1],
           delay,

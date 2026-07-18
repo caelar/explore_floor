@@ -417,7 +417,7 @@ export function CareerMapField({
       ref={viewportRef}
       className="absolute inset-0 touch-none overflow-visible"
       style={{
-        backgroundImage: 'radial-gradient(circle, rgb(255 255 255 / 0.045) 1px, transparent 1px)',
+        backgroundImage: 'radial-gradient(circle, var(--color-glass-fill) 1px, transparent 1px)',
         backgroundSize: '32px 32px',
       }}
       data-testid="career-map-field"

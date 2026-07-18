@@ -26,6 +26,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 
 import { getThoughtBubbleIcon,THOUGHT_BUBBLE_ICON_PX } from '@/data/thoughtBubbleIcons';
+import { durations } from '@/lib';
 
 // Placeholder symbols for choices without a custom illustration yet.
 const SYMBOLS = ['?', '!', '★'];
@@ -66,7 +67,7 @@ export function ThoughtBubble({ baseDelay = 0, sceneId, symbolIndex = 0, reduce 
       return {
         initial: { scale: 0, opacity: 0 },
         animate: { scale: 1, opacity: 1 },
-        transition: { duration: 0.15, delay: entranceDelay },
+        transition: { duration: durations.instant, delay: entranceDelay },
       };
     }
 
@@ -75,8 +76,9 @@ export function ThoughtBubble({ baseDelay = 0, sceneId, symbolIndex = 0, reduce 
       // y keyframes drive the perpetual bob; scale/opacity handle the entrance.
       animate: { scale: 1, opacity: 1, y: [0, -yAmt, 0] },
       transition: {
+        // Deliberately snappier than the shared `spring` token — the bubble's pop-in feel.
         scale: { type: 'spring' as const, stiffness: 520, damping: 24, delay: entranceDelay },
-        opacity: { duration: 0.1, delay: entranceDelay },
+        opacity: { duration: durations.instant, delay: entranceDelay },
         y: {
           duration: bobMs,
           repeat: Infinity,

@@ -1,4 +1,3 @@
-export { BUBBLE_VIEW, bubbleLayout, bubbleRadius } from './bubbleLayout';
 export type { CareerMapEdge, CareerMapEdgeLayout, CareerMapJobLayout, CareerMapRoleLayout, CareerMapZoom, MapBounds, MapCamera, MapPaneDock, MapPaneRect, MapPhase } from './careerMapLayout';
 export {
   careerMapAllJobNodes,

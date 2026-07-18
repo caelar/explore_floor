@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 
-import { MAP_ORB_FILL_OPACITY, MAP_STROKE_OPACITY, MAP_STROKE_WIDTH } from '@/data/careerMapArt';
+import { MAP_INK_HEX, MAP_ORB_FILL_OPACITY, MAP_STROKE_OPACITY, MAP_STROKE_WIDTH } from '@/data/careerMapArt';
 import { durations, easings } from '@/lib';
 
 // Figma 1395:509 — target-role job orb. Unfilled when set but not open; filled + glow when selected.
@@ -118,7 +118,7 @@ export function CareerMapTargetJobOrb({
           fontFamily="'Material Icons'"
           fontSize={starSize}
           initial={reduce ? false : { opacity: 0 }}
-          animate={{ fill: selected ? '#262626' : starColor, opacity: 1 }}
+          animate={{ fill: selected ? MAP_INK_HEX : starColor, opacity: 1 }}
           transition={{ ...stateTransition, delay: reduce ? 0 : ENTRANCE.star.delay }}
         >
           star

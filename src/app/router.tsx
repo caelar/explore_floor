@@ -9,10 +9,11 @@ import { Results } from '@/screens/Results';
 import { RoleSelect } from '@/screens/Select';
 
 /** Navigation is driven by store actions + these routes, all nested under the dark AppLayout shell
- *  (header + dark canvas, D-029). /flow is the step runner for the narrative flow; /results renders
- *  the node-map results. /select is the standalone "skip the quiz" comparator — not a registered
- *  flow, no session state. HashRouter (not browser history) so static GitHub Pages hosting survives
- *  refresh and deep links under the /explore_floor/ subpath without server-side rewrites. */
+ *  (header + dark canvas, D-029). /character picks the narrative character, /flow is the step runner,
+ *  /loading is the tabulating interstitial, /results renders the dark role-cards results (career map
+ *  inside). /select is the standalone "skip the quiz" comparator — not a registered flow, no session
+ *  state. HashRouter (not browser history) so static GitHub Pages hosting survives refresh and deep
+ *  links under the /explore_floor/ subpath without server-side rewrites. */
 export const router = createHashRouter([
   {
     element: <AppLayout />,

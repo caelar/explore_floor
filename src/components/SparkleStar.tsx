@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 
-// A four-point sparkle/twinkle star — the constellation + trajectory node glyph. The Claude Design
+// A four-point sparkle/twinkle star — the trajectory-ladder node glyph. The Claude Design
 // handoff uses this exact path (not a Material `star` glyph), which is what makes the nodes read as
 // glowing sparkles rather than generic five-point stars. `fill: currentColor` so the tint comes from
 // a text-color class on the caller; `size` and an optional glow `style` (e.g. a drop-shadow filter)

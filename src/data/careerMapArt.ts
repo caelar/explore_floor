@@ -83,6 +83,9 @@ export const MAP_ROLE_COLOR_HEX: Record<CategoryId, string> = {
   integrator: '#f2965a',
 };
 
+/** Ink on accent fills — mirrors @theme --color-near-black (a Motion-animated SVG fill needs a literal). */
+export const MAP_INK_HEX = '#262626';
+
 /** Hover glow on job orbs — mirrors @theme --color-role-*-glow tokens. */
 export const MAP_JOB_GLOW_HEX: Record<CategoryId, string> = {
   technician: '#ffb81c',

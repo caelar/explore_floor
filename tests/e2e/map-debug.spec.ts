@@ -7,6 +7,11 @@ test('debug map hub label positions', async ({ page }) => {
   await page.getByTestId('open-map').waitFor({ timeout: 8000 });
   await page.getByTestId('open-map').click();
 
+  // The hub labels and edges mount with the entrance reveal — wait for them, or every
+  // assertion below runs over an empty list and the test passes vacuously.
+  await page.waitForSelector('[data-testid^="map-bubble-"]');
+  await page.waitForSelector('[data-testid="career-map-edge"]');
+
   const info = await page.evaluate(() => {
     const MAP_JOB_R = 19.669;
     const field = document.querySelector('[data-testid="career-map-field"]');
@@ -113,7 +118,8 @@ test('debug map hub label positions', async ({ page }) => {
     };
   });
 
-  console.log(JSON.stringify(info, null, 2));
+  expect(info.labelCount).toBe(3);
+  expect(info.edgeGaps.length).toBeGreaterThan(0);
   for (const label of info.labels) {
     if (!label.insideHub) throw new Error(`${label.testid} text escaped hub bounds`);
   }

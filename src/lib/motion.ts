@@ -24,19 +24,17 @@ export const durationsMs = {
 } as const;
 
 /**
- * Base durations (seconds) for the multi-second "breathe" idle loops on the results screens: the
- * ambient orbs, the bubble/constellation float, and the sparkle twinkle. Deliberately off the UI
- * scale above (which tops out at `reveal` 1s) — these are slow decorative loops, not UI feedback.
- * Each consumer adds its own small per-index/per-rank increment + stagger delay on top of the base.
+ * Base durations (seconds) for the multi-second "breathe" idle loops on the results screens (the
+ * ambient orbs). Deliberately off the UI scale above (which tops out at `reveal` 1s) — these are
+ * slow decorative loops, not UI feedback. Each consumer adds its own small per-index increment +
+ * stagger delay on top of the base. (The bubble/node/sparkle bases went with the bubble map and
+ * constellation at the career-map merge.)
  */
 export const breathe = {
   /** Ambient orb opacity breathe — retimed from 7s by the career-map rework (slower, subtler). */
   orb: 18,
   /** Ambient orb size pulse (scaleX/scaleY run offset from each other for drift). */
   orbPulse: 23,
-  bubble: 5,
-  node: 4,
-  sparkle: 2.4,
 } as const;
 
 /** Cubic-bezier control points. */

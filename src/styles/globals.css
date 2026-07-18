@@ -71,7 +71,7 @@
   /* ---- Role accents (dark results — kit-only gold/teal/orange; D-029) ----
      Technician=gold, Specialist=teal, Integrator=orange. `accent` reuses the brand
      token; -soft (legible large role names on dark), -on (text on the accent fill),
-     and -glow (bubbles / constellation nodes) are genuinely-new derivatives. Mirrored
+     and -glow (career-map orbs / trajectory nodes) are genuinely-new derivatives. Mirrored
      in src/components/categoryAccent.ts (ROLE_ACCENT). Retires arm-blue. */
   --color-role-technician: var(--color-arm-gold); /* #ffb81c */
   --color-role-technician-soft: #ffd27a;
@@ -97,7 +97,6 @@
   --spacing-space-5: 32px;
   --spacing-space-6: 48px;
   --spacing-space-7: 64px;
-  --spacing-cta-x: 30px; /* Figma 1368:450 — landing hero CTA horizontal padding */
   --spacing-job-stat: 25px; /* Figma 1386:494 — job-overview salary/education stat box padding */
   --min-height-job-stat: 148px; /* Figma 1386:494 — job-overview stat box height */
   --spacing-container-px: 16px; /* horizontal page padding */
@@ -122,14 +121,12 @@
   --container-xl: 1500px;
   --container-read: 672px; /* the quiz reading column in the flow runner (was an ad-hoc max-w-2xl) */
   --container-results: 760px; /* the results reading column inside the role-cards panel (D-029 Phase C) */
-  --container-map-card: 640px; /* the glass "your results" intro card on the bubble map (D-029 Phase E) */
-  --container-map: 1040px; /* the bubble field on the results map; matches BUBBLE_VIEW.width in lib/bubbleLayout (D-029 Phase E) */
+  --container-map-card: 640px; /* the glass "your career map" intro card on the career map */
 
   /* ---- Radius (§6 — overrides defaults) ---- */
   --radius-sm: 6px; /* kit Refined (was 4px) */
   --radius-md: 8px; /* inputs / answer + rating rows (mockup 8px) */
   --radius-lg: 16px; /* dark quiz cards — question + scene-context surfaces (mockup 14–16px); D-029 Phase B */
-  --radius-cta: 20px; /* Figma 1368:450 — landing hero CTA */
   --radius-full: 9999px;
 
   /* ---- Shadow / elevation — kit soft tiers (DEF-013 R1; replaces the Material triple-stacks) ---- */

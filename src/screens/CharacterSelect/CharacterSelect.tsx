@@ -36,7 +36,7 @@ export function CharacterSelect() {
       >
         <h1 className="w-full text-center font-heading text-h1 text-text-on-dark">Choose your character</h1>
 
-        <div className="flex w-full flex-col items-center justify-center gap-space-5 md:flex-row md:gap-10">
+        <div className="flex w-full flex-col items-center justify-center gap-space-5 md:flex-row md:gap-space-6">
           {OPTIONS.map((option) => (
             <button
               key={option.id}
@@ -44,7 +44,7 @@ export function CharacterSelect() {
               data-testid={`character-select-${option.id}`}
               aria-label={`Choose ${option.label.toLowerCase()} character`}
               onClick={() => pick(option.id)}
-              className="group relative h-[min(549px,60vh)] w-full max-w-[478px] shrink-0 overflow-hidden rounded-cta border border-glass-border bg-glass-fill-strong shadow-dark-card backdrop-blur-panel transition-colors hover:border-text-on-dark-faint hover:bg-glass-fill"
+              className="group relative h-[min(549px,60vh)] w-full max-w-[478px] shrink-0 overflow-hidden rounded-lg border border-glass-border bg-glass-fill-strong shadow-dark-card backdrop-blur-panel transition-colors hover:border-text-on-dark-faint hover:bg-glass-fill"
             >
               <img
                 src={CHARACTER_SELECT_ART[option.id]}

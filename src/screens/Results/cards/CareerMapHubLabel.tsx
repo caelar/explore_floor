@@ -21,12 +21,17 @@ interface CareerMapHubLabelProps {
   onHoverEnd?: () => void;
 }
 
+// Legibility floor for the role name (viewBox units ≈ px near fit zoom). Area-true hub sizing
+// (CM-05) can shrink a low-% hub until its name ratio lands near 6vb; type stops scaling here
+// instead, slightly overhanging the smallest orbs rather than going unreadable.
+const NAME_SIZE_FLOOR = 11;
+
 function hubLabelLayout(role: CareerMapRoleLayout) {
   const d = role.r * 2;
   const l = MAP_BUBBLE_LABEL;
   const s = 1;
   const iconSize = d * l.icon * s;
-  const nameSize = d * l.name * s;
+  const nameSize = Math.max(d * l.name * s, NAME_SIZE_FLOOR);
   const pctSize = d * l.pct * s;
   const gap = d * l.gap * s;
   const nameH = nameSize * l.nameLine;
@@ -120,7 +125,7 @@ export function CareerMapHubLabel({
         fontSize={layout.pctSize}
         fontFamily="Montserrat, system-ui, sans-serif"
         fontWeight={700}
-        fill="#ffffff"
+        fill="var(--color-white)"
         pointerEvents="none"
       >
         {pct}%
