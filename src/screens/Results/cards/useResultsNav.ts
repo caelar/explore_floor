@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import type { MapPhase } from '@/lib';
 
-// The results internal view-state machine (DATA_MODEL §17, D-029 Phase C–F). The career map now
-// owns the explore zoom ladder (overview → role → job) inside `view === 'map'`; JobOverview stays
-// for the job-selected panel. Legacy `selected` / `job` views remain in the type for test migration.
+// The results internal view-state machine (DATA_MODEL §17, D-029 Phase C–F). The career map owns
+// the explore zoom ladder (overview → role → job) inside `view === 'map'`; the floating
+// MapContextPanel (CM-10) carries the role and job content, so jobs never leave the map view.
 
-export type ResultsView = 'cards' | 'compare' | 'map' | 'selected' | 'job' | 'job-overview';
+export type ResultsView = 'cards' | 'compare' | 'map';
 
 export interface ResultsNav {
   view: ResultsView;
@@ -20,16 +20,12 @@ export interface ResultsNav {
   setActiveTab: (t: number) => void;
   expanded: boolean;
   toggleExpanded: () => void;
-  fromMap: boolean;
   mapPhase: MapPhase;
   selectedJob: number | null;
   openConstellation: (i: number) => void;
   openJob: (rank: number, jobIndex: number) => void;
-  openJobOverview: () => void;
   backToConstellation: () => void;
-  backToJob: () => void;
   backToMapOverview: () => void;
-  roleOverview: () => void;
   compareWith: number;
   openCompare: () => void;
   setCompareWith: (i: number) => void;
@@ -47,7 +43,6 @@ export function useResultsNav(roleCount: number, initialView: ResultsView = 'car
   const [roleIndex, setRoleIndex] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [fromMap, setFromMap] = useState(false);
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
   const [compareWith, setCompareWithState] = useState(roleCount > 1 ? 1 : 0);
   const [compareExpanded, setCompareExpanded] = useState<[boolean, boolean]>([false, false]);
@@ -85,7 +80,6 @@ export function useResultsNav(roleCount: number, initialView: ResultsView = 'car
     setActiveTab,
     expanded,
     toggleExpanded: () => setExpanded((e) => !e),
-    fromMap,
     mapPhase,
     selectedJob,
     openConstellation: (i) => {
@@ -103,19 +97,9 @@ export function useResultsNav(roleCount: number, initialView: ResultsView = 'car
       setViewState('map');
       scrollTop();
     },
-    openJobOverview: () => {
-      setMapPhase('job');
-      setViewState('map');
-      scrollTop();
-    },
     backToConstellation: () => {
       setSelectedJob(null);
       setMapPhase('role');
-      setViewState('map');
-      scrollTop();
-    },
-    backToJob: () => {
-      setMapPhase('job');
       setViewState('map');
       scrollTop();
     },
@@ -123,11 +107,6 @@ export function useResultsNav(roleCount: number, initialView: ResultsView = 'car
       setSelectedJob(null);
       setMapPhase('overview');
       setViewState('map');
-      scrollTop();
-    },
-    roleOverview: () => {
-      setFromMap(true);
-      setViewState('cards');
       scrollTop();
     },
     compareWith,

@@ -11,7 +11,6 @@ import { useFlow, useSessionStore } from '@/state';
 import { AmbientField } from './AmbientField';
 import { CareerMap } from './CareerMap';
 import { CompareView } from './CompareView';
-import { fill } from './copy';
 import { ResultsPanel } from './ResultsPanel';
 import { RoleHero } from './RoleHero';
 import { RoleTabs } from './RoleTabs';
@@ -90,19 +89,7 @@ export function ResultsExperience() {
         <Icon name="compare" size={19} />
         {cards.compareCta}
       </button>
-      {nav.fromMap ? (
-        // Reached cards via the map → constellation → "Role overview" path: the forward action dives
-        // back into THIS role's job constellation (matches the mockup's "Explore {role} careers").
-        <button
-          type="button"
-          onClick={() => nav.openConstellation(nav.roleIndex)}
-          data-testid="explore-role"
-          className={pill}
-        >
-          {fill(cards.exploreRoleCta, { role: detail.roleName })}
-          <Icon name="arrow-r" size={18} />
-        </button>
-      ) : nav.atEnd ? (
+      {nav.atEnd ? (
         <button
           type="button"
           onClick={() => nav.setView('map')}
@@ -121,15 +108,10 @@ export function ResultsExperience() {
     </>
   );
 
-  // Clicking the gutter around the cards panel navigates to the map — or back to the constellation if
-  // the user dived in from there (reference parity: a full-bleed click layer sits behind the panel).
-  const gutterToConstellation = nav.fromMap;
-  const onGutterClick = gutterToConstellation
-    ? () => nav.openConstellation(nav.roleIndex)
-    : () => nav.setView('map');
-  const gutterLabel = gutterToConstellation
-    ? fill(cards.exploreRoleCta, { role: detail.roleName })
-    : cards.mapCta;
+  // Clicking the gutter around the cards panel opens the map (reference parity: a full-bleed
+  // click layer sits behind the panel).
+  const onGutterClick = () => nav.setView('map');
+  const gutterLabel = cards.mapCta;
 
   const mapFocusCategory =
     nav.view === 'map' && nav.mapPhase !== 'overview' ? ranking[nav.roleIndex] : null;
@@ -225,7 +207,6 @@ export function ResultsExperience() {
               onBackToOverview={nav.backToMapOverview}
               onBackToRole={nav.backToConstellation}
               onBackToCards={() => nav.setView('cards')}
-              onJobOverviewBack={nav.backToConstellation}
               targetJobId={nav.targetJobId}
               onSetTargetJob={nav.setTargetJob}
             />

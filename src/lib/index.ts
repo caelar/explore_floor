@@ -1,8 +1,9 @@
 export { BUBBLE_VIEW, bubbleLayout, bubbleRadius } from './bubbleLayout';
-export type { CareerMapEdge, CareerMapEdgeLayout, CareerMapJobLayout, CareerMapRoleLayout, CareerMapZoom, MapBounds, MapCamera, MapPhase } from './careerMapLayout';
+export type { CareerMapEdge, CareerMapEdgeLayout, CareerMapJobLayout, CareerMapRoleLayout, CareerMapZoom, MapBounds, MapCamera, MapPaneDock, MapPaneRect, MapPhase } from './careerMapLayout';
 export {
   careerMapAllJobNodes,
   careerMapCamera,
+  careerMapCameraForBoundsInPane,
   careerMapCameraForJob,
   careerMapCameraForPhase,
   careerMapCirclesFitViewport,
@@ -15,12 +16,13 @@ export {
   careerMapEdges,
   careerMapFitScale,
   careerMapHubRadius,
+  careerMapJobFocusBounds,
   careerMapJobNodes,
   careerMapJobs,
   careerMapMinScaleForBounds,
+  careerMapPaneRect,
   careerMapPanLimits,
   careerMapPointInBounds,
-  careerMapRemapCameraForViewportResize,
   careerMapRoles,
   careerMapScreenToViewBox,
   careerMapZoom,

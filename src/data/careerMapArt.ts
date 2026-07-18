@@ -43,8 +43,20 @@ export const MAP_JOB_LABEL_RATIO = {
   gap: 0.25,
 } as const;
 
-/** Figma 1296:1894 — job overview panel width when docked left (md+). */
-export const MAP_JOB_PANEL_MAX_WIDTH = 696;
+/** CM-10/11: the floating context panel (role + job zoom). Floats with margin on all sides —
+ *  never edge-docked — and the camera fits the cluster into the pane it leaves free. Width sits
+ *  between the old rail (404) and the old docked lane (696): wide enough for the three job tabs,
+ *  narrow enough to leave a real map pane at 1024+. */
+export const MAP_CONTEXT_PANEL = {
+  width: 460,
+  margin: 16, // --spacing-space-3
+  gap: 16, // between the panel edge and the camera pane
+  mobileMaxHeightRatio: 0.55,
+  mobileMargin: 12, // --spacing-space-2
+} as const;
+
+/** CM-10 beat: at job zoom the selected orb stays lit while its cluster siblings recede. */
+export const MAP_JOB_SIBLING_ORB_OPACITY = 0.55;
 
 /** Figma 1296:1669 — hub label auto-layout ratios relative to bubble diameter. */
 export const MAP_BUBBLE_LABEL = {

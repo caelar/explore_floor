@@ -8,6 +8,7 @@ import {
   MAP_INACTIVE_EDGE_OPACITY,
   MAP_JOB_GLOW_HEX,
   MAP_JOB_LABEL_RATIO,
+  MAP_JOB_SIBLING_ORB_OPACITY,
   MAP_ORB_FILL_OPACITY,
   MAP_OVERVIEW_JOB_DIM_OPACITY,
   MAP_ROLE_COLOR,
@@ -25,14 +26,15 @@ import {
   careerMapEdgeGapViewBox,
   careerMapEdgeLayouts,
   careerMapFitScale,
+  careerMapPaneRect,
   careerMapPointInBounds,
-  careerMapRemapCameraForViewportResize,
   careerMapRoles,
   careerMapScreenToViewBox,
   durations,
   easings,
   MAP_VIEW,
   type MapCamera,
+  type MapPaneDock,
   type MapPhase,
 } from '@/lib';
 
@@ -50,6 +52,8 @@ interface CareerMapFieldProps {
   activeRoleIndex: number;
   selectedJob: number | null;
   targetJobId?: string | null;
+  /** Where the floating context panel sits (CM-11) — phase cameras fit into the pane it leaves. */
+  paneDock?: MapPaneDock;
   reduce: boolean;
   onSelectRole: (rank: number) => void;
   onSelectJob: (rank: number, jobIndex: number) => void;
@@ -119,6 +123,7 @@ export function CareerMapField({
   activeRoleIndex,
   selectedJob,
   targetJobId = null,
+  paneDock = 'none',
   reduce,
   onSelectRole,
   onSelectJob,
@@ -134,10 +139,7 @@ export function CareerMapField({
   const settleTimerRef = useRef<number | null>(null);
   const entrancePlayedRef = useRef(false);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
-  const jobZoomCompleteRef = useRef(false);
-  const preJobViewportRef = useRef<{ width: number; height: number } | null>(null);
-  const jobRemapPendingRef = useRef(false);
-  const prevPhaseRef = useRef<MapPhase>(phase);
+  const settledCameraKeyRef = useRef<string | null>(null);
   const [viewport, setViewport] = useState({ width: 900, height: 420 });
   const [zoomLabelOpacity, setZoomLabelOpacity] = useState(0);
   const [cameraScale, setCameraScale] = useState(1);
@@ -161,53 +163,6 @@ export function CareerMapField({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const syncViewportSize = useCallback(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const { width, height } = el.getBoundingClientRect();
-    setViewport({ width, height });
-  }, []);
-
-  useLayoutEffect(() => {
-    syncViewportSize();
-  }, [phase, syncViewportSize]);
-
-  useLayoutEffect(() => {
-    if (prevPhaseRef.current === 'role' && phase === 'job') {
-      jobRemapPendingRef.current = true;
-    }
-    if (phase !== 'job') {
-      jobRemapPendingRef.current = false;
-    }
-    prevPhaseRef.current = phase;
-  }, [phase]);
-
-  useLayoutEffect(() => {
-    if (phase === 'role') {
-      preJobViewportRef.current = viewport;
-    } else if (phase !== 'job') {
-      preJobViewportRef.current = null;
-    }
-  }, [phase, viewport]);
-
-  useLayoutEffect(() => {
-    if (!jobRemapPendingRef.current || phase !== 'job' || reduce) return;
-
-    const prior = preJobViewportRef.current;
-    if (!prior) return;
-    if (prior.width === viewport.width && prior.height === viewport.height) return;
-
-    const remapped = careerMapRemapCameraForViewportResize(
-      { x: x.get(), y: y.get(), scale: scale.get() },
-      prior,
-      viewport,
-    );
-    x.set(remapped.x);
-    y.set(remapped.y);
-    jobRemapPendingRef.current = false;
-    preJobViewportRef.current = null;
-  }, [phase, viewport, reduce, x, y, scale]);
 
   const roles = careerMapRoles(ranking, matchPercentages);
   const activeCategory = ranking[activeRoleIndex];
@@ -257,16 +212,10 @@ export function CareerMapField({
     [minZoom, maxZoom, x, y, scale],
   );
 
-  const jobCameraKey =
-    phase === 'job' && selectedJob !== null ? `${activeRoleIndex}-${selectedJob}` : null;
-
-  useEffect(() => {
-    if (!jobCameraKey) {
-      jobZoomCompleteRef.current = false;
-      return;
-    }
-    jobZoomCompleteRef.current = false;
-  }, [jobCameraKey]);
+  // One settle per camera target: phase, role, and job each get their own key so the
+  // onCameraTransitionEnd beat fires once per landing (role AND job — the panel waits on it),
+  // and later re-fits of an already-settled target snap instead of re-gliding.
+  const cameraKey = `${phase}:${activeRoleIndex}:${selectedJob ?? 'none'}`;
 
   const phaseCamera = useMemo(
     () =>
@@ -277,8 +226,9 @@ export function CareerMapField({
         viewport,
         phase === 'overview' ? undefined : activeCategory,
         phase === 'job' ? selectedJob : null,
+        paneDock === 'none' ? undefined : { pane: careerMapPaneRect(viewport, paneDock) },
       ),
-    [ranking, matchPercentages, phase, viewport, activeCategory, selectedJob],
+    [ranking, matchPercentages, phase, viewport, activeCategory, selectedJob, paneDock],
   );
 
   const cancelCameraAnimation = useCallback(() => {
@@ -337,20 +287,18 @@ export function CareerMapField({
   useEffect(() => {
     cancelCameraAnimation();
     const target = phaseCamera;
-    const cameraDuration = reduce
-      ? durations.instant
-      : phase === 'job' && jobZoomCompleteRef.current
-        ? durations.instant
-        : MAP_CAMERA_DURATION[phase];
+    const alreadySettled = settledCameraKeyRef.current === cameraKey;
+    const markSettled = () => {
+      if (settledCameraKeyRef.current === cameraKey) return;
+      settledCameraKeyRef.current = cameraKey;
+      onCameraTransitionEnd?.();
+    };
 
-    if (reduce) {
+    if (reduce || alreadySettled) {
       x.set(target.x);
       y.set(target.y);
       scale.set(target.scale);
-      if (phase === 'job' && !jobZoomCompleteRef.current) {
-        jobZoomCompleteRef.current = true;
-        onCameraTransitionEnd?.();
-      }
+      markSettled();
       return;
     }
 
@@ -358,19 +306,17 @@ export function CareerMapField({
     const onAxisDone = () => {
       pending -= 1;
       if (pending > 0) return;
-      if (phase === 'job' && !jobZoomCompleteRef.current) {
-        jobZoomCompleteRef.current = true;
-        onCameraTransitionEnd?.();
-      }
+      markSettled();
     };
 
+    const cameraDuration = MAP_CAMERA_DURATION[phase];
     cameraAnimRef.current = [
       animate(x, target.x, { duration: cameraDuration, ease: easings.soft, onComplete: onAxisDone }),
       animate(y, target.y, { duration: cameraDuration, ease: easings.soft, onComplete: onAxisDone }),
       animate(scale, target.scale, { duration: cameraDuration, ease: easings.soft, onComplete: onAxisDone }),
     ];
     return cancelCameraAnimation;
-  }, [phaseCamera, reduce, phase, selectedJob, x, y, scale, onCameraTransitionEnd, cancelCameraAnimation]);
+  }, [phaseCamera, cameraKey, reduce, phase, x, y, scale, onCameraTransitionEnd, cancelCameraAnimation]);
 
   useEffect(() => {
     const el = viewportRef.current;
@@ -569,14 +515,22 @@ export function CareerMapField({
                 node.category === activeCategory;
               const isTargetJob = targetJobId === job.id;
               const showGlow = isHovered || isSelectedJob;
-              const nodeOpacity =
-                isTargetJob || isActiveCluster
-                  ? 1
-                  : isRoleFocus
-                    ? MAP_INACTIVE_CLUSTER_OPACITY
-                    : isHovered
-                      ? 1
-                      : overviewDotOpacity;
+              // Beat ladder: target always lit; at job zoom the selected orb stays lit while its
+              // cluster siblings recede (CM-10 beat); other clusters dim under role focus; at
+              // overview the dots ride the zoom ramp unless hovered.
+              const nodeOpacity = isTargetJob
+                ? 1
+                : phase === 'job' && isActiveCluster
+                  ? isSelectedJob || isHovered
+                    ? 1
+                    : MAP_JOB_SIBLING_ORB_OPACITY
+                  : isActiveCluster
+                    ? 1
+                    : isRoleFocus
+                      ? MAP_INACTIVE_CLUSTER_OPACITY
+                      : isHovered
+                        ? 1
+                        : overviewDotOpacity;
               const fillTarget = isTargetJob
                 ? MAP_SELECTED_ORB_FILL_OPACITY
                 : isSelectedJob
@@ -799,11 +753,16 @@ export function CareerMapField({
             const labelCompact = phase === 'job';
 
             // CM-06: hovering (or keyboard-focusing) a dimmed overview dot reveals its name
-            // even below the zoom-fade band; hover wins over the zoom ramp.
+            // even below the zoom-fade band; hover wins over the zoom ramp. At job zoom the
+            // sibling labels recede with their orbs (CM-10 beat).
             const isHoveredOverview =
               phase === 'overview' && hoveredJob === jobNodeKey(node.category, node.jobIndex);
+            const isSelectedJobLabel =
+              phase === 'job' && selectedJob === node.jobIndex && node.category === activeCategory;
             const labelOpacity = isActiveCluster
-              ? 1
+              ? phase === 'job' && !isSelectedJobLabel
+                ? MAP_JOB_SIBLING_ORB_OPACITY
+                : 1
               : isHoveredOverview
                 ? 1
                 : zoomLabelOpacity * (isRoleFocus ? MAP_INACTIVE_CLUSTER_OPACITY : 1);

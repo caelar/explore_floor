@@ -83,16 +83,18 @@ test('narrative flow works under prefers-reduced-motion', async ({ page }) => {
   await page.getByTestId('role-next').click();
   await expect(page.getByTestId('role-name')).toHaveText('Integrator');
 
-  // The unified career map renders without motion; role zoom and job panel still work.
+  // The unified career map renders without motion; role zoom and the floating context panel
+  // (CM-10) still work — role body at role zoom, job body after an orb click.
   await page.getByTestId('open-map').click();
   await expect(page.getByTestId('results-map')).toBeVisible();
   await expect(page.getByTestId('map-bubble-specialist')).toBeVisible();
   await page.getByTestId('map-bubble-specialist').click();
   await expect(page.getByTestId('career-map-field')).toBeVisible();
-  await expect(page.getByTestId('map-back-overview')).toBeVisible();
+  await expect(page.getByTestId('map-context-panel')).toBeVisible();
+  await expect(page.getByTestId('map-panel-back')).toBeVisible();
   const firstJob = jobs.specialist[0];
   await page.getByTestId(`career-map-job-${firstJob.id}`).click();
-  await expect(page.getByTestId('career-map-job-panel')).toContainText('Job in Specialist');
+  await expect(page.getByTestId('map-context-panel')).toContainText('Job in Specialist');
 
   expect(consoleErrors, `console errors:\n${consoleErrors.join('\n')}`).toEqual([]);
 });

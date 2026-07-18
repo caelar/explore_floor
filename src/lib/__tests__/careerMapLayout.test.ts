@@ -14,9 +14,8 @@ import {
   careerMapHubRadius,
   careerMapJobNodes,
   careerMapJobs,
-  careerMapRemapCameraForViewportResize,
+  careerMapPaneRect,
   careerMapRoles,
-  careerMapScreenToViewBox,
   careerMapZoom,
   MAP_VIEW,
 } from '@/lib/careerMapLayout';
@@ -273,54 +272,75 @@ describe('careerMapLayout', () => {
     expect(screenX).toBeCloseTo(viewport.width * 0.5, 0);
   });
 
-  it('frames job zoom for the docked-left panel before the panel opens', () => {
-    const viewport = { width: 1200, height: 720 };
-    const panel = 696;
-    const pane = viewport.width - panel;
+  it('reserves a left pane on desktop and a bottom pane on mobile (CM-11)', () => {
+    const viewport = { width: 1280, height: 720 };
+    const left = careerMapPaneRect(viewport, 'left');
+    expect(left.left).toBeGreaterThan(0);
+    expect(left.left + left.width).toBeCloseTo(viewport.width, 5);
+    expect(left.height).toBe(viewport.height);
+
+    const mobile = { width: 375, height: 700 };
+    const bottom = careerMapPaneRect(mobile, 'bottom');
+    expect(bottom.top).toBe(0);
+    expect(bottom.width).toBe(mobile.width);
+    expect(bottom.height).toBeLessThan(mobile.height / 2);
+
+    const none = careerMapPaneRect(viewport, 'none');
+    expect(none.width).toBe(viewport.width);
+    expect(none.height).toBe(viewport.height);
+  });
+
+  it('fits the role cluster into the pane the floating panel leaves free (CM-11)', () => {
+    const viewport = { width: 1280, height: 720 };
+    const pane = careerMapPaneRect(viewport, 'left');
+    const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
+    const bounds = careerMapContentBounds(ranking, matchPercentages, 'role', 'integrator');
+    const camera = careerMapCameraForPhase(
+      ranking,
+      matchPercentages,
+      'role',
+      viewport,
+      'integrator',
+      null,
+      { pane },
+    );
+
+    const cx = (bounds.minX + bounds.maxX) / 2;
+    const screenX = camera.x + (cx / MAP_VIEW.width) * viewport.width * camera.scale;
+    expect(screenX).toBeCloseTo(pane.left + pane.width / 2, 0);
+
+    const boundsScreenW =
+      ((bounds.maxX - bounds.minX) / MAP_VIEW.width) * viewport.width * camera.scale;
+    expect(boundsScreenW).toBeLessThanOrEqual(pane.width + 1);
+  });
+
+  it('centers the selected job orb in the left pane, tighter than role zoom', () => {
+    const viewport = { width: 1280, height: 720 };
+    const pane = careerMapPaneRect(viewport, 'left');
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
     const job = careerMapJobs('integrator', ranking.indexOf('integrator'), 'overview')[0];
-    const prePanel = careerMapCameraForPhase(ranking, matchPercentages, 'job', viewport, 'integrator', 0, {
-      mapPaneWidth: pane,
-      paneOffsetLeft: panel,
-    });
-    const docked = careerMapCameraForPhase(
+    const role = careerMapCameraForPhase(
+      ranking,
+      matchPercentages,
+      'role',
+      viewport,
+      'integrator',
+      null,
+      { pane },
+    );
+    const jobCamera = careerMapCameraForPhase(
       ranking,
       matchPercentages,
       'job',
-      { width: pane, height: viewport.height },
+      viewport,
       'integrator',
       0,
+      { pane },
     );
 
-    const preScreenX =
-      prePanel.x + (job.cx / MAP_VIEW.width) * viewport.width * prePanel.scale;
-    const dockedScreenX =
-      docked.x + (job.cx / MAP_VIEW.width) * pane * docked.scale;
-
-    expect(preScreenX).toBeCloseTo(panel + pane / 2, 0);
-    expect(dockedScreenX).toBeCloseTo(pane / 2, 0);
-    const preBoundsScreenW =
-      ((job.r * 2) / MAP_VIEW.width) * viewport.width * prePanel.scale;
-    expect(preBoundsScreenW).toBeLessThanOrEqual(pane - 64 + 1);
-  });
-
-  it('remaps the camera when the map viewport shrinks for the job panel lane', () => {
-    const from = { width: 1200, height: 720 };
-    const to = { width: 504, height: 720 };
-    const camera = careerMapCameraForPhase(
-      ['specialist', 'integrator', 'technician'],
-      matchPercentages,
-      'role',
-      from,
-      'integrator',
-    );
-    const remapped = careerMapRemapCameraForViewportResize(camera, from, to);
-    const centerBefore = careerMapScreenToViewBox(from.width / 2, from.height / 2, from, camera);
-    const centerAfter = careerMapScreenToViewBox(to.width / 2, to.height / 2, to, remapped);
-
-    expect(centerBefore.x).toBeCloseTo(centerAfter.x, 2);
-    expect(centerBefore.y).toBeCloseTo(centerAfter.y, 2);
-    expect(remapped.scale).toBe(camera.scale);
+    const screenX = jobCamera.x + (job.cx / MAP_VIEW.width) * viewport.width * jobCamera.scale;
+    expect(screenX).toBeCloseTo(pane.left + pane.width / 2, 0);
+    expect(jobCamera.scale).toBeGreaterThan(role.scale);
   });
 
   it('keeps overview camera at the height-fit scale', () => {

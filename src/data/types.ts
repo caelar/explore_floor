@@ -218,8 +218,8 @@ export interface ResultsCardsCopy {
   stepLabel: string;
   /** Sticky control-bar actions. */
   compareCta: string;
-  mapCta: string; // mid-rank: "Skip to map"
-  exploreCta: string; // last rank: "Explore careers"
+  mapCta: string; // mid-rank: "Skip to your career map"
+  exploreCta: string; // last rank: "Explore your career map"
   // --- Why you matched ---
   whyHeading: string; // "Why {role}?"
   collapsedLine: string; // "Across the {total} moments...{moreThanAny}. That's where your {pct}% comes from."
@@ -253,36 +253,31 @@ export interface ResultsCardsCopy {
   compareWithLabel: string; // dropdown lead-in before the target role name
   recommendationLabel: string; // small lead-in above the recommendation line
   recommendation: CompareRecommendationCopy;
-  // --- Map (Phase E) ---
-  backToMap: string; // cards control bar (after a map dive): "Back to the map"
-  /** Map overview exit — leaves the map for the results cards, so the label names the
-   *  destination honestly (CM-09): "Back to your results", never "Back to {role}". */
+  // --- Map (Phase E; CM-09) ---
+  /** Map exit platter (every phase) — leaves the map for the results cards, so the label names
+   *  the destination honestly (CM-09): "Back to your results", never "Back to {role}". */
   backToResults: string;
-  /** Cards control bar, when reached via the map path: "Explore {role} careers" → that role's
-   *  constellation (Phase G; replaces the old "Back to the map" back-action). */
-  exploreRoleCta: string;
   map: ResultsMapCopy;
-  // --- Explore: constellation / job panel / job overview (Phase F) ---
+  // --- Explore: the floating context panel at role + job zoom (CM-10) ---
   explore: ResultsExploreCopy;
 }
 
-/** Copy for the Phase F explore views (DATA_MODEL §17): the role constellation, the job
- *  side-panel overlay, and the standalone job-overview page. Templates fill {role}, {noun}, and
- *  {n}; the rest are plain labels. The per-job *content* lives in src/data/jobs.ts — these are
- *  only the chrome. (data-integrity flattens this block, so every value is a string or a string
+/** Copy for the map's floating context panel (CM-10): the role body (jobs-in-path), the
+ *  three-tab job body, and the panel chrome. Templates fill {role}, {noun}, and {n}; the rest
+ *  are plain labels. The per-job *content* lives in src/data/jobs.ts — these are only the
+ *  chrome. (data-integrity flattens this block, so every value is a string or a string
  *  array.) */
 export interface ResultsExploreCopy {
-  // constellation (view: 'selected')
+  // panel chrome
+  panelKickerRole: string; // header kicker at role zoom ("Career path")
+  panelKickerJob: string; // header kicker at job zoom ("Job")
+  allPathsBack: string; // panel header back at role zoom → map overview
+  // role body
   jobsInPathHeading: string; // "Jobs in this path"
-  jobsInPathCount: string; // "{n} roles" counter beside the heading
-  roleOverviewCta: string; // side-panel footer → role cards
-  allPathsBack: string; // side-panel header back → map
-  // job overlay (view: 'job')
+  jobsInPathCount: string; // "{n} jobs" counter beside the heading
+  // job body (three tabs)
   jobEyebrow: string; // "Job in {role}"
-  jobOverviewCta: string; // side-panel footer → job-overview page
   responsibilitiesHeading: string; // job "What you'll do"
-  // job overview page (view: 'job-overview')
-  overviewBack: string; // control-bar back → job overlay
   setTargetCta: string; // "Set as target role" pill (default)
   currentTargetCta: string; // "Current target role" pill (selected)
   overviewTabs: string[]; // [overview, skills & competencies, how you fit]

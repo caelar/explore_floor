@@ -1,4 +1,5 @@
 import {
+  MAP_CONTEXT_PANEL,
   MAP_HUB_SIZING,
   MAP_JOB_R,
   MAP_RANK_CLUSTERS,
@@ -605,15 +606,88 @@ export function careerMapClampCamera(
   };
 }
 
-/** Figma 1296:1763 — selected job orb centered in the map pane as the panel docks left. */
+/** Figma 1296:1763 — selected job orb centered in the map pane as the panel floats beside it.
+ *  The tighter padding (vs CAMERA_PADDING) is the job zoom's closer framing beat. */
 const JOB_CAMERA_PADDING = 32;
 const JOB_FOCUS_SCREEN_X = 0.5;
 
-function careerMapJobFocusBounds(cx: number, cy: number, r: number): MapBounds {
+export function careerMapJobFocusBounds(cx: number, cy: number, r: number): MapBounds {
   return mergeBounds(
     circleBounds(cx, cy, r + MAP_STROKE_WIDTH),
     jobLabelBounds(cx, cy, r),
   );
+}
+
+/** The viewport rectangle the floating context panel leaves free for the camera (CM-11). */
+export interface MapPaneRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+export type MapPaneDock = 'left' | 'bottom' | 'none';
+
+/** Pane geometry from the panel constants: 'left' = desktop float, 'bottom' = mobile sheet. */
+export function careerMapPaneRect(
+  viewport: { width: number; height: number },
+  dock: MapPaneDock,
+): MapPaneRect {
+  if (dock === 'left') {
+    const occupied = MAP_CONTEXT_PANEL.margin + MAP_CONTEXT_PANEL.width + MAP_CONTEXT_PANEL.gap;
+    return {
+      left: occupied,
+      top: 0,
+      width: Math.max(1, viewport.width - occupied),
+      height: viewport.height,
+    };
+  }
+  if (dock === 'bottom') {
+    const occupied =
+      viewport.height * MAP_CONTEXT_PANEL.mobileMaxHeightRatio + MAP_CONTEXT_PANEL.mobileMargin * 2;
+    return {
+      left: 0,
+      top: 0,
+      width: viewport.width,
+      height: Math.max(1, viewport.height - occupied),
+    };
+  }
+  return { left: 0, top: 0, width: viewport.width, height: viewport.height };
+}
+
+/**
+ * Fit `bounds` into a pane of the viewport: scale to the pane's available space, center the
+ * bounds (or an explicit `focus` point) at the pane's center. Available space comes from the
+ * pane, but scale converts through the rendered map width (the map always renders at viewport
+ * width). Pan/zoom stay free afterwards — this only sets the phase target.
+ */
+export function careerMapCameraForBoundsInPane(
+  bounds: MapBounds,
+  viewport: { width: number; height: number },
+  pane: MapPaneRect,
+  options?: { maxScale?: number; screenPadding?: number; focus?: { x: number; y: number } },
+): MapCamera {
+  const fit = careerMapFitScale(viewport);
+  const screenPadding = options?.screenPadding ?? CAMERA_PADDING;
+  const mapWidth = viewport.width;
+  const mapHeight = mapWidth * (MAP_VIEW.height / MAP_VIEW.width);
+
+  const boundsW = Math.max(bounds.maxX - bounds.minX, 1);
+  const boundsH = Math.max(bounds.maxY - bounds.minY, 1);
+  const availW = Math.max(1, pane.width - screenPadding * 2);
+  const availH = Math.max(1, pane.height - screenPadding * 2);
+
+  const scaleForW = availW / ((boundsW / MAP_VIEW.width) * mapWidth);
+  const scaleForH = availH / ((boundsH / MAP_VIEW.height) * mapHeight);
+  const maxZoom = options?.maxScale ?? fit * MAX_ZOOM_RATIO;
+  const scale = Math.min(Math.min(scaleForW, scaleForH), maxZoom) * CAMERA_FIT_FUDGE;
+
+  const cx = options?.focus?.x ?? (bounds.minX + bounds.maxX) / 2;
+  const cy = options?.focus?.y ?? (bounds.minY + bounds.maxY) / 2;
+  const x = pane.left + pane.width / 2 - (cx / MAP_VIEW.width) * mapWidth * scale;
+  const y = pane.top + pane.height / 2 - (cy / MAP_VIEW.height) * mapHeight * scale;
+
+  return { scale, x, y };
 }
 
 /** Zoom and pan so one job orb + label fills the map pane with the orb on screen center. */
@@ -646,68 +720,9 @@ export function careerMapCameraForJob(
   return { scale, x, y };
 }
 
-/** Preserve the viewBox point at the prior screen center when the map viewport resizes. */
-export function careerMapRemapCameraForViewportResize(
-  camera: MapCamera,
-  from: { width: number; height: number },
-  to: { width: number; height: number },
-): MapCamera {
-  if (from.width <= 0 || from.height <= 0) return camera;
-
-  const fromMapHeight = from.width * (MAP_VIEW.height / MAP_VIEW.width);
-  const toMapHeight = to.width * (MAP_VIEW.height / MAP_VIEW.width);
-  const widthRatio = to.width / from.width;
-  const mapHeightRatio = toMapHeight / fromMapHeight;
-
-  return {
-    scale: camera.scale,
-    x: to.width / 2 - (from.width / 2 - camera.x) * widthRatio,
-    y: to.height / 2 - (from.height / 2 - camera.y) * mapHeightRatio,
-  };
-}
-
 export interface CareerMapCameraOptions {
-  /** Logical map-pane width for job zoom (may be narrower than viewport before the panel docks). */
-  mapPaneWidth?: number;
-  /** Left inset of the map pane within the viewport while the panel is still closed. */
-  paneOffsetLeft?: number;
-}
-
-/** Job zoom framed for a map pane that may be inset or narrower than the viewport. */
-export function careerMapCameraForJobInMapPane(
-  job: { cx: number; cy: number; r: number },
-  viewport: { width: number; height: number },
-  mapPaneWidth: number,
-  paneOffsetLeft: number,
-  options?: { maxScale?: number; screenPadding?: number },
-): MapCamera {
-  const pane = Math.max(1, mapPaneWidth);
-  const offset = Math.max(0, paneOffsetLeft);
-  const screenPadding = options?.screenPadding ?? JOB_CAMERA_PADDING;
-  const fit = careerMapFitScale(viewport);
-  const mapWidth = viewport.width;
-  const mapHeight = mapWidth * (MAP_VIEW.height / MAP_VIEW.width);
-  const bounds = careerMapJobFocusBounds(job.cx, job.cy, job.r);
-
-  const boundsW = Math.max(bounds.maxX - bounds.minX, 1);
-  const boundsH = Math.max(bounds.maxY - bounds.minY, 1);
-  // Fit to the logical pane width, but scale against the rendered map width.
-  const availW = Math.max(1, pane - screenPadding * 2);
-  const availH = Math.max(1, viewport.height - screenPadding * 2);
-
-  const scaleForW = availW / ((boundsW / MAP_VIEW.width) * mapWidth);
-  const scaleForH = availH / ((boundsH / MAP_VIEW.height) * mapHeight);
-  const maxZoom = options?.maxScale ?? fit * MAX_ZOOM_RATIO;
-  const scale = Math.min(Math.min(scaleForW, scaleForH), maxZoom) * CAMERA_FIT_FUDGE;
-
-  const focusScreenX = (offset + pane / 2) / viewport.width;
-  const focusScreenY = viewport.height / 2;
-  const x =
-    viewport.width * focusScreenX -
-    (job.cx / MAP_VIEW.width) * mapWidth * scale;
-  const y = focusScreenY - (job.cy / MAP_VIEW.height) * mapHeight * scale;
-
-  return { scale, x, y };
+  /** Pane the floating context panel leaves free (CM-11); phase targets fit into it. */
+  pane?: MapPaneRect;
 }
 
 export function careerMapCameraForPhase(
@@ -722,6 +737,7 @@ export function careerMapCameraForPhase(
   const fit = careerMapFitScale(viewport);
   const mapWidth = viewport.width;
   const mapHeight = mapWidth * (MAP_VIEW.height / MAP_VIEW.width);
+  const pane = options?.pane;
 
   if (phase === 'overview') {
     const bounds = careerMapContentBounds(ranking, matchPercentages, 'overview');
@@ -738,10 +754,13 @@ export function careerMapCameraForPhase(
       const jobNodes = careerMapJobs(activeCategory, rank, 'overview');
       const job = jobNodes[selectedJobIndex];
       if (job) {
-        const mapPaneWidth = options?.mapPaneWidth;
-        const paneOffsetLeft = options?.paneOffsetLeft ?? 0;
-        if (mapPaneWidth != null && mapPaneWidth > 0) {
-          return careerMapCameraForJobInMapPane(job, viewport, mapPaneWidth, paneOffsetLeft);
+        if (pane) {
+          return careerMapCameraForBoundsInPane(
+            careerMapJobFocusBounds(job.cx, job.cy, job.r),
+            viewport,
+            pane,
+            { screenPadding: JOB_CAMERA_PADDING, focus: { x: job.cx, y: job.cy } },
+          );
         }
         return careerMapCameraForJob(job, viewport);
       }
@@ -750,6 +769,9 @@ export function careerMapCameraForPhase(
 
   if (activeCategory) {
     const bounds = careerMapContentBounds(ranking, matchPercentages, phase, activeCategory);
+    if (pane) {
+      return careerMapCameraForBoundsInPane(bounds, viewport, pane);
+    }
     return careerMapCamera(bounds, viewport);
   }
 

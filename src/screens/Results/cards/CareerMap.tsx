@@ -2,15 +2,17 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Icon } from '@/components/Icon';
-import { MAP_JOB_PANEL_MAX_WIDTH } from '@/data/careerMapArt';
+import { MAP_CONTEXT_PANEL } from '@/data/careerMapArt';
 import type { CategoryId, CategoryWeights, Job, ResultsCardsCopy, ResultsMapCopy, RoleDetail } from '@/data/types';
-import { durations, easings, jobMapLocation, type MapPhase } from '@/lib';
+import { durations, durationsMs, easings, jobMapLocation, type MapPaneDock, type MapPhase } from '@/lib';
 
 import { CareerMapField } from './CareerMapField';
-import { JobOverview } from './JobOverview';
+import { MapContextPanel } from './MapContextPanel';
 
-// Unified zoomable career map: full-bleed infinite canvas with overlay chrome (intro card,
-// back nav). JobOverview panel docks left on the job-selected phase only.
+// Unified zoomable career map: a truly full-bleed infinite canvas at every phase, with overlay
+// chrome — the intro card / "?" pill, a persistent exit platter (CM-09), and the floating
+// MapContextPanel at role + job zoom (CM-10). The camera fits the active cluster into the pane
+// the panel leaves free (CM-11); the panel mounts once the phase camera lands.
 
 interface CareerMapProps {
   copy: ResultsMapCopy;
@@ -30,13 +32,9 @@ interface CareerMapProps {
   onBackToOverview: () => void;
   onBackToRole: () => void;
   onBackToCards: () => void;
-  onJobOverviewBack: () => void;
   targetJobId: string | null;
   onSetTargetJob: (jobId: string) => void;
 }
-
-const backRow =
-  'inline-flex items-center gap-space-1 font-body text-small font-medium text-text-on-dark-muted transition-colors hover:text-text-on-dark';
 
 export function CareerMap({
   copy,
@@ -56,7 +54,6 @@ export function CareerMap({
   onBackToOverview,
   onBackToRole,
   onBackToCards,
-  onJobOverviewBack,
   targetJobId,
   onSetTargetJob,
 }: CareerMapProps) {
@@ -66,11 +63,12 @@ export function CareerMap({
   const [introMode, setIntroMode] = useState<'expanded' | 'collapsed'>('expanded');
   const [introRevealed, setIntroRevealed] = useState(reduce);
   const autoReExpandedRef = useRef(false);
-  const [jobPanelOpen, setJobPanelOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [mdUp, setMdUp] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
   );
   const job = selectedJob !== null ? jobs[selectedJob] : undefined;
+  const paneDock: MapPaneDock = phase === 'overview' ? 'none' : mdUp ? 'left' : 'bottom';
 
   const navigateToJob = useCallback(
     (jobId: string) => {
@@ -88,23 +86,26 @@ export function CareerMap({
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // The panel mounts once the phase camera lands (onCameraSettled below); the timeout covers a
+  // missed motion callback (e.g. headless), derived from the phase glide instead of a magic number.
   useEffect(() => {
-    if (phase !== 'job') {
-      setJobPanelOpen(false);
+    if (phase === 'overview') {
+      setPanelOpen(false);
       return;
     }
     if (reduce) {
-      setJobPanelOpen(true);
+      setPanelOpen(true);
       return;
     }
-    // Fallback: if the motion camera callback is missed (e.g. headless), still dock the panel
-    // after the job-zoom duration (Figma: panel follows the pour).
-    const timer = window.setTimeout(() => setJobPanelOpen(true), 800);
+    const timer = window.setTimeout(
+      () => setPanelOpen(true),
+      durationsMs[phase === 'job' ? 'pour' : 'glide'] + 100,
+    );
     return () => window.clearTimeout(timer);
   }, [phase, reduce, selectedJob]);
 
-  const onJobZoomComplete = useCallback(() => {
-    if (phase === 'job') setJobPanelOpen(true);
+  const onCameraSettled = useCallback(() => {
+    if (phase !== 'overview') setPanelOpen(true);
   }, [phase]);
 
   const onMapEntranceComplete = useCallback(() => {
@@ -132,164 +133,139 @@ export function CareerMap({
     transition: { duration: reduce ? durations.instant : durations.glide, ease: easings.soft },
   };
 
-  const backControl =
-    phase === 'overview' ? (
-      <button type="button" onClick={onBackToCards} data-testid="map-back-cards" className={backRow}>
-        <Icon name="chevron-l" size={18} />
-        {cardsCopy.backToResults}
-      </button>
-    ) : phase === 'role' ? (
-      <button type="button" onClick={onBackToOverview} data-testid="map-back-overview" className={backRow}>
-        <Icon name="chevron-l" size={18} />
-        {cardsCopy.backToMap}
-      </button>
-    ) : null;
-
-  const panelSlide = {
-    initial: reduce ? false : { x: '-100%' },
-    animate: { x: 0 },
-    exit: reduce ? { opacity: 0 } : { x: '-100%' },
+  const panelFade = {
+    initial: reduce ? false : { opacity: 0, x: -12 },
+    animate: { opacity: 1, x: 0 },
+    exit: reduce ? { opacity: 0 } : { opacity: 0, x: -12 },
     transition: { duration: reduce ? durations.instant : durations.snap, ease: easings.soft },
   };
 
-  const jobPanelLane =
-    phase === 'job' && mdUp ? (
-      <div
-        className="relative h-full shrink-0"
-        style={{ width: MAP_JOB_PANEL_MAX_WIDTH }}
-        aria-hidden={!jobPanelOpen}
-      >
-        <AnimatePresence>
-          {job && jobPanelOpen && (
+  return (
+    <div className="absolute inset-0 overflow-hidden" data-testid="results-map">
+      <div className="absolute inset-0">
+        <CareerMapField
+          ranking={ranking}
+          matchPercentages={matchPercentages}
+          phase={phase}
+          activeRoleIndex={roleIndex}
+          selectedJob={selectedJob}
+          targetJobId={targetJobId}
+          paneDock={paneDock}
+          reduce={reduce}
+          onSelectRole={onSelectRole}
+          onSelectJob={onSelectJob}
+          onDeselectRole={onDeselectRole ?? onBackToOverview}
+          onDeselectJob={onDeselectJob ?? onBackToRole}
+          onExplore={collapseIntro}
+          onOverviewSettle={onOverviewSettle}
+          onCameraTransitionEnd={onCameraSettled}
+          onEntranceComplete={onMapEntranceComplete}
+        />
+      </div>
+
+      {/* overlay chrome: exit platter, intro card / pill, and the floating context panel */}
+      <div className="pointer-events-none absolute inset-0 z-20">
+        {/* Persistent exit (CM-09): one label, one place, every phase. */}
+        <button
+          type="button"
+          onClick={onBackToCards}
+          data-testid="map-back-cards"
+          className="pointer-events-auto absolute right-space-3 top-space-3 inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 font-body text-small font-medium text-text-on-dark-muted backdrop-blur-panel transition-colors hover:text-text-on-dark"
+        >
+          <Icon name="chevron-l" size={18} />
+          {cardsCopy.backToResults}
+        </button>
+
+        <AnimatePresence mode="wait">
+          {phase === 'overview' && introRevealed && introMode === 'expanded' && (
             <motion.div
-              key="career-map-job-panel"
-              {...panelSlide}
-              className="pointer-events-auto absolute inset-0 z-20 overflow-hidden"
-              data-testid="career-map-job-panel"
+              key="map-intro"
+              {...introFade}
+              className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6"
+              data-testid="career-map-intro"
             >
-              <div className="h-full overflow-y-auto p-space-3">
-                <JobOverview
-                  key={job.id}
-                  copy={cardsCopy}
-                  detail={detail}
-                  job={job}
-                  onBack={onJobOverviewBack}
-                  embedded
-                  onNavigateToJob={navigateToJob}
-                  isTargetRole={targetJobId === job.id}
-                  onSetTargetRole={() => onSetTargetJob(job.id)}
-                />
+              <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-4 text-center shadow-dark-card backdrop-blur-panel">
+                <button
+                  type="button"
+                  data-testid="career-map-intro-dismiss"
+                  aria-label={copy.hideDirections}
+                  onClick={collapseIntro}
+                  className="pointer-events-auto absolute right-space-2 top-space-2 flex h-6 w-6 items-center justify-center rounded-full text-text-on-dark-faint transition-colors hover:text-text-on-dark"
+                >
+                  <Icon name="x" size={16} />
+                </button>
+                <h1 className="font-heading text-h3 text-text-on-dark">{copy.title}</h1>
+                <div className="my-space-3 h-px bg-glass-border" />
+                <p className="font-body text-body text-text-on-dark-muted">{copy.intro}</p>
+                <p className="mt-space-1 font-body text-body text-text-on-dark-muted">{copy.dots}</p>
+                <p className="mt-space-1 font-body text-body text-text-on-dark-faint">{copy.hint}</p>
               </div>
             </motion.div>
           )}
+          {phase === 'overview' && introRevealed && introMode === 'collapsed' && (
+            <motion.div
+              key="map-intro-pill"
+              {...introFade}
+              className="absolute inset-x-space-3 top-space-3 flex justify-center"
+            >
+              <button
+                type="button"
+                data-testid="career-map-intro-pill"
+                aria-label={copy.showDirections}
+                onClick={expandIntro}
+                className="pointer-events-auto flex h-control-tap w-control-tap items-center justify-center rounded-full border border-glass-border bg-glass-fill-strong font-heading text-h4 text-text-on-dark shadow-dark-card backdrop-blur-panel transition-colors hover:border-arm-gold hover:text-arm-gold"
+              >
+                ?
+              </button>
+            </motion.div>
+          )}
         </AnimatePresence>
-      </div>
-    ) : null;
 
-  const jobPanelMobile =
-    phase === 'job' && !mdUp ? (
-      <AnimatePresence>
-        {job && jobPanelOpen && (
-          <motion.div
-            key="career-map-job-panel-mobile"
-            {...panelSlide}
-            className="pointer-events-auto relative z-20 w-full shrink-0 overflow-hidden"
-            data-testid="career-map-job-panel"
-          >
-            <div className="h-full overflow-y-auto p-space-3">
-              <JobOverview
-                key={job.id}
+        {/* Floating context panel (CM-10): persists across role <-> job, exits at overview. */}
+        <AnimatePresence>
+          {phase !== 'overview' && panelOpen && (
+            <motion.div
+              key="context-panel"
+              {...panelFade}
+              className="pointer-events-auto absolute z-20"
+              style={
+                mdUp
+                  ? {
+                      left: MAP_CONTEXT_PANEL.margin,
+                      top: MAP_CONTEXT_PANEL.margin,
+                      bottom: MAP_CONTEXT_PANEL.margin,
+                      width: MAP_CONTEXT_PANEL.width,
+                    }
+                  : {
+                      left: MAP_CONTEXT_PANEL.mobileMargin,
+                      right: MAP_CONTEXT_PANEL.mobileMargin,
+                      bottom: MAP_CONTEXT_PANEL.mobileMargin,
+                      maxHeight: `${MAP_CONTEXT_PANEL.mobileMaxHeightRatio * 100}%`,
+                      height: `${MAP_CONTEXT_PANEL.mobileMaxHeightRatio * 100}%`,
+                    }
+              }
+            >
+              <MapContextPanel
+                phase={phase === 'job' ? 'job' : 'role'}
                 copy={cardsCopy}
                 detail={detail}
+                rank={roleIndex}
+                pct={matchPercentages[detail.categoryId]}
+                jobs={jobs}
                 job={job}
-                onBack={onJobOverviewBack}
-                embedded
+                ranking={ranking}
+                matchPercentages={matchPercentages}
+                reduce={reduce}
+                targetJobId={targetJobId}
+                onOpenJob={(jobIndex) => onSelectJob(roleIndex, jobIndex)}
                 onNavigateToJob={navigateToJob}
-                isTargetRole={targetJobId === job.id}
-                onSetTargetRole={() => onSetTargetJob(job.id)}
+                onBackToOverview={onBackToOverview}
+                onBackToRole={onBackToRole}
+                onSetTargetJob={onSetTargetJob}
               />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    ) : null;
-
-  return (
-    <div className="absolute inset-0 overflow-hidden" data-testid="results-map">
-      <div className="relative z-10 flex h-full">
-        {jobPanelLane}
-        {jobPanelMobile}
-
-        <div className="relative min-h-0 min-w-0 flex-1 overflow-visible">
-          <CareerMapField
-            ranking={ranking}
-            matchPercentages={matchPercentages}
-            phase={phase}
-            activeRoleIndex={roleIndex}
-            selectedJob={selectedJob}
-            targetJobId={targetJobId}
-            reduce={reduce}
-            onSelectRole={onSelectRole}
-            onSelectJob={onSelectJob}
-            onDeselectRole={onDeselectRole ?? onBackToOverview}
-            onDeselectJob={onDeselectJob ?? onBackToRole}
-            onExplore={collapseIntro}
-            onOverviewSettle={onOverviewSettle}
-            onCameraTransitionEnd={onJobZoomComplete}
-            onEntranceComplete={onMapEntranceComplete}
-          />
-
-          <div className="pointer-events-none absolute inset-0 z-20">
-            {backControl ? (
-              <div className="pointer-events-auto absolute left-space-3 top-space-3">{backControl}</div>
-            ) : null}
-
-            <AnimatePresence mode="wait">
-              {phase === 'overview' && introRevealed && introMode === 'expanded' && (
-                <motion.div
-                  key="map-intro"
-                  {...introFade}
-                  className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6"
-                  data-testid="career-map-intro"
-                >
-                  <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-4 text-center shadow-dark-card backdrop-blur-panel">
-                    <button
-                      type="button"
-                      data-testid="career-map-intro-dismiss"
-                      aria-label={copy.hideDirections}
-                      onClick={collapseIntro}
-                      className="pointer-events-auto absolute right-space-2 top-space-2 flex h-6 w-6 items-center justify-center rounded-full text-text-on-dark-faint transition-colors hover:text-text-on-dark"
-                    >
-                      <Icon name="x" size={16} />
-                    </button>
-                    <h1 className="font-heading text-h3 text-text-on-dark">{copy.title}</h1>
-                    <div className="my-space-3 h-px bg-glass-border" />
-                    <p className="font-body text-body text-text-on-dark-muted">{copy.intro}</p>
-                    <p className="mt-space-1 font-body text-body text-text-on-dark-muted">{copy.dots}</p>
-                    <p className="mt-space-1 font-body text-body text-text-on-dark-faint">{copy.hint}</p>
-                  </div>
-                </motion.div>
-              )}
-              {phase === 'overview' && introRevealed && introMode === 'collapsed' && (
-                <motion.div
-                  key="map-intro-pill"
-                  {...introFade}
-                  className="absolute inset-x-space-3 top-space-3 flex justify-center"
-                >
-                  <button
-                    type="button"
-                    data-testid="career-map-intro-pill"
-                    aria-label={copy.showDirections}
-                    onClick={expandIntro}
-                    className="pointer-events-auto flex h-control-tap w-control-tap items-center justify-center rounded-full border border-glass-border bg-glass-fill-strong font-heading text-h4 text-text-on-dark shadow-dark-card backdrop-blur-panel transition-colors hover:border-arm-gold hover:text-arm-gold"
-                  >
-                    ?
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
