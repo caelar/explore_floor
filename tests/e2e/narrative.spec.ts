@@ -186,6 +186,19 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
     await expect(page.getByTestId(`map-bubble-${category}`)).toBeVisible();
   }
 
+  // Intro card → "?" pill (CM-07): the directions carry the job-dots line, collapse into a
+  // persistent pill on the first explore gesture, and the pill re-expands them on demand.
+  await expect(page.getByTestId('career-map-intro')).toBeVisible();
+  await expect(page.getByTestId('career-map-intro')).toContainText('small dots');
+  await page.getByTestId('career-map-field').hover();
+  await page.mouse.wheel(0, -300);
+  await expect(page.getByTestId('career-map-intro')).not.toBeVisible();
+  await expect(page.getByTestId('career-map-intro-pill')).toBeVisible();
+  await page.getByTestId('career-map-intro-pill').click();
+  await expect(page.getByTestId('career-map-intro')).toBeVisible();
+  await page.getByTestId('career-map-intro-dismiss').click();
+  await expect(page.getByTestId('career-map-intro-pill')).toBeVisible();
+
   // Role zoom: tapping the top-match bubble stays on the map and reveals job nodes + labels.
   // The map opens with an entrance camera glide, so let the bubble settle before clicking.
   const topBubble = page.getByTestId(`map-bubble-${expected.ranking[0]}`);

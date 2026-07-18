@@ -295,12 +295,15 @@ export interface ResultsExploreCopy {
   trajectoryCrossRole: string; // "{role} path"
 }
 
-/** Copy for the ambient bubble-map results view (D-029 Phase E): the glass intro card + its
- *  back-to-cards control. No placeholders — these are plain lines. */
+/** Copy for the career-map intro card and its collapsed "?" pill (D-029 Phase E; CM-07).
+ *  No placeholders — these are plain lines. */
 export interface ResultsMapCopy {
   title: string; // glass card heading
   intro: string; // one line on what the scores mean
-  hint: string; // one line on how to use the map (tap a bubble)
+  dots: string; // one line on what the small job dots are (covers touch, which can't hover)
+  hint: string; // one line on how to use the map (tap a circle)
+  showDirections: string; // aria-label for the collapsed "?" pill
+  hideDirections: string; // aria-label for the card's dismiss control
 }
 
 /** The compare-screen recommendation line, by variant (see lib/compareRecommendation).

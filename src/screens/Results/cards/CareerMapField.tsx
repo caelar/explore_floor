@@ -9,6 +9,7 @@ import {
   MAP_JOB_GLOW_HEX,
   MAP_JOB_LABEL_RATIO,
   MAP_ORB_FILL_OPACITY,
+  MAP_OVERVIEW_JOB_DIM_OPACITY,
   MAP_ROLE_COLOR,
   MAP_ROLE_COLOR_HEX,
   MAP_SELECTED_ORB_FILL_OPACITY,
@@ -55,6 +56,8 @@ interface CareerMapFieldProps {
   onDeselectRole?: () => void;
   onDeselectJob?: () => void;
   onExplore?: () => void;
+  /** CM-07: fires when the camera idles near fit zoom at overview (one re-offer of the intro). */
+  onOverviewSettle?: () => void;
   /** Fires when a phase camera glide finishes (used to defer the job panel until zoom lands). */
   onCameraTransitionEnd?: () => void;
   /** Fires when the overview entrance sequence finishes (orbs → edges). */
@@ -76,6 +79,8 @@ const MAP_CAMERA_DURATION = {
   role: durations.glide,
   job: durations.pour,
 } as const satisfies Record<MapPhase, number>;
+/** CM-07: the settle re-offer — camera idle this long, still near fit zoom, at overview. */
+const MAP_INTRO_SETTLE = { idleMs: 2500, nearFitRatio: 1.25 } as const;
 /** Overview load-in: orbs grow, then dotted edges draw, then the intro card (CareerMap). */
 const MAP_ENTRANCE = {
   orbStagger: 0.055,
@@ -120,12 +125,13 @@ export function CareerMapField({
   onDeselectRole,
   onDeselectJob,
   onExplore,
+  onOverviewSettle,
   onCameraTransitionEnd,
   onEntranceComplete,
 }: CareerMapFieldProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const cameraAnimRef = useRef<ReturnType<typeof animate>[]>([]);
-  const exploredRef = useRef(false);
+  const settleTimerRef = useRef<number | null>(null);
   const entrancePlayedRef = useRef(false);
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
   const jobZoomCompleteRef = useRef(false);
@@ -231,8 +237,13 @@ export function CareerMapField({
     () =>
       phase === 'overview' || !activeCategory
         ? null
-        : careerMapClusterBounds(ranking, activeCategory, phase === 'role' || phase === 'job'),
-    [ranking, phase, activeCategory],
+        : careerMapClusterBounds(
+            ranking,
+            matchPercentages,
+            activeCategory,
+            phase === 'role' || phase === 'job',
+          ),
+    [ranking, matchPercentages, phase, activeCategory],
   );
 
   const applyFreeCamera = useCallback(
@@ -261,12 +272,13 @@ export function CareerMapField({
     () =>
       careerMapCameraForPhase(
         ranking,
+        matchPercentages,
         phase,
         viewport,
         phase === 'overview' ? undefined : activeCategory,
         phase === 'job' ? selectedJob : null,
       ),
-    [ranking, phase, viewport, activeCategory, selectedJob],
+    [ranking, matchPercentages, phase, viewport, activeCategory, selectedJob],
   );
 
   const cancelCameraAnimation = useCallback(() => {
@@ -274,11 +286,39 @@ export function CareerMapField({
     cameraAnimRef.current = [];
   }, []);
 
+  // CM-07: every explore gesture collapses the intro (the parent no-ops when already collapsed),
+  // so the card re-collapses after each "?"-pill re-expand instead of only once per visit.
   const notifyExplore = useCallback(() => {
-    if (phase !== 'overview' || exploredRef.current) return;
-    exploredRef.current = true;
+    if (phase !== 'overview') return;
     onExplore?.();
   }, [phase, onExplore]);
+
+  // CM-07: settle watcher — any camera movement resets the timer; when the camera has been
+  // still for a beat and is still near fit zoom, offer the intro back once (parent caps it).
+  const clearSettleTimer = useCallback(() => {
+    if (settleTimerRef.current !== null) {
+      window.clearTimeout(settleTimerRef.current);
+      settleTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleSettleCheck = useCallback(() => {
+    if (phase !== 'overview' || reduce || !onOverviewSettle) return;
+    clearSettleTimer();
+    settleTimerRef.current = window.setTimeout(() => {
+      settleTimerRef.current = null;
+      if (scale.get() <= fitScale * MAP_INTRO_SETTLE.nearFitRatio) onOverviewSettle();
+    }, MAP_INTRO_SETTLE.idleMs);
+  }, [phase, reduce, onOverviewSettle, clearSettleTimer, scale, fitScale]);
+
+  useMotionValueEvent(x, 'change', scheduleSettleCheck);
+  useMotionValueEvent(y, 'change', scheduleSettleCheck);
+  useMotionValueEvent(scale, 'change', scheduleSettleCheck);
+
+  useEffect(() => {
+    if (phase !== 'overview') clearSettleTimer();
+    return clearSettleTimer;
+  }, [phase, clearSettleTimer]);
 
   const handleMapBackgroundClick = useCallback(
     (clientX: number, clientY: number) => {
@@ -293,10 +333,6 @@ export function CareerMapField({
     },
     [activeClusterBounds, viewport, x, y, scale, onDeselectRole],
   );
-
-  useEffect(() => {
-    if (phase === 'overview') exploredRef.current = false;
-  }, [phase]);
 
   useEffect(() => {
     cancelCameraAnimation();
@@ -375,8 +411,8 @@ export function CareerMapField({
   );
 
   const edges = useMemo(
-    () => careerMapEdgeLayouts(ranking, 'overview', undefined, edgeGapVb),
-    [ranking, edgeGapVb],
+    () => careerMapEdgeLayouts(ranking, matchPercentages, 'overview', undefined, edgeGapVb),
+    [ranking, matchPercentages, edgeGapVb],
   );
   const roleJobs = careerMapAllJobNodes(ranking, phase, activeCategory);
 
@@ -425,6 +461,10 @@ export function CareerMapField({
   }, [phase, reduce, onEntranceComplete]);
 
   const isRoleFocus = phase === 'role' || phase === 'job';
+  // CM-06: at overview the job dots recede so the hubs lead; they brighten on the same zoom
+  // ramp that reveals their labels (or fully on hover).
+  const overviewDotOpacity =
+    MAP_OVERVIEW_JOB_DIM_OPACITY + (1 - MAP_OVERVIEW_JOB_DIM_OPACITY) * zoomLabelOpacity;
 
   return (
     <div
@@ -534,7 +574,9 @@ export function CareerMapField({
                   ? 1
                   : isRoleFocus
                     ? MAP_INACTIVE_CLUSTER_OPACITY
-                    : 1;
+                    : isHovered
+                      ? 1
+                      : overviewDotOpacity;
               const fillTarget = isTargetJob
                 ? MAP_SELECTED_ORB_FILL_OPACITY
                 : isSelectedJob
@@ -741,6 +783,10 @@ export function CareerMapField({
                 onMouseLeave={() =>
                   setHoveredJob((current) => (current === nodeKey ? null : current))
                 }
+                onFocus={() => setHoveredJob(nodeKey)}
+                onBlur={() =>
+                  setHoveredJob((current) => (current === nodeKey ? null : current))
+                }
                 onClick={onJobClick}
               />
             );
@@ -752,9 +798,15 @@ export function CareerMapField({
             const isActiveCluster = isRoleFocus && node.category === activeCategory;
             const labelCompact = phase === 'job';
 
+            // CM-06: hovering (or keyboard-focusing) a dimmed overview dot reveals its name
+            // even below the zoom-fade band; hover wins over the zoom ramp.
+            const isHoveredOverview =
+              phase === 'overview' && hoveredJob === jobNodeKey(node.category, node.jobIndex);
             const labelOpacity = isActiveCluster
               ? 1
-              : zoomLabelOpacity * (isRoleFocus ? MAP_INACTIVE_CLUSTER_OPACITY : 1);
+              : isHoveredOverview
+                ? 1
+                : zoomLabelOpacity * (isRoleFocus ? MAP_INACTIVE_CLUSTER_OPACITY : 1);
 
             const orbDiameterPx = ((2 * node.r) / VW) * mapWidth;
             const jobRatio = labelCompact ? MAP_JOB_LABEL_RATIO.selected : null;

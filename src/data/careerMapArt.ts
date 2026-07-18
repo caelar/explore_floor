@@ -18,6 +18,19 @@ export const MAP_ACTIVE_EDGE_OPACITY = 0.75;
 export const MAP_INACTIVE_EDGE_OPACITY = 0.18;
 export const MAP_INACTIVE_CLUSTER_OPACITY = 0.38;
 
+/** CM-06: job dots recede at overview so the role hubs lead; zooming in (or hovering a dot)
+ *  brings them up on the same ramp that reveals their labels. */
+export const MAP_OVERVIEW_JOB_DIM_OPACITY = 0.25;
+
+/** CM-06: distinct hub glyph per role (Material Icons ligatures; the font is self-hosted, so
+ *  verify new glyphs render). The mockup's set: hands-on robot arm / code brackets / planning
+ *  clipboard, mapped to the roles' entry / mid-technical / planning tiers. */
+export const MAP_HUB_ICON: Record<CategoryId, string> = {
+  technician: 'precision_manufacturing',
+  specialist: 'code',
+  integrator: 'assignment',
+};
+
 /**
  * Figma 1349:312 — job title size relative to job-orb diameter in job-selected view.
  * Measured from the editable capture (32px title on ~120px orb in job-selected view).
@@ -150,6 +163,17 @@ export const MAP_RANK_CLUSTERS: readonly MapRankCluster[] = [
     ],
   },
 ] as const;
+
+/** CM-05: area-true hub sizing — r = k·√pct, anchored so a 40% match renders at the Figma
+ *  hero radius. Floor = the Figma small-hub radius (the label layout's proven worst case);
+ *  cap keeps the biggest hub clear of the nearest cross-cluster job dot (closest hub → the
+ *  second cluster's inner dot is 130.6vb away, so r 100 leaves ~11vb of daylight). */
+export const MAP_HUB_SIZING = {
+  anchorPct: 40,
+  anchorR: MAP_RANK_CLUSTERS[0].hub.r,
+  minR: MAP_RANK_CLUSTERS[1].hub.r,
+  maxR: 100,
+} as const;
 
 /** @deprecated Use MAP_RANK_CLUSTERS[rank].hub */
 export const MAP_ROLE_SLOTS = MAP_RANK_CLUSTERS.map((c) => c.hub);

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Icon } from '@/components/Icon';
 import { MAP_JOB_PANEL_MAX_WIDTH } from '@/data/careerMapArt';
@@ -60,8 +60,12 @@ export function CareerMap({
   targetJobId,
   onSetTargetJob,
 }: CareerMapProps) {
-  const [introVisible, setIntroVisible] = useState(true);
+  // CM-07: the directions card never vanishes for good — exploring collapses it into a
+  // persistent "?" pill, and the mode carries across phase changes (a later overview re-entry
+  // shows the pill, not the card). One settle-based re-expand per map visit, so it never nags.
+  const [introMode, setIntroMode] = useState<'expanded' | 'collapsed'>('expanded');
   const [introRevealed, setIntroRevealed] = useState(reduce);
+  const autoReExpandedRef = useRef(false);
   const [jobPanelOpen, setJobPanelOpen] = useState(false);
   const [mdUp, setMdUp] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
@@ -83,10 +87,6 @@ export function CareerMap({
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
   }, []);
-
-  useEffect(() => {
-    if (phase === 'overview') setIntroVisible(true);
-  }, [phase]);
 
   useEffect(() => {
     if (phase !== 'job') {
@@ -111,7 +111,19 @@ export function CareerMap({
     setIntroRevealed(true);
   }, []);
 
-  const dismissIntro = useCallback(() => setIntroVisible(false), []);
+  const collapseIntro = useCallback(
+    () => setIntroMode((mode) => (mode === 'expanded' ? 'collapsed' : mode)),
+    [],
+  );
+  const expandIntro = useCallback(() => setIntroMode('expanded'), []);
+  const onOverviewSettle = useCallback(() => {
+    if (autoReExpandedRef.current) return;
+    setIntroMode((mode) => {
+      if (mode !== 'collapsed') return mode;
+      autoReExpandedRef.current = true;
+      return 'expanded';
+    });
+  }, []);
 
   const introFade = {
     initial: reduce ? false : { opacity: 0, y: 10 },
@@ -221,7 +233,8 @@ export function CareerMap({
             onSelectJob={onSelectJob}
             onDeselectRole={onDeselectRole ?? onBackToOverview}
             onDeselectJob={onDeselectJob ?? onBackToRole}
-            onExplore={dismissIntro}
+            onExplore={collapseIntro}
+            onOverviewSettle={onOverviewSettle}
             onCameraTransitionEnd={onJobZoomComplete}
             onEntranceComplete={onMapEntranceComplete}
           />
@@ -231,20 +244,47 @@ export function CareerMap({
               <div className="pointer-events-auto absolute left-space-3 top-space-3">{backControl}</div>
             ) : null}
 
-            <AnimatePresence>
-              {phase === 'overview' && introVisible && introRevealed && (
+            <AnimatePresence mode="wait">
+              {phase === 'overview' && introRevealed && introMode === 'expanded' && (
                 <motion.div
                   key="map-intro"
                   {...introFade}
                   className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6"
                   data-testid="career-map-intro"
                 >
-                  <div className="w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-4 text-center shadow-dark-card backdrop-blur-panel">
+                  <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-4 text-center shadow-dark-card backdrop-blur-panel">
+                    <button
+                      type="button"
+                      data-testid="career-map-intro-dismiss"
+                      aria-label={copy.hideDirections}
+                      onClick={collapseIntro}
+                      className="pointer-events-auto absolute right-space-2 top-space-2 flex h-6 w-6 items-center justify-center rounded-full text-text-on-dark-faint transition-colors hover:text-text-on-dark"
+                    >
+                      <Icon name="x" size={16} />
+                    </button>
                     <h1 className="font-heading text-h3 text-text-on-dark">{copy.title}</h1>
                     <div className="my-space-3 h-px bg-glass-border" />
                     <p className="font-body text-body text-text-on-dark-muted">{copy.intro}</p>
+                    <p className="mt-space-1 font-body text-body text-text-on-dark-muted">{copy.dots}</p>
                     <p className="mt-space-1 font-body text-body text-text-on-dark-faint">{copy.hint}</p>
                   </div>
+                </motion.div>
+              )}
+              {phase === 'overview' && introRevealed && introMode === 'collapsed' && (
+                <motion.div
+                  key="map-intro-pill"
+                  {...introFade}
+                  className="absolute inset-x-space-3 top-space-3 flex justify-center"
+                >
+                  <button
+                    type="button"
+                    data-testid="career-map-intro-pill"
+                    aria-label={copy.showDirections}
+                    onClick={expandIntro}
+                    className="pointer-events-auto flex h-control-tap w-control-tap items-center justify-center rounded-full border border-glass-border bg-glass-fill-strong font-heading text-h4 text-text-on-dark shadow-dark-card backdrop-blur-panel transition-colors hover:border-arm-gold hover:text-arm-gold"
+                  >
+                    ?
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

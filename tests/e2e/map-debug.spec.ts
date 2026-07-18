@@ -13,11 +13,20 @@ test('debug map hub label positions', async ({ page }) => {
     const svg = field?.querySelector('svg');
     const labels = svg ? [...svg.querySelectorAll('[data-testid^="map-bubble-"]')] : [];
 
-    const hubCenters: Record<string, { cx: number; cy: number; r: number }> = {
-      'map-bubble-specialist': { cx: 577.173, cy: 251.623, r: 65.788 },
-      'map-bubble-integrator': { cx: 813.197, cy: 402.19, r: 45.441 },
-      'map-bubble-technician': { cx: 185.156, cy: 206.86, r: 45.441 },
-    };
+    // Hub geometry read from each label group's invisible hit circle — the radii are
+    // %-sized live values (CM-05), not fixed art constants.
+    const hubCenters: Record<string, { cx: number; cy: number; r: number }> = {};
+    for (const el of labels) {
+      const testid = el.getAttribute('data-testid') ?? '';
+      const hit = el.querySelector('circle');
+      if (testid && hit) {
+        hubCenters[testid] = {
+          cx: Number(hit.getAttribute('cx')),
+          cy: Number(hit.getAttribute('cy')),
+          r: Number(hit.getAttribute('r')),
+        };
+      }
+    }
 
     const jobCenters = [
       { cx: 813.197, cy: 187.87 },

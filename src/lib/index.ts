@@ -14,6 +14,7 @@ export {
   careerMapEdgeLayouts,
   careerMapEdges,
   careerMapFitScale,
+  careerMapHubRadius,
   careerMapJobNodes,
   careerMapJobs,
   careerMapMinScaleForBounds,
@@ -29,7 +30,6 @@ export {
   MAP_VIEW,
   mapRankCluster,
   orthogonalEdge,
-  roleRadius,
 } from './careerMapLayout';
 export type { CategoryContribution, CategoryContributions } from './categoryBreakdown';
 export { categoryContributions } from './categoryBreakdown';

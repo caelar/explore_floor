@@ -1,4 +1,4 @@
-import { MAP_RANK_CLUSTERS } from '@/data/careerMapArt';
+import { MAP_HUB_SIZING, MAP_RANK_CLUSTERS, type MapEdgeArt } from '@/data/careerMapArt';
 import type { CategoryId, CategoryWeights } from '@/data/types';
 import {
   careerMapAllJobNodes,
@@ -11,6 +11,7 @@ import {
   careerMapEdgeLayouts,
   careerMapEdges,
   careerMapFitScale,
+  careerMapHubRadius,
   careerMapJobNodes,
   careerMapJobs,
   careerMapRemapCameraForViewportResize,
@@ -20,15 +21,75 @@ import {
   MAP_VIEW,
 } from '@/lib/careerMapLayout';
 
+/** Resolve an orthogonal path's points to global (viewBox) coordinates. */
+function edgePathPoints(d: string, edge: MapEdgeArt): { x: number; y: number }[] {
+  const cmds = d.match(/[MLHV][^MLHV]*/gi) ?? [];
+  let x = 0;
+  let y = 0;
+  const points: { x: number; y: number }[] = [];
+  for (const cmd of cmds) {
+    const type = cmd[0];
+    const nums = cmd
+      .slice(1)
+      .trim()
+      .split(/[\s,]+/)
+      .map(Number)
+      .filter((n) => !Number.isNaN(n));
+    if (type === 'M') {
+      x = nums[0];
+      y = nums[1];
+    } else if (type === 'H') {
+      x = nums[0];
+    } else if (type === 'V') {
+      y = nums[0];
+    }
+    points.push({ x: x + edge.x, y: y + edge.y });
+  }
+  return points;
+}
+
 describe('careerMapLayout', () => {
   const ranking: CategoryId[] = ['integrator', 'specialist', 'technician'];
   const matchPercentages: CategoryWeights = { integrator: 60, specialist: 30, technician: 30 };
 
-  it('maps ranking[0] to the closest-match cluster hub', () => {
+  describe('careerMapHubRadius (CM-05)', () => {
+    it('anchors the sizing so a 40% match renders at the Figma hero radius', () => {
+      expect(careerMapHubRadius(40)).toBeCloseTo(MAP_RANK_CLUSTERS[0].hub.r, 3);
+    });
+
+    it('is area-true: doubling the match doubles the orb area', () => {
+      const r40 = careerMapHubRadius(40);
+      const r80 = careerMapHubRadius(80);
+      expect((r80 * r80) / (r40 * r40)).toBeCloseTo(2, 5);
+    });
+
+    it('floors at the Figma small-hub radius and caps for cross-cluster clearance', () => {
+      expect(careerMapHubRadius(0)).toBe(MAP_HUB_SIZING.minR);
+      expect(careerMapHubRadius(5)).toBe(MAP_HUB_SIZING.minR);
+      expect(careerMapHubRadius(100)).toBe(MAP_HUB_SIZING.maxR);
+    });
+
+    it('never shrinks as the match grows', () => {
+      const radii = [0, 10, 20, 40, 70, 100].map(careerMapHubRadius);
+      for (let i = 1; i < radii.length; i += 1) {
+        expect(radii[i]).toBeGreaterThanOrEqual(radii[i - 1]);
+      }
+    });
+  });
+
+  it('maps ranking[0] to the closest-match cluster hub, sized by its match %', () => {
     const roles = careerMapRoles(ranking, matchPercentages);
     expect(roles[0].category).toBe('integrator');
     expect(roles[0].cx).toBeCloseTo(MAP_RANK_CLUSTERS[0].hub.cx, 1);
-    expect(roles[0].r).toBeCloseTo(65.788, 1);
+    expect(roles[0].r).toBeCloseTo(careerMapHubRadius(60), 5);
+    expect(roles[0].r).toBeGreaterThan(roles[1].r);
+  });
+
+  it('renders tied percentages at exactly equal size (CM-05 hard requirement)', () => {
+    const roles = careerMapRoles(ranking, matchPercentages);
+    expect(matchPercentages[roles[1].category]).toBe(matchPercentages[roles[2].category]);
+    expect(roles[1].r).toBe(roles[2].r);
+    expect(roles[1].strokeWidth).toBe(roles[2].strokeWidth);
   });
 
   it('maps ranking[1] and [2] to second and third clusters', () => {
@@ -61,31 +122,7 @@ describe('careerMapLayout', () => {
     const gapVb = 1.25;
     for (const edge of cluster.edges) {
       const connected = careerMapConnectedEdgePath(edge, cluster.hub, cluster.jobs, gapVb);
-      const cmds = connected.match(/[MLHV][^MLHV]*/gi) ?? [];
-      let x = 0;
-      let y = 0;
-      const points: { x: number; y: number }[] = [];
-      for (const cmd of cmds) {
-        const type = cmd[0];
-        const nums = cmd
-          .slice(1)
-          .trim()
-          .split(/[\s,]+/)
-          .map(Number)
-          .filter((n) => !Number.isNaN(n));
-        if (type === 'M') {
-          x = nums[0];
-          y = nums[1];
-          points.push({ x: x + edge.x, y: y + edge.y });
-        } else if (type === 'H') {
-          x = nums[0];
-          points.push({ x: x + edge.x, y: y + edge.y });
-        } else if (type === 'V') {
-          y = nums[0];
-          points.push({ x: x + edge.x, y: y + edge.y });
-        }
-      }
-
+      const points = edgePathPoints(connected, edge);
       const start = points[0];
       const end = points[points.length - 1];
       const distStartHub = Math.hypot(start.x - cluster.hub.cx, start.y - cluster.hub.cy);
@@ -101,6 +138,29 @@ describe('careerMapLayout', () => {
     }
   });
 
+  it('re-trims the hub-side endpoint flush onto the live hub radius (CM-05)', () => {
+    for (const cluster of MAP_RANK_CLUSTERS) {
+      // Floored, art-native, and grown radii; 90 swallows a corner on the second/third
+      // cluster art (their inner corner sits ~80vb from the hub center).
+      for (const liveR of [MAP_HUB_SIZING.minR, cluster.hub.r, 90]) {
+        const hub = { ...cluster.hub, r: liveR };
+        for (const edge of cluster.edges) {
+          const connected = careerMapConnectedEdgePath(edge, hub, cluster.jobs);
+          const points = edgePathPoints(connected, edge);
+          const start = points[0];
+          const end = points[points.length - 1];
+          const dStart = Math.hypot(start.x - hub.cx, start.y - hub.cy);
+          const dEnd = Math.hypot(end.x - hub.cx, end.y - hub.cy);
+          expect(Math.min(dStart, dEnd)).toBeCloseTo(liveR, 1);
+          // No surviving point may sit inside the live circle (swallowed corners drop).
+          for (const p of points) {
+            expect(Math.hypot(p.x - hub.cx, p.y - hub.cy)).toBeGreaterThanOrEqual(liveR - 0.1);
+          }
+        }
+      }
+    }
+  });
+
   it('converts a 1px screen gap to viewBox units from map scale', () => {
     const gap = careerMapEdgeGapViewBox(900, 0.94, 1);
     expect(gap).toBeCloseTo(1.29, 1);
@@ -108,7 +168,7 @@ describe('careerMapLayout', () => {
 
   it('colors edges by the role occupying each rank slot', () => {
     const reordered: CategoryId[] = ['specialist', 'integrator', 'technician'];
-    const edges = careerMapEdgeLayouts(reordered, 'overview');
+    const edges = careerMapEdgeLayouts(reordered, matchPercentages, 'overview');
     const closestEdges = edges.filter((e) => e.rank === 0);
     expect(closestEdges.every((e) => e.category === 'specialist')).toBe(true);
   });
@@ -136,12 +196,29 @@ describe('careerMapLayout', () => {
   it('zooms to fit the highlighted cluster when a role is focused', () => {
     const viewport = { width: 900, height: 620 };
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
-    const overview = careerMapCameraForPhase(ranking, 'overview', viewport);
-    const role = careerMapCameraForPhase(ranking, 'role', viewport, 'integrator');
-    const bounds = careerMapContentBounds(ranking, 'role', 'integrator');
+    const overview = careerMapCameraForPhase(ranking, matchPercentages, 'overview', viewport);
+    const role = careerMapCameraForPhase(ranking, matchPercentages, 'role', viewport, 'integrator');
+    const bounds = careerMapContentBounds(ranking, matchPercentages, 'role', 'integrator');
 
     expect(role.scale).toBeGreaterThan(overview.scale);
     expect(careerMapCirclesFitViewport(bounds, viewport, role)).toBe(true);
+  });
+
+  it('keeps a sane camera at extreme percentages (all floors, all caps)', () => {
+    const viewport = { width: 900, height: 620 };
+    for (const pct of [5, 100]) {
+      const pcts: CategoryWeights = { integrator: pct, specialist: pct, technician: pct };
+      const bounds = careerMapContentBounds(ranking, pcts, 'overview');
+      expect(Number.isFinite(bounds.minX)).toBe(true);
+      expect(Number.isFinite(bounds.maxY)).toBe(true);
+
+      const overview = careerMapCameraForPhase(ranking, pcts, 'overview', viewport);
+      expect(overview.scale).toBeCloseTo(careerMapFitScale(viewport), 2);
+
+      const role = careerMapCameraForPhase(ranking, pcts, 'role', viewport, 'integrator');
+      const clusterBounds = careerMapContentBounds(ranking, pcts, 'role', 'integrator');
+      expect(careerMapCirclesFitViewport(clusterBounds, viewport, role)).toBe(true);
+    }
   });
 
   it('returns every cluster job node when a role is focused', () => {
@@ -159,9 +236,9 @@ describe('careerMapLayout', () => {
   it('clamps pan after zoom-out drift so circles never clip', () => {
     const viewport = { width: 900, height: 620 };
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
-    const bounds = careerMapContentBounds(ranking, 'overview');
+    const bounds = careerMapContentBounds(ranking, matchPercentages, 'overview');
     const fit = careerMapFitScale(viewport);
-    const ideal = careerMapCameraForPhase(ranking, 'overview', viewport);
+    const ideal = careerMapCameraForPhase(ranking, matchPercentages, 'overview', viewport);
     const drifted = {
       scale: ideal.scale * 0.75,
       x: ideal.x + 120,
@@ -178,9 +255,16 @@ describe('careerMapLayout', () => {
   it('zooms tighter on the selected job and centers it in the map pane', () => {
     const viewport = { width: 520, height: 720 };
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
-    const role = careerMapCameraForPhase(ranking, 'role', viewport, 'integrator');
+    const role = careerMapCameraForPhase(ranking, matchPercentages, 'role', viewport, 'integrator');
     const job = careerMapJobs('integrator', ranking.indexOf('integrator'), 'overview')[0];
-    const jobCamera = careerMapCameraForPhase(ranking, 'job', viewport, 'integrator', 0);
+    const jobCamera = careerMapCameraForPhase(
+      ranking,
+      matchPercentages,
+      'job',
+      viewport,
+      'integrator',
+      0,
+    );
     const mapWidth = viewport.width;
     const screenX =
       jobCamera.x + (job.cx / MAP_VIEW.width) * mapWidth * jobCamera.scale;
@@ -195,12 +279,13 @@ describe('careerMapLayout', () => {
     const pane = viewport.width - panel;
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
     const job = careerMapJobs('integrator', ranking.indexOf('integrator'), 'overview')[0];
-    const prePanel = careerMapCameraForPhase(ranking, 'job', viewport, 'integrator', 0, {
+    const prePanel = careerMapCameraForPhase(ranking, matchPercentages, 'job', viewport, 'integrator', 0, {
       mapPaneWidth: pane,
       paneOffsetLeft: panel,
     });
     const docked = careerMapCameraForPhase(
       ranking,
+      matchPercentages,
       'job',
       { width: pane, height: viewport.height },
       'integrator',
@@ -224,6 +309,7 @@ describe('careerMapLayout', () => {
     const to = { width: 504, height: 720 };
     const camera = careerMapCameraForPhase(
       ['specialist', 'integrator', 'technician'],
+      matchPercentages,
       'role',
       from,
       'integrator',
@@ -240,7 +326,7 @@ describe('careerMapLayout', () => {
   it('keeps overview camera at the height-fit scale', () => {
     const viewport = { width: 900, height: 500 };
     const ranking: CategoryId[] = ['specialist', 'integrator', 'technician'];
-    const camera = careerMapCameraForPhase(ranking, 'overview', viewport);
+    const camera = careerMapCameraForPhase(ranking, matchPercentages, 'overview', viewport);
 
     expect(camera.scale).toBeCloseTo(careerMapFitScale(viewport), 2);
   });

@@ -1,4 +1,5 @@
 import {
+  MAP_HUB_SIZING,
   MAP_JOB_R,
   MAP_RANK_CLUSTERS,
   MAP_STROKE_WIDTH,
@@ -113,24 +114,41 @@ export function careerMapFitScale(viewport: { width: number; height: number }): 
   return Math.min(1, viewport.height / mapHeightAtFullWidth) * 0.94;
 }
 
+/** The Figma art draws one stroke ratio for both hub sizes (1.848/65.788 ≈ 1.276/45.441). */
+const HUB_STROKE_RATIO =
+  MAP_RANK_CLUSTERS[0].hub.strokeWidth / MAP_RANK_CLUSTERS[0].hub.r;
+
+/**
+ * CM-05: area-true hub radius — area ∝ match %, so r = k·√pct. A pure function of pct, which
+ * makes tied percentages render identical by construction. The floor keeps the smallest hub at
+ * the Figma small-hub size (label legibility); the cap preserves cross-cluster clearance.
+ */
+export function careerMapHubRadius(pct: number): number {
+  const { anchorPct, anchorR, minR, maxR } = MAP_HUB_SIZING;
+  const k = anchorR / Math.sqrt(anchorPct);
+  const safe = Number.isFinite(pct) ? clamp(pct, 0, 100) : 0;
+  return clamp(k * Math.sqrt(safe), minR, maxR);
+}
+
 /**
  * Maps user ranking onto three fixed Figma clusters. ranking[0] → closest (large center),
- * ranking[1] → second (lower-right), ranking[2] → third (upper-left). Cluster geometry is
- * constant; only the role label, color, and job titles change.
+ * ranking[1] → second (lower-right), ranking[2] → third (upper-left). Cluster positions are
+ * constant; each hub's size encodes that role's match % (CM-05), so ties read equal.
  */
 export function careerMapRoles(
   ranking: CategoryId[],
-  _matchPercentages: CategoryWeights,
+  matchPercentages: CategoryWeights,
 ): CareerMapRoleLayout[] {
   return ranking.slice(0, MAP_RANK_CLUSTERS.length).map((category, rank) => {
     const { hub } = mapRankCluster(rank);
+    const r = careerMapHubRadius(matchPercentages[category]);
     return {
       category,
       rank,
       cx: hub.cx,
       cy: hub.cy,
-      r: hub.r,
-      strokeWidth: hub.strokeWidth,
+      r,
+      strokeWidth: r * HUB_STROKE_RATIO,
     };
   });
 }
@@ -185,13 +203,14 @@ export function careerMapAllJobNodes(
 /** Bounds of one role cluster (hub + jobs, optional job labels) for camera fit. */
 export function careerMapClusterBounds(
   ranking: CategoryId[],
+  matchPercentages: CategoryWeights,
   activeCategory: CategoryId,
   includeJobLabels = false,
 ): MapBounds {
   const rank = ranking.indexOf(activeCategory);
-  if (rank < 0) return careerMapContentBounds(ranking, 'overview');
+  if (rank < 0) return careerMapContentBounds(ranking, matchPercentages, 'overview');
 
-  const roles = careerMapRoles(ranking, {} as CategoryWeights);
+  const roles = careerMapRoles(ranking, matchPercentages);
   const activeRole = roles.find((role) => role.category === activeCategory);
   const parts: MapBounds[] = [];
 
@@ -278,7 +297,13 @@ export function careerMapEdgeGapViewBox(
   return (MAP_VIEW.width / (mapWidth * scale)) * screenGapPx;
 }
 
-/** Trim the job-side endpoint to sit just outside the overview orb (plus optional gap). */
+/**
+ * Trim the job-side endpoint to sit just outside the overview orb (plus optional gap), and the
+ * hub-side endpoint flush onto the hub circle. The art bakes hub endpoints onto the fixed Figma
+ * radii; with %-sized hubs (CM-05) the live `hub.r` differs, so the hub-nearest point is re-set
+ * along its axis-aligned segment — no gap off a floored hub, no line through a grown hub's
+ * translucent fill.
+ */
 export function careerMapConnectedEdgePath(
   edge: MapEdgeArt,
   hub: MapHubArt,
@@ -327,11 +352,80 @@ export function careerMapConnectedEdgePath(
   };
 
   setOrthoPoint(cmds, jobPointIdx, connectedLocal);
-  return orthoCommandsToD(cmds);
+
+  // Hub side. The art bakes endpoints onto the fixed Figma radii, so the live radius needs a
+  // re-trim in both directions: a floored hub leaves the endpoint floating outside the circle
+  // (pull it in flush), and a grown hub can swallow the endpoint and even whole corners of the
+  // path (drop the swallowed points, trim the first crossing segment). Points map 1:1 to
+  // commands and every command is absolute, so dropping commands never shifts the rest.
+  const hubEndIdx = jobPointIdx === lastIdx ? 0 : lastIdx;
+  const step = hubEndIdx === 0 ? 1 : -1;
+  const globalPoints = localPoints.map(toGlobal);
+  globalPoints[jobPointIdx] = connectedGlobal;
+  const insideHub = (p: { x: number; y: number }) =>
+    Math.hypot(p.x - hub.cx, p.y - hub.cy) < hub.r;
+
+  let m = hubEndIdx;
+  while (m !== jobPointIdx && insideHub(globalPoints[m])) m += step;
+
+  if (m === hubEndIdx) {
+    // Endpoint on or outside the circle: pull it in flush along its adjoining axis-aligned
+    // segment (no-op within float noise when the radius matches the art).
+    const axisCmd = hubEndIdx === 0 ? cmds[1] : cmds[lastIdx];
+    if (lastIdx >= 1 && axisCmd && (axisCmd.type === 'H' || axisCmd.type === 'V')) {
+      const endpoint = globalPoints[hubEndIdx];
+      if (axisCmd.type === 'V') {
+        const perp = endpoint.x - hub.cx;
+        if (Math.abs(perp) < hub.r) {
+          const along = Math.sqrt(hub.r * hub.r - perp * perp);
+          const yNew = hub.cy + (Math.sign(endpoint.y - hub.cy) || 1) * along;
+          setOrthoPoint(cmds, hubEndIdx, { x: endpoint.x - edge.x, y: yNew - edge.y });
+        }
+      } else {
+        const perp = endpoint.y - hub.cy;
+        if (Math.abs(perp) < hub.r) {
+          const along = Math.sqrt(hub.r * hub.r - perp * perp);
+          const xNew = hub.cx + (Math.sign(endpoint.x - hub.cx) || 1) * along;
+          setOrthoPoint(cmds, hubEndIdx, { x: xNew - edge.x, y: endpoint.y - edge.y });
+        }
+      }
+    }
+    return orthoCommandsToD(cmds);
+  }
+
+  // Grown hub: the crossing segment runs from globalPoints[m - step] (inside) to
+  // globalPoints[m] (outside); it is axis-aligned, so keep its fixed coordinate and solve
+  // the circle for the other.
+  const outside = globalPoints[m];
+  const inside = globalPoints[m - step];
+  const vertical = Math.abs(outside.x - inside.x) < Math.abs(outside.y - inside.y);
+  let crossing: { x: number; y: number };
+  if (vertical) {
+    const perp = inside.x - hub.cx;
+    const along = Math.sqrt(Math.max(hub.r * hub.r - perp * perp, 0));
+    crossing = { x: inside.x, y: hub.cy + (Math.sign(outside.y - hub.cy) || 1) * along };
+  } else {
+    const perp = inside.y - hub.cy;
+    const along = Math.sqrt(Math.max(hub.r * hub.r - perp * perp, 0));
+    crossing = { x: hub.cx + (Math.sign(outside.x - hub.cx) || 1) * along, y: inside.y };
+  }
+  const crossingLocal = { x: crossing.x - edge.x, y: crossing.y - edge.y };
+
+  if (hubEndIdx === 0) {
+    // Swallowed points 0..m-1 collapse into a new M at the crossing; cmds[m] onward survive.
+    const kept = cmds.slice(m);
+    kept.unshift({ type: 'M', values: [crossingLocal.x, crossingLocal.y] });
+    return orthoCommandsToD(kept);
+  }
+  // Swallowed points m+1..last drop; cmds[m+1] becomes the crossing segment's new endpoint.
+  const kept = cmds.slice(0, m + 2);
+  setOrthoPoint(kept, m + 1, crossingLocal);
+  return orthoCommandsToD(kept);
 }
 
 export function careerMapEdgeLayouts(
   ranking: CategoryId[],
+  matchPercentages: CategoryWeights,
   phase: MapPhase,
   activeCategory?: CategoryId,
   edgeGapVb = 0,
@@ -347,12 +441,13 @@ export function careerMapEdgeLayouts(
   for (const { category, rank } of visible) {
     if (rank < 0) continue;
     const cluster = mapRankCluster(rank);
+    const hub = { ...cluster.hub, r: careerMapHubRadius(matchPercentages[category]) };
     for (const edge of cluster.edges) {
       edges.push({
         ...edge,
         category,
         rank,
-        d: careerMapConnectedEdgePath(edge, cluster.hub, cluster.jobs, edgeGapVb),
+        d: careerMapConnectedEdgePath(edge, hub, cluster.jobs, edgeGapVb),
       });
     }
   }
@@ -364,21 +459,28 @@ export function careerMapEdges(
   phase: MapPhase,
   activeCategory?: CategoryId,
 ): CareerMapEdge[] {
-  const ranking = roles.map((r) => r.category);
-  return careerMapEdgeLayouts(ranking, phase, activeCategory).map((e) => ({
-    category: e.category,
-    d: e.d,
-  }));
+  const visible =
+    phase === 'overview' ? roles : roles.filter((role) => role.category === activeCategory);
+
+  return visible.flatMap((role) => {
+    const cluster = mapRankCluster(role.rank);
+    const hub = { ...cluster.hub, r: role.r };
+    return cluster.edges.map((edge) => ({
+      category: role.category,
+      d: careerMapConnectedEdgePath(edge, hub, cluster.jobs),
+    }));
+  });
 }
 
 /** Bounding box of content the camera should keep in frame for the current phase. */
 export function careerMapContentBounds(
   ranking: CategoryId[],
+  matchPercentages: CategoryWeights,
   phase: MapPhase,
   activeCategory?: CategoryId,
 ): MapBounds {
   if (phase === 'overview') {
-    const roles = careerMapRoles(ranking, {} as CategoryWeights);
+    const roles = careerMapRoles(ranking, matchPercentages);
     const jobNodes = careerMapAllJobNodes(ranking);
     const parts: MapBounds[] = [];
 
@@ -394,12 +496,13 @@ export function careerMapContentBounds(
   if (activeCategory) {
     return careerMapClusterBounds(
       ranking,
+      matchPercentages,
       activeCategory,
       phase === 'role' || phase === 'job',
     );
   }
 
-  return careerMapContentBounds(ranking, 'overview');
+  return careerMapContentBounds(ranking, matchPercentages, 'overview');
 }
 
 /** Smallest scale that keeps `bounds` inside the viewport (with padding). */
@@ -609,6 +712,7 @@ export function careerMapCameraForJobInMapPane(
 
 export function careerMapCameraForPhase(
   ranking: CategoryId[],
+  matchPercentages: CategoryWeights,
   phase: MapPhase,
   viewport: { width: number; height: number },
   activeCategory?: CategoryId,
@@ -620,7 +724,7 @@ export function careerMapCameraForPhase(
   const mapHeight = mapWidth * (MAP_VIEW.height / MAP_VIEW.width);
 
   if (phase === 'overview') {
-    const bounds = careerMapContentBounds(ranking, 'overview');
+    const bounds = careerMapContentBounds(ranking, matchPercentages, 'overview');
     return careerMapClampCamera(bounds, viewport, {
       scale: fit,
       x: viewport.width / 2 - (mapWidth * fit) / 2,
@@ -645,11 +749,11 @@ export function careerMapCameraForPhase(
   }
 
   if (activeCategory) {
-    const bounds = careerMapContentBounds(ranking, phase, activeCategory);
+    const bounds = careerMapContentBounds(ranking, matchPercentages, phase, activeCategory);
     return careerMapCamera(bounds, viewport);
   }
 
-  const bounds = careerMapContentBounds(ranking, 'overview');
+  const bounds = careerMapContentBounds(ranking, matchPercentages, 'overview');
   return careerMapClampCamera(bounds, viewport, {
     scale: fit,
     x: viewport.width / 2 - (mapWidth * fit) / 2,
@@ -741,13 +845,6 @@ export function jobMapPosition(
   const rank = ranking.indexOf(category);
   const jobs = careerMapJobs(category, rank >= 0 ? rank : 0, 'overview');
   return jobs[jobIndex] ?? jobs[0];
-}
-
-export function roleRadius(pct: number, baseR: number): number {
-  const t = clamp(pct, 0, 100) / 100;
-  const floor = baseR * 0.72;
-  const ceil = baseR * 1.12;
-  return floor + (ceil - floor) * t;
 }
 
 export function orthogonalEdge(

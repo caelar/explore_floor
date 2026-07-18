@@ -45,10 +45,13 @@ export function LoadingMiniMap({ ranking, matchPercentages, reduce }: LoadingMin
     [ranking, matchPercentages],
   );
   const jobNodes = useMemo(() => careerMapAllJobNodes(ranking), [ranking]);
-  const edges = useMemo(() => careerMapEdgeLayouts(ranking, 'overview'), [ranking]);
+  const edges = useMemo(
+    () => careerMapEdgeLayouts(ranking, matchPercentages, 'overview'),
+    [ranking, matchPercentages],
+  );
 
   const viewBox = useMemo(() => {
-    const bounds = careerMapContentBounds(ranking, 'overview');
+    const bounds = careerMapContentBounds(ranking, matchPercentages, 'overview');
     const pad = LOADING_MAP_VIEW_PADDING;
     return {
       x: bounds.minX - pad,
@@ -56,7 +59,7 @@ export function LoadingMiniMap({ ranking, matchPercentages, reduce }: LoadingMin
       width: bounds.maxX - bounds.minX + pad * 2,
       height: bounds.maxY - bounds.minY + pad * 2,
     };
-  }, [ranking]);
+  }, [ranking, matchPercentages]);
 
   const orbEntranceIndex = useMemo(() => {
     const index = new Map<string, number>();

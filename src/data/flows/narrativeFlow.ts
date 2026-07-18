@@ -306,7 +306,10 @@ export const narrativeFlow: CategoryFlow = {
       map: {
         title: 'Your Results',
         intro: 'Each path’s score is determined by how often your answers leaned toward it.',
+        dots: 'The small dots around each path are real jobs inside it. Zoom in to see their names.',
         hint: 'Tap any circle to explore the path and the jobs inside it.',
+        showDirections: 'Show the map directions',
+        hideDirections: 'Hide the map directions',
       },
       explore: {
         jobsInPathHeading: 'Jobs in this path',

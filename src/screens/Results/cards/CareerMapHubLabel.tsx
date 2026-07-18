@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import type { KeyboardEvent } from 'react';
 
 import { roleDetails } from '@/data';
-import { MAP_BUBBLE_LABEL, MAP_ROLE_COLOR_HEX } from '@/data/careerMapArt';
+import { MAP_BUBBLE_LABEL, MAP_HUB_ICON, MAP_ROLE_COLOR_HEX } from '@/data/careerMapArt';
 import type { CareerMapRoleLayout } from '@/lib';
 import { durations, easings } from '@/lib';
 
@@ -97,7 +97,7 @@ export function CareerMapHubLabel({
         fill={color}
         pointerEvents="none"
       >
-        precision_manufacturing
+        {MAP_HUB_ICON[role.category]}
       </text>
       <text
         x={role.cx}

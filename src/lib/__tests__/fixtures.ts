@@ -63,7 +63,10 @@ const cardsCopyFixture: ResultsCardsCopy = {
   map: {
     title: 'your results',
     intro: 'intro',
+    dots: 'dots',
     hint: 'hint',
+    showDirections: 'show directions',
+    hideDirections: 'hide directions',
   },
   explore: {
     jobsInPathHeading: 'jobs',
