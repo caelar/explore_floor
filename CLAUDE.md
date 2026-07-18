@@ -43,12 +43,12 @@ Research found the barrier to robotics manufacturing careers is not lack of inte
 | Language | TypeScript | Strict mode on. |
 | UI | React 18 | Function components and hooks only. |
 | Styling | Tailwind CSS (v4, CSS-first) | All design tokens live in the `@theme` block in `src/styles/globals.css` (loaded via `@tailwindcss/vite`). No magic hex values in components. |
-| Animation (UI) | Motion (ex-Framer Motion) | React-state-driven motion: screen + flow-step transitions, the bucket-sort drag, the dark results role-cards screen, `prefers-reduced-motion`. |
+| Animation (UI) | Motion (ex-Framer Motion) | React-state-driven motion: screen + flow-step transitions, the bucket-sort drag, the dark results role-cards screen, the career map's camera/orb/panel motion, `prefers-reduced-motion`. |
 | Animation (scene) | GSAP + plugins | Registered at app start (`lib/gsap.ts`: `DrawSVGPlugin` + `useGSAP`) as a future seam; **no live use** today. Shares a motion-token file with Motion and never animates the same property on the same node. _(The conveyor choreography it was chosen for is the documented cut — `REALIGNMENT.md`.)_ |
-| Scene rendering | SVG (React components) | Live SVG geometry is the `/select` fit radar and the results ambient bubble map. _(The old node map and the composed-SVG assembly line are the documented cut — `DECISIONS.md` D-029.)_ |
+| Scene rendering | SVG (React components) | Live SVG geometry is the `/select` fit radar and the results career map (`docs/knowledge/CAREER_MAP_REVIEW.md`; it replaced the bubble map + constellation). _(The old node map and the composed-SVG assembly line are the documented cut — `DECISIONS.md` D-029.)_ |
 | State | Zustand | One store per domain. No Redux. |
 | Audio | Howler.js | Documented cut — never integrated; deps removed (D-028). |
-| Testing | Vitest + Playwright | Vitest for pure-function units (the category scoring engine especially, `data-integrity`); Playwright for the flow E2E specs (narrative / role-select / reduced-motion). |
+| Testing | Vitest + Playwright | Vitest for pure-function units (the category scoring engine especially, `careerMapLayout`, `data-integrity`); Playwright for the flow E2E specs (narrative / role-select / reduced-motion / map-debug). |
 | Package manager | pnpm | |
 | Lint/format | ESLint + Prettier | Run before considering a task done. |
 
@@ -61,13 +61,13 @@ If you want to add a dependency, check `ARCHITECTURE.md` first. Prefer the stack
 /public               Static assets, fonts
 /src
   /app                App shell (AppLayout: dark canvas + AppHeader mount), routing, top-level providers
-  /screens            Landing (type-led dark hero), Flow (the narrative runner), Results (the dark role-cards results), Select
-  /components         Shared UI (buttons, sort cards, segmented control, AppHeader, Icon, role accents)
+  /screens            Landing (the factory-floor hero), CharacterSelect, Flow (the narrative runner), Loading, Results (role cards + compare + the career map), Select
+  /components         Shared UI (buttons, the scene illustration layer — SceneBackground/SceneCharacter/ThoughtBubble, AppHeader, Icon, role accents)
   /state              Zustand stores (sessionStore, useFlow)
-  /data               Mock data: the flow (§17, live), roleDetails (three roles), screeners, roleSelect
-  /lib                Pure helpers: categoryScoring (the brain), screenerFit, categoryBreakdown, nodeLayout, bubbleLayout
+  /data               Mock data: the flow (§17, live), roleDetails (three roles), jobs, screeners, roleSelect, the career-map art (careerMapArt) + scene/thought-bubble maps + loading copy
+  /lib                Pure helpers: categoryScoring (the brain), screenerFit, categoryBreakdown, careerMapLayout (the map brain), jobTrajectory, nodeLayout
   /styles             Tailwind v4 entry + the @theme design-token block (globals.css)
-/tests                Playwright specs (narrative / role-select / reduced-motion)
+/tests                Playwright specs (narrative / role-select / reduced-motion / map-debug)
 src/styles/globals.css  Design tokens via Tailwind v4 @theme; mirrors the published Figma DS library (precedence: DESIGN_SYSTEM.md §2/§15). Motion tokens live in src/lib/motion.ts.
 ```
 See `ARCHITECTURE.md` §3 for the full tree and `DATA_MODEL.md` §17 for the live data model.
@@ -88,7 +88,7 @@ Before calling any task complete:
 
 1. `pnpm dev` runs with no console errors.
 2. `pnpm lint` and `pnpm typecheck` pass.
-3. `pnpm test` passes — Vitest unit tests (the category scoring engine, `data-integrity`) and the Playwright specs (narrative / role-select / reduced-motion).
+3. `pnpm test` passes — Vitest unit tests (the category scoring engine, `careerMapLayout`, `data-integrity`) and the Playwright specs (narrative / role-select / reduced-motion / map-debug).
 4. The change matches the live model (`DATA_MODEL.md` §17) and the current plan (`docs/knowledge/STATUS.md` + `REMAINING_WORK.md`); the realignment + visual-rearchitecture memos are complete and archived at `docs/knowledge/archive/`. `ROADMAP.md` Phase 0/1 are done and Phase 2/3 are largely the documented cut.
 
 Use Playwright to self-check visual and flow changes rather than asking the user to manually verify. Screenshot the relevant screen and inspect it.

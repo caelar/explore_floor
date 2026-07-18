@@ -3,18 +3,18 @@
 **Read this first.** Live snapshot of where the build is. Updated as acceptance criteria clear (by `/phase-check` or by hand). Keep this a snapshot: session-by-session detail lives in the `sessions/` notes, linked below, not inline here.
 
 - **Last updated:** 2026-07-18
-- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17; D-027/D-028): a branching 6-question intro, 7 bucket-sort scenes, and the dark 5-screen **role-cards results** scoring ARM's three roles, plus the `/select` comparator. The dark re-architecture + polish are complete (D-029/D-030/D-031). Work lands on `main`. Gates green: lint, typecheck, **82 unit**, **3 E2E**; both design rubrics PASS.
+- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
-- **Open items:** catalogued in the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md` (ARM/Fivestar post-handoff content + our pre-handoff cleanup), `DESIGN_SYSTEM_RUN.md` (the `rc-design-system` build), and `DEFERRED_DIRECTIONS.md` (v4 polish + open scoring calls).
-- **Kayla's career-map work (this branch):** on **`career-map-merge`**, merge HELD behind the `CAREER_MAP_REVIEW.md` ledger. **Passes 0–2 done**, all gates green (CM-12 resolved panel-only); next is **Pass 3** (design-review, D-entries, docs sweep, merge, Kayla summary). Detail: the 2026-07-18 note below.
-- **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052; `COMPONENTIZATION_RUN.md`); conditional Pass 5 + registry-§6 sit in the post-presentation wrap-up queue (`REMAINING_WORK.md`, surface after Tue 07-21). The ecosystem run (D-035) lacks only its stretch pass; neither run gates the handoff (`HANDOFF_GUIDE.md`).
-- **Awaiting Caelan (pushes):** explore_floor `main` (D-052 close-out) and robotics_career `refine/phase-2-loop` (`33e0ba5`, 4 ahead) need pushes; career_dashboard fully landed, DS republish current. Direct `git push` stays denied to the agent.
+- **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`. Review team items (CM-02, CM-04 mention, screener content) ride with the Kayla summary (`Capstone/Handoff/Career_Map_Merge_Summary_for_Kayla.md`).
+- **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
+- **Awaiting Caelan (pushes):** explore_floor `main` (now incl. D-053) and robotics_career `refine/phase-2-loop` (`33e0ba5`) need pushes; `git push` stays denied to the agent. Also restart the Playwright MCP browser (the review pass left a Vite-reload filter in it).
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
 
 Newest first; full detail lives in each note.
 
+- 2026-07-18 · D-053/D-054/D-055 · career-map review **Pass 3 done — MERGED to `main`** — CM-16 PillButton ruling, orphan chain deleted, docs reconciled, design-review PASS (6/7 p2 fixed), ledger CLOSED, Kayla summary staged → [note](./sessions/2026-07-18-career-map-pass-3-close.md)
 - 2026-07-18 · career-map review **Pass 2 done** — glass + map information design + floating-panel wayfinding landed, boards deleted; resume at Pass 3 → [note](./sessions/2026-07-18-career-map-pass-2.md)
 - 2026-07-17 · career-map review **Pass 0 + Pass 1 done** — quick wins landed, boards built + decided; resume at Pass 2 → [note](./sessions/2026-07-17-career-map-pass-0-1.md)
 - 2026-07-17 · Kayla's **career-map branch reviewed** — trial merge green on `career-map-merge`; merge HELD behind `CAREER_MAP_REVIEW.md` (CM-01..19) → [note](./sessions/2026-07-17-career-map-branch-review.md)

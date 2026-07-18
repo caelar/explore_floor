@@ -35,7 +35,11 @@ All underlying rubrics already PASS, so none is a gate:
 
 ## Responsive + accessibility follow-ups
 
-**Responsive story for the desktop-first screens.** The mockup is desktop-1400px and the map, constellation, and cards gutter are tuned for `>= md`. The plan asks for a per-screen responsive story and 44px touch targets. Moot for the current round (the virtual test screener is desktop/laptop-only), so deferred, not dropped. **Medium priority as a handoff artifact and for any future mobile testing.**
+**Responsive story for the desktop-first screens.** The mockup is desktop-1400px and the map and cards gutter are tuned for `>= md`. The plan asks for a per-screen responsive story and 44px touch targets. Moot for the current round (the virtual test screener is desktop/laptop-only), so deferred, not dropped. **Medium priority as a handoff artifact and for any future mobile testing.**
+
+**Career-map mobile label strategy (the one open p2 from the merge review, 2026-07-18).** At `< md` role zoom, job-label text overflows its layout box and can clip at the viewport edge: the label *box* (`MAP_JOB_LABEL`, 120vb wide) scales with the viewport, but the *type* size is pegged to the orb-diameter reference, so the two diverge as the screen narrows. The fix is a design call, not a camera hack: map-proportional type (shrinks to ~7px — likely unreadable), text wrapped inside a genuinely wider fitted box (zooms the cluster out further), or a dedicated `< md` label treatment. Diagnosis and the live repro numbers are in the `CAREER_MAP_REVIEW.md` Pass 3 record.
+
+**Career-map review p3 tail (same review, all polish):** per-screen container-width literals (`Landing` 729, `CharacterSelect` 996, `LoadingScreen` 662, `AppHeader` 440) instead of container tokens; the `/select`-only `RoleDetailSheet` still on the light `bg-bg` surface; the Motion "animate opacity from undefined" console warnings on map SVG orbs (the `initial={false}` + SVG-attr idiom — give explicit baselines); three aria-hidden-with-focused-descendant warnings from map chrome; the ThoughtBubble arbitrary drop-shadow; the mobile intro card covering all three hubs at overview (fit the overview camera below the card at `< md`).
 
 The a11y items sit inside the repo's stated "keyboard sanity only" scope, so all are low:
 
