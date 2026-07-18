@@ -112,6 +112,14 @@ The user doesn't know what the map is yet. The real progression is: you're looki
 
 HTML canvas boards or Claude Design, decide at session start. Each board ends in a decision recorded here.
 
+☑ **Built and reviewed 2026-07-17** as an in-app dev-only route (`/boards`, `src/screens/Boards/`, registered only under `import.meta.env.DEV`; delete the folder + route once Pass 2 lands). Caelan reviewed all three live.
+
+### Board decisions (2026-07-17, Caelan)
+
+1. **Glass (CM-01/02/03):** her existing panel glass (`glass-fill-strong` + `backdrop-blur-panel`, board variant B) is the direction, nudged toward variant D's legibility — raise the fill somewhat above 6% while keeping the glassy look; tune the exact value live against the scenes in Pass 2. Reuses/extends existing tokens rather than minting a parallel system. The heavy white frost (E, the literal Figma read) and the background veil (F) are out. Selected answer stays solid gold. The Back control gets the same platter (CM-03).
+2. **Map overview (CM-05/06):** board variant B — orbs sized by match % (area-true, ties render equal), job dots dimmed at landing, distinct hub icons from the mockup. Plus: hovering a job dot brightens it and reveals its name (desktop affordance); the intro card gains a line explaining what the small dots are (covers touch); zoom-driven labels stay as-is.
+3. **Role zoom + panel (CM-10/11/12):** the pre-merge floating panel pattern returns as persistent context — a floating rounded panel (NOT edge-docked; margin on all sides, map visible around it), role content at role zoom (top-match read, description, jobs-in-path list), job content at job zoom, stable back controls in its header. Panel-aware camera fits the cluster into the space the panel leaves, then pan/zoom stay free (CM-11). The optional full-page open ("Role overview →" / "Job overview →" CTA, as pre-merge) stays — a deliberate CM-12 decision; revisit only if job-seeker usability sessions show confusion. Docking rejected: with a panel-aware camera it gains nothing, and floating keeps the continuous-space feel. Collapse toggle: nice-to-have, not required.
+
 ## Team discussion items
 
 - Glass direction and the screener/narrative separation, with the critique notes under CM-02 (Caelan + Kayla + team).
@@ -122,8 +130,8 @@ HTML canvas boards or Claude Design, decide at session start. Each board ends in
 ## Session plan (next chat)
 
 - **Pass 0, quick wins (code only, no design ambiguity):** ☑ **done 2026-07-17** — CM-04 header revert, CM-08 label halo, CM-09 copy fix on the exit control, CM-14 spec fix, CM-15 lint warning, CM-17 token rebind, CM-18 compression. All on `career-map-merge`, gates green (lint zero-warning, typecheck, 107 unit, 4/4 E2E).
-- **Pass 1, boards:** build the three boards, review with Caelan, record decisions per item.
-- **Pass 2, apply decisions:** CM-01/02/03 surface system, CM-05/06/07 map information design, CM-10/11/12/13 wayfinding.
+- **Pass 1, boards:** ☑ **done 2026-07-17** — three boards built at dev-only `/boards`, reviewed live, decisions recorded above.
+- **Pass 2, apply decisions:** CM-01/02/03 surface system (panel glass, legibility-nudged, tokenized), CM-05/06/07 map information design (%-sized orbs, dimmed dots + hover labels + intro copy, the ? pill), CM-10/11/12/13 wayfinding (floating context panel + panel-aware camera + optional full-page CTA + the copy pass). Then delete `/boards` + `src/screens/Boards/`.
 - **Pass 3, close:** full gates, `/design-review` rubric pass, D-entries + STATUS + this ledger ticked, then merge `career-map-merge` to main and hand Kayla the summary.
 
 Single-session passes, run-sheet style. This doc is the ledger; nothing merges until the H items are closed or explicitly deferred with a reason.

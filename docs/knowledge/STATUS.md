@@ -6,7 +6,7 @@
 - **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17; D-027/D-028): a branching 6-question intro, 7 bucket-sort scenes, and the dark 5-screen **role-cards results** scoring ARM's three roles, plus the `/select` comparator. The dark re-architecture + polish are complete (D-029/D-030/D-031). Work lands on `main`. Gates green: lint, typecheck, **82 unit**, **3 E2E**; both design rubrics PASS.
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
 - **Open items:** catalogued in the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md` (ARM/Fivestar post-handoff content + our pre-handoff cleanup), `DESIGN_SYSTEM_RUN.md` (the `rc-design-system` build), and `DEFERRED_DIRECTIONS.md` (v4 polish + open scoring calls).
-- **Kayla's career-map work (this branch):** trial merge reconciled on **`career-map-merge`** (checked out here), all gates green. **Merge HELD** pending the `CAREER_MAP_REVIEW.md` ledger (CM-01..19); next is its Pass 0. Detail: the 2026-07-17 session note below.
+- **Kayla's career-map work (this branch):** trial merge reconciled on **`career-map-merge`** (checked out here), all gates green. **Merge HELD** pending the `CAREER_MAP_REVIEW.md` ledger (CM-01..19). **Pass 0 (quick wins) and Pass 1 (boards + decisions) are done**; next is Pass 2 (apply the board decisions), then Pass 3 closes and merges. Detail: the two 2026-07-17 session notes below.
 - **Next up:** the **componentization run's core is DONE** (Passes 0–4 ☑, D-042–D-052; ledger `COMPONENTIZATION_RUN.md`). Conditional Pass 5 + the registry-§6 items sit in the **post-presentation wrap-up queue** (`REMAINING_WORK.md` — surface when Caelan asks "what's left" after Tue 07-21). The ecosystem run (D-035) lacks only its stretch pass. Neither run gates the handoff (`HANDOFF_GUIDE.md`).
 - **Awaiting Caelan (pushes):** explore_floor `main` needs a push (the D-052 close-out commits). robotics_career `refine/phase-2-loop` is 4 ahead (`33e0ba5`), push when ready. career_dashboard fully landed; DS republish current (none pending). Direct `git push` stays denied to the agent.
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
@@ -15,6 +15,7 @@
 
 Newest first; full detail lives in each note.
 
+- 2026-07-17 · career-map review **Pass 0 + Pass 1 done** — quick wins landed, boards built + decided; resume at Pass 2 → [note](./sessions/2026-07-17-career-map-pass-0-1.md)
 - 2026-07-17 · Kayla's **career-map branch reviewed** — trial merge green on `career-map-merge`; merge HELD behind `CAREER_MAP_REVIEW.md` (CM-01..19) → [note](./sessions/2026-07-17-career-map-branch-review.md)
 - 2026-07-17 · D-052 · componentization **Pass 4 complete** — robotics_career 4b tail + 4c; gates + review green; `33e0ba5` awaits push → [note](./sessions/2026-07-17-componentization-pass-4-complete.md)
 - 2026-07-17 · D-051 · componentization **4b dashboard portion done** — radius landed, TopNav a no-op; gates + review green → [note](./sessions/2026-07-17-componentization-pass-4b-dashboard.md)
