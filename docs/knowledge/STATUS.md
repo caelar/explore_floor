@@ -7,7 +7,7 @@
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
 - **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`. Review team items (CM-02, CM-04 mention, screener content) ride with the Kayla summary (`Capstone/Handoff/Career_Map_Merge_Summary_for_Kayla.md`).
 - **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
-- **Awaiting Caelan (pushes):** explore_floor `main` has the **07-20 chrome fix pass committed** (D-056) on top of the 07-18 push (D-053) — **push pending**; still pending pushes: rc-design-system `main` (`2dcd460`, the CM-16 registry amendment) and robotics_career `refine/phase-2-loop` (`33e0ba5`). `git push` stays denied to the agent.
+- **Cross-repo sync (07-20):** all pending pushes cleared — explore_floor `main` (`3b8d833`, the D-056 chrome fix pass), rc-design-system `main` (`2dcd460`, the CM-16 registry amendment), and robotics_career (`33e0ba5`, `refine/phase-2-loop` merged) are all on origin. `git push` stays denied to the agent.
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
