@@ -121,7 +121,7 @@
   --container-xl: 1500px;
   --container-read: 672px; /* the quiz reading column in the flow runner (was an ad-hoc max-w-2xl) */
   --container-results: 760px; /* the results reading column inside the role-cards panel (D-029 Phase C) */
-  --container-map-card: 640px; /* the glass "your career map" intro card on the career map */
+  --container-map-card: 720px; /* the glass "your career map" intro card on the career map */
 
   /* ---- Radius (§6 — overrides defaults) ---- */
   --radius-sm: 6px; /* kit Refined (was 4px) */

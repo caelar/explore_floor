@@ -303,9 +303,9 @@ export const narrativeFlow: CategoryFlow = {
       backToResults: 'Back to your results',
       map: {
         title: 'Your career map',
-        intro: 'Here are your three role paths, scored by how often your answers leaned toward each one.',
-        dots: 'The small dots around each path are real jobs inside it. Zoom in to see their names.',
-        hint: 'Tap a path to see it up close, then tap a job to see what it takes and where it can lead.',
+        intro: 'Your three role paths, scored by how often your answers leaned toward each.',
+        dots: 'The small dots are real jobs on each path. Zoom in to see their names.',
+        hint: 'Tap a path to open it, then tap a job to see what it takes and where it leads.',
         showDirections: 'Show the map directions',
         hideDirections: 'Hide the map directions',
       },

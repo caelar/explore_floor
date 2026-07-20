@@ -14,6 +14,10 @@ import { MapContextPanel } from './MapContextPanel';
 // MapContextPanel at role + job zoom (CM-10). The camera fits the active cluster into the pane
 // the panel leaves free (CM-11); the panel mounts once the phase camera lands.
 
+// The persistent back button lives top-left (top-space-3 = 16, h-control-lg = 36); the left-docked
+// desktop panel starts a space-2 (12) gap below it so the two share the top-left corner cleanly.
+const PANEL_TOP_BELOW_BACK = 16 + 36 + 12;
+
 interface CareerMapProps {
   copy: ResultsMapCopy;
   cardsCopy: ResultsCardsCopy;
@@ -170,7 +174,7 @@ export function CareerMap({
           type="button"
           onClick={onBackToCards}
           data-testid="map-back-cards"
-          className="pointer-events-auto absolute right-space-3 top-space-3 inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 font-body text-small font-medium text-text-on-dark-muted backdrop-blur-panel transition-colors hover:text-text-on-dark"
+          className="pointer-events-auto absolute left-space-3 top-space-3 inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 font-body text-small font-medium text-text-on-dark-muted backdrop-blur-panel transition-colors hover:text-text-on-dark"
         >
           <Icon name="chevron-l" size={18} />
           {cardsCopy.backToResults}
@@ -181,10 +185,10 @@ export function CareerMap({
             <motion.div
               key="map-intro"
               {...introFade}
-              className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6"
+              className="absolute inset-x-space-3 top-space-3 flex justify-center"
               data-testid="career-map-intro"
             >
-              <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-4 text-center shadow-dark-card backdrop-blur-panel">
+              <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-3 text-center shadow-dark-card backdrop-blur-panel">
                 <button
                   type="button"
                   data-testid="career-map-intro-dismiss"
@@ -194,8 +198,8 @@ export function CareerMap({
                 >
                   <Icon name="x" size={16} />
                 </button>
-                <h1 className="font-heading text-h3 text-text-on-dark">{copy.title}</h1>
-                <div className="my-space-3 h-px bg-glass-border" />
+                <h1 className="font-heading text-h4 text-text-on-dark">{copy.title}</h1>
+                <div className="my-space-1 h-px bg-glass-border" />
                 <p className="font-body text-body text-text-on-dark-muted">{copy.intro}</p>
                 <p className="mt-space-1 font-body text-body text-text-on-dark-muted">{copy.dots}</p>
                 <p className="mt-space-1 font-body text-body text-text-on-dark-faint">{copy.hint}</p>
@@ -232,7 +236,8 @@ export function CareerMap({
                 mdUp
                   ? {
                       left: MAP_CONTEXT_PANEL.margin,
-                      top: MAP_CONTEXT_PANEL.margin,
+                      // Start below the persistent back button so the two never overlap top-left.
+                      top: PANEL_TOP_BELOW_BACK,
                       bottom: MAP_CONTEXT_PANEL.margin,
                       width: MAP_CONTEXT_PANEL.width,
                     }

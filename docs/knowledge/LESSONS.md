@@ -8,6 +8,12 @@ Format per entry: **L-### — one-line takeaway** · context · what to do.
 
 ---
 
+## 2026-07-20
+
+### L-013 — Material Icons in SVG `<text>`: center with `dominant-baseline="central"`, not `"middle"`
+- **Context:** The career-map hub icons (`precision_manufacturing` / `code` / `assignment`) and the target-job star render as SVG `<text fontFamily="Material Icons">`. The hub icons used `dominantBaseline="middle"` and every one sat visibly off — up and to the side of its hub, worse on the bigger hubs. Measuring the live DOM (getBBox center vs the attr `y`) showed the glyph rendering **half a glyph-height too high**: this icon font's baseline tables put "middle" at the alphabetic baseline, so `middle` (and `alphabetic`, and `text-after-edge`) all leave the glyph sitting above `y`. `text-anchor="middle"` was fine — the offset was purely vertical, which read as "scattered" because it scaled with each icon's size. `dominant-baseline="central"` centered all four glyphs to a 0px delta on both axes. The target star already used `central` (so it was correct all along — a mid-transition screenshot made it look broken). Note the offset does *not* show for regular text (Montserrat name/pct on the same card sit fine on `middle`) — it's specific to how the icon font declares its baselines.
+- **Do:** To vertically center an icon-font glyph in SVG, use `dominant-baseline="central"` (the ascender/descender midpoint), not `"middle"` (x-height midpoint, which many icon fonts pin to the baseline). Don't eyeball it from a screenshot — measure `getBBox()` center against the intended point in the live DOM; it's a one-line read that tells you the exact delta and which baseline keyword lands at 0. cf. the icons render as HTML `span.material-icons` elsewhere (Icon.tsx), where CSS `line-height:1` + the flow box handle centering — the SVG path has no such box, so the baseline keyword is load-bearing.
+
 ## 2026-07-18
 
 ### L-012 — A spec that queries before its subject mounts passes vacuously; assert list sizes, not just list contents

@@ -2,18 +2,19 @@
 
 **Read this first.** Live snapshot of where the build is. Updated as acceptance criteria clear (by `/phase-check` or by hand). Keep this a snapshot: session-by-session detail lives in the `sessions/` notes, linked below, not inline here.
 
-- **Last updated:** 2026-07-18
+- **Last updated:** 2026-07-20
 - **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
 - **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`. Review team items (CM-02, CM-04 mention, screener content) ride with the Kayla summary (`Capstone/Handoff/Career_Map_Merge_Summary_for_Kayla.md`).
 - **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
-- **Awaiting Caelan (pushes):** explore_floor `main` pushed 07-18 (incl. D-053); still pending: rc-design-system `main` (`2dcd460`, the CM-16 registry amendment) and robotics_career `refine/phase-2-loop` (`33e0ba5`). `git push` stays denied to the agent. Also restart the Playwright MCP browser (the review pass left a Vite-reload filter in it).
+- **Awaiting Caelan (pushes):** explore_floor `main` has the **07-20 chrome fix pass committed** (D-056) on top of the 07-18 push (D-053) — **push pending**; still pending pushes: rc-design-system `main` (`2dcd460`, the CM-16 registry amendment) and robotics_career `refine/phase-2-loop` (`33e0ba5`). `git push` stays denied to the agent.
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
 
 Newest first; full detail lives in each note.
 
+- 2026-07-20 · D-056/L-013 · career-map **chrome fix pass** — hub icons/star re-centered (SVG `central` baseline), back button → top-left with the panel still left-docked below it, intro card compacted so it clears the hubs → [note](./sessions/2026-07-20-career-map-chrome-fixes.md)
 - 2026-07-18 · D-053/054/055 · career-map review **Pass 3 — MERGED to `main`**, ledger CLOSED → [note](./sessions/2026-07-18-career-map-pass-3-close.md)
 - 2026-07-18 · career-map review **Pass 2 done** — glass + map info design + wayfinding → [note](./sessions/2026-07-18-career-map-pass-2.md)
 - 2026-07-17 · career-map review **Pass 0 + Pass 1 done** — quick wins landed, boards built + decided; resume at Pass 2 → [note](./sessions/2026-07-17-career-map-pass-0-1.md)
@@ -58,14 +59,7 @@ Newest first; full detail lives in each note.
 - 2026-06-25 · realignment foundation slice → [note](./sessions/2026-06-25-realignment-foundation-slice.md)
 - 2026-06-25 · D-027 · Phase 4 strip executed → [note](./sessions/2026-06-25-phase-4-strip-executed.md)
 - 2026-06-22 · narrative v3 language + intro scoring → [note](./sessions/2026-06-22-narrative-v3-language-and-intro-scoring.md)
-- 2026-06-11 · D-022 · role-select comparator → [note](./sessions/2026-06-11-role-select-comparator.md)
-- 2026-06-08 · screener fit + MC race → [note](./sessions/2026-06-08-screener-fit-and-mc-race.md)
-- 2026-06-08 · narrative bucket-sort → [note](./sessions/2026-06-08-narrative-bucket-sort.md)
-- 2026-06-07 · question-structure study → [note](./sessions/2026-06-07-question-structure-study.md)
-- 2026-06-04 · A/B question sets → [note](./sessions/2026-06-04-ab-question-sets.md)
-- 2026-05-30 · Phase 1 flow → [note](./sessions/2026-05-30-phase-1-flow.md)
-- 2026-05-29 · Phase 0 scaffold → [note](./sessions/2026-05-29-phase-0-scaffold.md)
-- 2026-05-29 · docs reconciliation + harness bootstrap → [note](./sessions/2026-05-29-docs-reconciliation-and-harness.md)
+- _Pre-narrative sessions (2026-05-29 → 2026-06-11: harness bootstrap, Phase 0/1 scaffold, A/B question sets, question-structure study, bucket-sort, screener fit, role-select comparator) pruned from this index; their notes remain in `sessions/` and the decisions in `DECISIONS.md` (D-001–D-022)._
 
 ---
 

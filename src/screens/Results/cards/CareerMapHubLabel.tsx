@@ -96,7 +96,9 @@ export function CareerMapHubLabel({
         x={role.cx}
         y={layout.iconY}
         textAnchor="middle"
-        dominantBaseline="middle"
+        // Material Icons glyphs center on the font's "central" baseline, not "middle" (which sits
+        // half a glyph-height high for this icon font). The name/pct below stay on "middle".
+        dominantBaseline="central"
         fontSize={layout.iconSize}
         fontFamily="Material Icons"
         fill={color}
