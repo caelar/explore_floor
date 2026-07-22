@@ -2,18 +2,19 @@
 
 **Read this first.** Live snapshot of where the build is. Updated as acceptance criteria clear (by `/phase-check` or by hand). Keep this a snapshot: session-by-session detail lives in the `sessions/` notes, linked below, not inline here.
 
-- **Last updated:** 2026-07-20
+- **Last updated:** 2026-07-22
 - **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
-- **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`. Review team items (CM-02, CM-04 mention, screener content) ride with the Kayla summary (`Capstone/Handoff/Career_Map_Merge_Summary_for_Kayla.md`).
+- **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`; review team items (CM-02, CM-04, screener content) ride with the Kayla summary. **Scope locked (07-22, D-057):** desktop-only (responsiveness documented not built), `devSeedResults()` stays + documented, ARM content → placeholder notes; the `HANDOFF_GUIDE.md` rewrite is deferred until wrap-up (currently stale re the pre-career-map results screens). → [note](./sessions/2026-07-22-handoff-readiness-review.md)
 - **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
-- **Cross-repo sync (07-20):** all pending pushes cleared — explore_floor `main` (`3b8d833`, the D-056 chrome fix pass), rc-design-system `main` (`2dcd460`, the CM-16 registry amendment), and robotics_career (`33e0ba5`, `refine/phase-2-loop` merged) are all on origin. `git push` stays denied to the agent.
+- **Cross-repo sync (07-22, `ls-remote`-verified):** all three repos on origin — explore_floor `76a1bbf`, rc-design-system `2dcd460`, robotics_career `33e0ba5` (now on `main`; `refine/phase-2-loop` retired; this push actually landed 07-22, not 07-20). `git push` stays agent-denied.
 - **Future direction (documented, not built):** the Fivestar-deck comparison (`ARM_FIVESTAR_COMPARISON.md`) + the domain-mirror path to the three AI roles (`AI_ROLES_INTEGRATION.md`, D-034). Build deferred; hard rules unchanged until green-lit.
 
 ### Earlier sessions
 
 Newest first; full detail lives in each note.
 
+- 2026-07-22 · D-057 · **handoff-readiness review** — gates re-verified, all three repos synced, pre-handoff scope locked → [note](./sessions/2026-07-22-handoff-readiness-review.md)
 - 2026-07-20 · D-056/L-013 · career-map **chrome fix pass** — hub icons/star re-centered (SVG `central` baseline), back button → top-left with the panel still left-docked below it, intro card compacted so it clears the hubs → [note](./sessions/2026-07-20-career-map-chrome-fixes.md)
 - 2026-07-18 · D-053/054/055 · career-map review **Pass 3 — MERGED to `main`**, ledger CLOSED → [note](./sessions/2026-07-18-career-map-pass-3-close.md)
 - 2026-07-18 · career-map review **Pass 2 done** — glass + map info design + wayfinding → [note](./sessions/2026-07-18-career-map-pass-2.md)
@@ -31,12 +32,7 @@ Newest first; full detail lives in each note.
 - 2026-07-03 · D-042 · componentization Pass 0: cross-repo audit, four rulings settled, promotion registry ratified in rc-design-system → [note](./sessions/2026-07-03-componentization-pass-0-registry.md)
 - 2026-07-03 · D-041 · componentization run planned: surveys + Caelan's cluster rulings, run sheet written → [note](./sessions/2026-07-03-componentization-run-planned.md)
 - 2026-07-03 · D-040 · ecosystem run Pass 7 remainder: variable-bound screen rebuilds, steps 7–8 closed → [note](./sessions/2026-07-03-ecosystem-pass-7-remainder.md)
-- 2026-07-02 · D-039 · ecosystem run Pass 7 core: dark set published, quiz file + FIGMA_MAP → [note](./sessions/2026-07-02-ecosystem-pass-7-figma-core.md)
-- 2026-07-02 · D-036/D-037 · ecosystem run Pass 6: pre-sync pass → [note](./sessions/2026-07-02-ecosystem-pass-6-presync.md)
-- 2026-07-02 · ecosystem run Pass 4: harness ported into `robotics_career` + baseline design review → [note](./sessions/2026-07-02-ecosystem-pass-4-harness-port.md)
-- 2026-07-02 · ecosystem run Pass 3: `robotics_career` excavated + six-role content, pushed → [note](./sessions/2026-07-02-ecosystem-pass-3-robotics-career.md)
-- 2026-07-02 · ecosystem run Pass 2: `rc-design-system` (`@rc/ui` v1) stood up, both gates PASS → [note](./sessions/2026-07-02-ecosystem-pass-2-rc-design-system.md)
-- 2026-07-02 · D-035 · ecosystem run Pass 1: asset rescue + run sheet + GO bookkeeping → [note](./sessions/2026-07-02-ecosystem-pass-1-rescue-and-run-sheet.md)
+- 2026-07-02 · D-035–D-039 · ecosystem run Passes 1–6 + Pass 7 core (asset rescue, `@rc/ui` v1 stood up, `robotics_career` excavated + harness-ported, pre-sync, dark set published + FIGMA_MAP) → notes in `sessions/2026-07-02-ecosystem-*`
 - 2026-07-01 · D-031/D-032 · docs hygiene + code follow-ups + REMAINING_WORK reorg → [note](./sessions/2026-07-01-hygiene-and-doc-reorg.md)
 - 2026-06-30 · virtual-test prep: Landing + role-overview education → [note](./sessions/2026-06-30-virtual-test-prep-landing-education.md)
 - 2026-06-30 · Technician-top + all-low design review (PASS) → [note](./sessions/2026-06-30-technician-top-design-review.md)
