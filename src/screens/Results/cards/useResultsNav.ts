@@ -3,10 +3,11 @@ import { useState } from 'react';
 import type { MapPhase } from '@/lib';
 
 // The results internal view-state machine (DATA_MODEL §17, D-029 Phase C–F). The career map owns
-// the explore zoom ladder (overview → role → job) inside `view === 'map'`; the floating
-// MapContextPanel (CM-10) carries the role and job content, so jobs never leave the map view.
+// the explore zoom ladder (overview → role → job) inside `view === 'map'`; the docked JobSidePanel
+// rail carries the role and compact-job content. The rail's "Job overview →" CTA opens the large
+// standalone job page (`view === 'job-overview'`), a full-bleed surface over the same field.
 
-export type ResultsView = 'cards' | 'compare' | 'map';
+export type ResultsView = 'cards' | 'compare' | 'map' | 'job-overview';
 
 export interface ResultsNav {
   view: ResultsView;
@@ -24,7 +25,9 @@ export interface ResultsNav {
   selectedJob: number | null;
   openConstellation: (i: number) => void;
   openJob: (rank: number, jobIndex: number) => void;
+  openJobOverview: () => void;
   backToConstellation: () => void;
+  backToJob: () => void;
   backToMapOverview: () => void;
   compareWith: number;
   openCompare: () => void;
@@ -97,9 +100,22 @@ export function useResultsNav(roleCount: number, initialView: ResultsView = 'car
       setViewState('map');
       scrollTop();
     },
+    // The rail's "Job overview →" CTA: leave the map for the large standalone job page, keeping
+    // the current role + selected job (mapPhase stays 'job' so backToJob returns to the rail).
+    openJobOverview: () => {
+      setViewState('job-overview');
+      scrollTop();
+    },
     backToConstellation: () => {
       setSelectedJob(null);
       setMapPhase('role');
+      setViewState('map');
+      scrollTop();
+    },
+    // Close the large job page → back to the compact job rail on the map (mapPhase is already
+    // 'job'; setViewState directly so we don't trip setView('map')'s overview reset).
+    backToJob: () => {
+      setMapPhase('job');
       setViewState('map');
       scrollTop();
     },

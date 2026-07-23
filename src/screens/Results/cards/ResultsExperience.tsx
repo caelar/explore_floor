@@ -11,6 +11,7 @@ import { useFlow, useSessionStore } from '@/state';
 import { AmbientField } from './AmbientField';
 import { CareerMap } from './CareerMap';
 import { CompareView } from './CompareView';
+import { JobOverview } from './JobOverview';
 import { ResultsPanel } from './ResultsPanel';
 import { RoleHero } from './RoleHero';
 import { RoleTabs } from './RoleTabs';
@@ -61,6 +62,8 @@ export function ResultsExperience() {
   const profile = deriveScreenerProfile(flow.id, answers);
   const contribution = contributions[role];
   const fitLines = screenerFitLines(role, profile);
+  // The job open on the large job-overview page (view === 'job-overview'), if any.
+  const selectedJobData = nav.selectedJob !== null ? jobs[role][nav.selectedJob] : undefined;
 
   const handleRetake = () => {
     reset();
@@ -114,7 +117,9 @@ export function ResultsExperience() {
   const gutterLabel = cards.mapCta;
 
   const mapFocusCategory =
-    nav.view === 'map' && nav.mapPhase !== 'overview' ? ranking[nav.roleIndex] : null;
+    (nav.view === 'map' && nav.mapPhase !== 'overview') || nav.view === 'job-overview'
+      ? ranking[nav.roleIndex]
+      : null;
 
   // One viewport-height canvas with a SHARED AmbientField behind every view, so the cards / compare /
   // job-overview panels float over the same orb background as the map + constellation (each panel is
@@ -189,6 +194,17 @@ export function ResultsExperience() {
               reduce={reduce}
             />
           </motion.div>
+        ) : nav.view === 'job-overview' && selectedJobData ? (
+          <motion.div key="job-overview" className="absolute inset-0" {...fade}>
+            <JobOverview
+              copy={cards}
+              detail={detail}
+              job={selectedJobData}
+              onBack={nav.backToJob}
+              isTargetRole={nav.targetJobId === selectedJobData.id}
+              onSetTargetRole={() => nav.setTargetJob(selectedJobData.id)}
+            />
+          </motion.div>
         ) : (
           <motion.div key="map" className="absolute inset-0" {...fade}>
             <CareerMap
@@ -207,8 +223,9 @@ export function ResultsExperience() {
               onBackToOverview={nav.backToMapOverview}
               onBackToRole={nav.backToConstellation}
               onBackToCards={() => nav.setView('cards')}
+              onRoleOverview={() => nav.setView('cards')}
+              onOpenJobOverview={nav.openJobOverview}
               targetJobId={nav.targetJobId}
-              onSetTargetJob={nav.setTargetJob}
             />
           </motion.div>
         )}

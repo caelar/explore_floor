@@ -145,16 +145,16 @@ The principle: **data flows down, actions flow up, logic lives in pure functions
 │   │   │   │                      ResultsExperience, ResultsPanel, RoleHero, SignalBars,
 │   │   │   │                      WhyYouMatched, RoleTabs, CompareView, AmbientField,
 │   │   │   │                      CareerMap, CareerMapField, CareerMapHubLabel,
-│   │   │   │                      CareerMapOrbGlow, CareerMapTargetJobOrb, MapContextPanel,
-│   │   │   │                      MapPanelRole, MapPanelJob (the renamed JobOverview content),
+│   │   │   │                      CareerMapOrbGlow, CareerMapTargetJobOrb, JobSidePanel,
+│   │   │   │                      JobOverview (the restored standalone job page, D-058),
 │   │   │   │                      TrajectoryViz
-│   │   │   │                      (view-state via useResultsNav: view cards|compare|map,
+│   │   │   │                      (view-state via useResultsNav: view cards|compare|map|job-overview,
 │   │   │   │                       mapPhase overview|role|job, selectedJob, targetJobId)
 │   │   │   ├── category/          RoleDetailSheet.tsx, FitRadar.tsx — both still live in /select
 │   │   │   │                      (the narrative node map — CategoryResults.tsx, NodeMap.tsx,
 │   │   │   │                       FitNote.tsx — was deleted at Phase E, D-029; its Phase E/F
 │   │   │   │                       successors, the bubble map + constellation + JobOverview
-│   │   │   │                       page, were replaced by the career map at the merge)
+│   │   │   │                       page, were replaced by the career map at the merge; the bubble map + constellation stay cut, `JobOverview` was restored by D-058)
 │   │   └── Select/                RoleSelect.tsx — the /select role-pick comparator
 │   │
 │   │                              (no /src/scene — the dir was deleted at step 8 Phase A, D-029,
@@ -295,7 +295,7 @@ Routes (`/src/app/router.tsx`):
 - `/character` — `CharacterSelect`, pick who you play as (career-map merge; between landing and quiz)
 - `/flow` — the `FlowRunner` (narrative): renders the current step by type
 - `/loading` — the `LoadingScreen` interstitial (career-map merge; between quiz and results)
-- `/results` — Results (renders `ResultsExperience`: the dark role-cards screen, compare, and the career map — the map replaced the Phase E/F bubble map + constellation + job-overview page at the career-map merge, `CAREER_MAP_REVIEW.md`)
+- `/results` — Results (renders `ResultsExperience`: the dark role-cards screen, compare, and the career map — the map replaced the Phase E/F bubble map + constellation + job-overview page at the career-map merge (the standalone `JobOverview` page later restored, D-058), `CAREER_MAP_REVIEW.md`)
 - `/select` — the role-pick comparator (`RoleSelect`, the industry-professional arm)
 - _(Documented cut: `/flow` also ran the cut Exam flow; `/results` also dispatched the exam dashboard and the classic results; the `/sort` and `/build` routes served the classic interest-sort and Build beat. All deleted in Phase 4, D-027. `defaultFlowId = 'narrative'`, D-021.)_
 
@@ -358,7 +358,7 @@ Playwright is set up in Phase 0 and runs as part of `pnpm test`. It serves two p
 ### Test types
 
 - **Flow E2E (live).** `narrative.spec` walks a known set of answers through `/flow` to `/results`, asserting the displayed percentages match the engine and the right top match shows; `role-select.spec` covers the `/select` comparator; `reduced-motion.spec` (rehomed to the narrative flow in Phase 4) checks the `prefers-reduced-motion` path; `map-debug.spec` asserts the career map's hub/orb geometry against the layout brain (career-map merge). Four specs total.
-- **Interaction tests.** The bucket-sort drag, the role-cards compare stepping, the career map's dive-into-a-role (hub → role zoom → job panel).
+- **Interaction tests.** The bucket-sort drag, the role-cards compare stepping, the career map's dive-into-a-role (hub → role zoom → job rail → job overview page).
 - _(Documented cut: `exam.spec` drove the cut exam flow, and `happy-path`/`compare` drove the classic flow via a dev-only store handle. All deleted in Phase 4, D-027.)_
 - **Visual regression.** Snapshot key screens. A later add.
 

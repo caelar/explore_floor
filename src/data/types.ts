@@ -253,31 +253,33 @@ export interface ResultsCardsCopy {
   compareWithLabel: string; // dropdown lead-in before the target role name
   recommendationLabel: string; // small lead-in above the recommendation line
   recommendation: CompareRecommendationCopy;
-  // --- Map (Phase E; CM-09) ---
-  /** Map exit platter (every phase) — leaves the map for the results cards, so the label names
-   *  the destination honestly (CM-09): "Back to your results", never "Back to {role}". */
+  // --- Map (Phase E) ---
+  /** Map overview exit link (top-left, overview phase only) — leaves the map for the results
+   *  cards, so the label names the destination honestly: "Back to your results". At role/job
+   *  zoom the docked rail's own header owns the back nav. */
   backToResults: string;
   map: ResultsMapCopy;
-  // --- Explore: the floating context panel at role + job zoom (CM-10) ---
+  // --- Explore: the docked context rail at role + job zoom + the large job page ---
   explore: ResultsExploreCopy;
 }
 
-/** Copy for the map's floating context panel (CM-10): the role body (jobs-in-path), the
- *  three-tab job body, and the panel chrome. Templates fill {role}, {noun}, and {n}; the rest
- *  are plain labels. The per-job *content* lives in src/data/jobs.ts — these are only the
- *  chrome. (data-integrity flattens this block, so every value is a string or a string
- *  array.) */
+/** Copy for the map's docked context rail (JobSidePanel): the role body (jobs-in-path), the
+ *  compact job body, and the rail chrome, plus the standalone three-tab job page (JobOverview)
+ *  the "Job overview" CTA opens. Templates fill {role}, {noun}, and {n}; the rest are plain
+ *  labels. The per-job *content* lives in src/data/jobs.ts — these are only the chrome.
+ *  (data-integrity flattens this block, so every value is a string or a string array.) */
 export interface ResultsExploreCopy {
-  // panel chrome
-  panelKickerRole: string; // header kicker at role zoom ("Career path")
-  panelKickerJob: string; // header kicker at job zoom ("Job")
-  allPathsBack: string; // panel header back at role zoom → map overview
+  // rail chrome
+  allPathsBack: string; // rail header back at role zoom → map overview
+  overviewBack: string; // aria-label for the large job page's close control
   // role body
   jobsInPathHeading: string; // "Jobs in this path"
   jobsInPathCount: string; // "{n} jobs" counter beside the heading
-  // job body (three tabs)
+  roleOverviewCta: string; // role rail footer → the role's full overview (cards)
+  // job body + the standalone large job page (three tabs)
   jobEyebrow: string; // "Job in {role}"
   responsibilitiesHeading: string; // job "What you'll do"
+  jobOverviewCta: string; // job rail footer → the large standalone job page
   setTargetCta: string; // "Set as target role" pill (default)
   currentTargetCta: string; // "Current target role" pill (selected)
   overviewTabs: string[]; // [overview, skills & competencies, how you fit]

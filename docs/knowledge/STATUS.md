@@ -2,8 +2,8 @@
 
 **Read this first.** Live snapshot of where the build is. Updated as acceptance criteria clear (by `/phase-check` or by hand). Keep this a snapshot: session-by-session detail lives in the `sessions/` notes, linked below, not inline here.
 
-- **Last updated:** 2026-07-22
-- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
+- **Last updated:** 2026-07-23
+- **Current focus:** The single live flow is the **narrative career-discovery quiz** (`DATA_MODEL.md` §17): landing → `/character` → intro + 7 illustrated scenes → `/loading` → the dark results (role cards / compare / the zoomable **career map**), plus `/select`. **Kayla's career-map merge is landed on `main`** (D-053; `CAREER_MAP_REVIEW.md` CLOSED). **The career-map detail panels were reverted (D-058, 07-23)** to the pre-Kayla docked `JobSidePanel` two-step rail + standalone `JobOverview` page (on the same new map); details in the session note. Gates green: lint zero-warning, typecheck, **102 unit**, **4 E2E**; both rubrics PASS (zero p1; deferred tail → `DEFERRED_DIRECTIONS.md`).
 - **Phase 1 status:** complete (all gates green; details in the Phase 1 section below).
 - **Open items:** the `REMAINING_WORK.md` router (D-032): `HANDOFF_GUIDE.md`, `DESIGN_SYSTEM_RUN.md`, `DEFERRED_DIRECTIONS.md`; review team items (CM-02, CM-04, screener content) ride with the Kayla summary. **Scope locked (07-22, D-057):** desktop-only (responsiveness documented not built), `devSeedResults()` stays + documented, ARM content → placeholder notes; the `HANDOFF_GUIDE.md` rewrite is deferred until wrap-up (currently stale re the pre-career-map results screens). → [note](./sessions/2026-07-22-handoff-readiness-review.md)
 - **Next up:** componentization core **DONE** (Passes 0–4 ☑, D-042–D-052); conditional Pass 5 + registry-§6 in the post-presentation wrap-up queue (surface after Tue 07-21). The ecosystem run lacks only its stretch pass; neither gates the handoff.
@@ -14,6 +14,7 @@
 
 Newest first; full detail lives in each note.
 
+- 2026-07-23 · D-058 · **career-map panels reverted** — floating `MapContextPanel` → docked `JobSidePanel` two-step rail + standalone `JobOverview` page (pre-Kayla design, on the new map); exit platter → overview-only pill + per-phase rail-header back; reverses D-054 → [note](./sessions/2026-07-23-career-map-panel-revert.md)
 - 2026-07-22 · D-057 · **handoff-readiness review** — gates re-verified, all three repos synced, pre-handoff scope locked → [note](./sessions/2026-07-22-handoff-readiness-review.md)
 - 2026-07-20 · D-056/L-013 · career-map **chrome fix pass** — hub icons/star re-centered (SVG `central` baseline), back button → top-left with the panel still left-docked below it, intro card compacted so it clears the hubs → [note](./sessions/2026-07-20-career-map-chrome-fixes.md)
 - 2026-07-18 · D-053/054/055 · career-map review **Pass 3 — MERGED to `main`**, ledger CLOSED → [note](./sessions/2026-07-18-career-map-pass-3-close.md)

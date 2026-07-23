@@ -85,11 +85,13 @@ Overview shows "Back to {role}" which actually exits to the results cards; role 
 *Resolve:* code pass. Stable exit affordance with honest copy ("Back to your results"), a separate phase-local back, both on a platter consistent with the DS. Feeds the boards for CM-10/11.
 *Landed so far:* new `backToResults` copy key ("Back to your results") on the overview exit control, replacing the misleading "Back to {role}". Platter + stable exit/phase-back split still open.
 *Landed (Pass 2):* the split is now two stable affordances — a persistent "Back to your results" exit platter (glass pill, top-right, every phase) and the panel-header phase-local back ("All paths" at role zoom → overview; the role name at job zoom → role zoom). `backToMap` and the per-phase switching control are deleted.
+*Superseded by D-058 (2026-07-23): the persistent exit platter was removed — back now lives in the rail header per phase, with an overview-only "Back to your results" exit pill top-left (shown only at map overview).*
 
 **CM-10 (H) Role zoom lost all persistent context.** ☑ **Done (Pass 2).**
 The old constellation kept a side panel mounted: role name and summary (where you are), the job list (what you can do next), and a way back. The new role zoom is orbs in space with a floating text link. The old convention was better wayfinding, and the map can keep its continuous-space feel while regaining it.
 *Resolve:* canvas board. Leading candidate: a slim context rail on role/job zoom listing the role and its jobs, click to zoom. Explicitly not a wholesale restore of the old panel; the bar is persistent orientation.
 *Landed:* `MapContextPanel` — a floating rounded glass panel (margin all sides, map visible around it) persistent at role and job zoom. Role body revives the old rail's summary (match read, signal bars, description, stat chips, jobs-in-path list, click to zoom); job body carries the full three-tab job content (`MapPanelJob`, the renamed JobOverview). Bodies crossfade inside one shell; per-level header kicker ("Career path" / "Job") plus tighter job framing and sibling-orb dim differentiate the beats. Mobile gets the same panel as a bottom sheet.
+*Superseded by D-058 (2026-07-23): the floating `MapContextPanel` was reverted to the docked `JobSidePanel` two-step rail (role summary → compact job) + the standalone `JobOverview` page; the per-level kicker and the one-shell crossfade were removed.*
 
 **CM-11 (M) Panel plus map layout compromises the cluster.** ☑ **Done (Pass 2).**
 With the job panel docked, seeing all four job orbs means shrinking everything or breaking the map's spacing.
@@ -100,6 +102,7 @@ With the job panel docked, seeing all four job orbs means shrinking everything o
 Roles get a full-bleed cards treatment; jobs used to have their own overview page and now max out at a docked panel. Breaks the established convention without a stated reason.
 *Resolve:* expand affordance on the panel, or a deliberate decision that jobs stay panel-only, recorded in DECISIONS.md.
 *Decided:* no further usability sessions are scheduled, so per the board's conditional: **jobs stay panel-only** — the floating panel carries the full three-tab job content, the "Role overview → / Job overview →" CTAs are dropped, and no full job page gets rebuilt. Crisper convention for the Fivestar handoff. D-entry lands at Pass 3 (CM-19).
+*Superseded by D-058 (2026-07-23): the "panel-only" decision was reversed — the "Role overview →" / "Job overview →" CTAs and the standalone `JobOverview` page are restored (two-step: role rail → compact job → "Job overview →" → the full page).*
 
 **CM-13 (M) "Explore careers" is ambiguous at the moment it appears.** ☑ **Done (Pass 2).**
 The user doesn't know what the map is yet. The real progression is: you're looking at the high-level roles, then you explore the jobs on those paths. The CTA and the intro card should carry that (the mockup's intro copy already did: "Tap any circle to explore the path and the jobs inside it"). No onboarding slides.

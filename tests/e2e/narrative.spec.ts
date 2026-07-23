@@ -199,23 +199,28 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await page.getByTestId('career-map-intro-dismiss').click();
   await expect(page.getByTestId('career-map-intro-pill')).toBeVisible();
 
-  // Role zoom: tapping the top-match bubble stays on the map; the floating context panel
-  // (CM-10) mounts once the camera lands, showing the role body with the jobs-in-path list.
-  // The map opens with an entrance camera glide, so let the bubble settle before clicking.
+  // Role zoom: tapping the top-match bubble stays on the map; the docked rail mounts once the
+  // camera lands, showing the role body with the jobs-in-path list. The map opens with an
+  // entrance camera glide, so let the bubble settle before clicking.
   const topBubble = page.getByTestId(`map-bubble-${expected.ranking[0]}`);
   await cameraSettled(topBubble);
   await topBubble.click({ force: true });
   await expect(page.getByTestId('career-map-field')).toBeVisible();
-  await expect(page.getByTestId('map-context-panel')).toBeVisible();
-  await expect(page.getByTestId('map-panel-role')).toContainText(topRole);
-  await expect(page.getByTestId('map-panel-role')).toContainText('Jobs in this path');
+  await expect(page.getByTestId('job-side-panel')).toBeVisible();
+  await expect(page.getByTestId('job-side-panel')).toContainText(topRole);
+  await expect(page.getByTestId('job-side-panel')).toContainText('Jobs in this path');
 
-  // Job select: the panel persists and its body swaps to the full three-tab job content.
-  // The role-zoom glide moves the orb, so wait for the camera to land first (CM-14).
+  // Job select: the rail crossfades to the compact job summary. The role-zoom glide moves the
+  // orb, so wait for the camera to land first (CM-14).
   const topJob = jobs[expected.ranking[0]][0];
   const topJobOrb = page.getByTestId(`career-map-job-${topJob.id}`);
   await cameraSettled(topJobOrb);
   await topJobOrb.click({ force: true });
+  await expect(page.getByTestId('job-side-panel')).toContainText(topJob.title);
+  await expect(page.getByTestId('job-side-panel')).toContainText(`Job in ${topRole}`);
+
+  // "Job overview →" opens the large standalone job page (three tabs).
+  await page.getByTestId('job-overview-cta').click();
   await expect(page.getByTestId('job-overview')).toContainText(topJob.title);
   await expect(page.getByTestId('job-overview')).toContainText(`Job in ${topRole}`);
   await page.getByTestId('job-overview-tab-1').click();
@@ -223,14 +228,17 @@ test('narrative: branch over Q2, sort every scene into buckets, results match th
   await page.getByTestId('job-overview-tab-2').click();
   await expect(page.getByTestId('trajectory')).toBeVisible();
 
-  // Back chain (CM-09): the panel-header back reads the role name at job zoom (→ role body),
-  // then "All paths" at role zoom (→ overview); the persistent exit platter leaves to cards.
-  await expect(page.getByTestId('map-panel-back')).toContainText(topRole);
-  await page.getByTestId('map-panel-back').click();
-  await expect(page.getByTestId('map-panel-role')).toBeVisible();
-  await expect(page.getByTestId('map-panel-back')).toContainText('All paths');
-  await page.getByTestId('map-panel-back').click();
-  await expect(page.getByTestId('map-context-panel')).not.toBeVisible();
+  // Back chain: the job page closes to the compact job rail; the rail-header back reads the role
+  // name at job zoom (→ role body), then "All paths" at role zoom (→ overview); the overview exit
+  // link leaves to the cards.
+  await page.getByTestId('job-overview-back').click();
+  await expect(page.getByTestId('job-side-panel')).toContainText(`Job in ${topRole}`);
+  await expect(page.getByTestId('job-panel-back')).toContainText(topRole);
+  await page.getByTestId('job-panel-back').click();
+  await expect(page.getByTestId('job-side-panel')).toContainText('Jobs in this path');
+  await expect(page.getByTestId('job-panel-back')).toContainText('All paths');
+  await page.getByTestId('job-panel-back').click();
+  await expect(page.getByTestId('job-side-panel')).not.toBeVisible();
   await expect(page.getByTestId('career-map-field')).toBeVisible();
   await page.getByTestId('map-back-cards').click();
   await expect(page.getByTestId('role-name')).toHaveText(topRole);

@@ -4,19 +4,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { MAP_CONTEXT_PANEL } from '@/data/careerMapArt';
 import type { CategoryId, CategoryWeights, Job, ResultsCardsCopy, ResultsMapCopy, RoleDetail } from '@/data/types';
-import { durations, durationsMs, easings, jobMapLocation, type MapPaneDock, type MapPhase } from '@/lib';
+import { durations, durationsMs, easings, type MapPaneDock, type MapPhase } from '@/lib';
 
 import { CareerMapField } from './CareerMapField';
-import { MapContextPanel } from './MapContextPanel';
+import { JobSidePanel } from './JobSidePanel';
 
 // Unified zoomable career map: a truly full-bleed infinite canvas at every phase, with overlay
-// chrome — the intro card / "?" pill, a persistent exit platter (CM-09), and the floating
-// MapContextPanel at role + job zoom (CM-10). The camera fits the active cluster into the pane
-// the panel leaves free (CM-11); the panel mounts once the phase camera lands.
-
-// The persistent back button lives top-left (top-space-3 = 16, h-control-lg = 36); the left-docked
-// desktop panel starts a space-2 (12) gap below it so the two share the top-left corner cleanly.
-const PANEL_TOP_BELOW_BACK = 16 + 36 + 12;
+// chrome — the intro card / "?" pill, an overview-only "Back to your results" pill, and the
+// docked JobSidePanel rail at role + job zoom. The camera fits the active cluster into the pane
+// the rail leaves free (CM-11); the rail mounts once the phase camera lands. At role/job zoom the
+// rail's own header owns the back nav, so the top-left exit pill shows only at overview.
 
 interface CareerMapProps {
   copy: ResultsMapCopy;
@@ -36,8 +33,9 @@ interface CareerMapProps {
   onBackToOverview: () => void;
   onBackToRole: () => void;
   onBackToCards: () => void;
+  onRoleOverview: () => void;
+  onOpenJobOverview: () => void;
   targetJobId: string | null;
-  onSetTargetJob: (jobId: string) => void;
 }
 
 export function CareerMap({
@@ -58,8 +56,9 @@ export function CareerMap({
   onBackToOverview,
   onBackToRole,
   onBackToCards,
+  onRoleOverview,
+  onOpenJobOverview,
   targetJobId,
-  onSetTargetJob,
 }: CareerMapProps) {
   // CM-07: the directions card never vanishes for good — exploring collapses it into a
   // persistent "?" pill, and the mode carries across phase changes (a later overview re-entry
@@ -71,16 +70,7 @@ export function CareerMap({
   const [mdUp, setMdUp] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
   );
-  const job = selectedJob !== null ? jobs[selectedJob] : undefined;
   const paneDock: MapPaneDock = phase === 'overview' ? 'none' : mdUp ? 'left' : 'bottom';
-
-  const navigateToJob = useCallback(
-    (jobId: string) => {
-      const location = jobMapLocation(jobId, ranking);
-      if (location) onSelectJob(location.rank, location.jobIndex);
-    },
-    [ranking, onSelectJob],
-  );
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
@@ -90,7 +80,7 @@ export function CareerMap({
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // The panel mounts once the phase camera lands (onCameraSettled below); the timeout covers a
+  // The rail mounts once the phase camera lands (onCameraSettled below); the timeout covers a
   // missed motion callback (e.g. headless), derived from the phase glide instead of a magic number.
   useEffect(() => {
     if (phase === 'overview') {
@@ -167,25 +157,27 @@ export function CareerMap({
         />
       </div>
 
-      {/* overlay chrome: exit platter, intro card / pill, and the floating context panel */}
+      {/* overlay chrome: overview exit link, intro card / pill, and the docked rail */}
       <div className="pointer-events-none absolute inset-0 z-20">
-        {/* Persistent exit (CM-09): one label, one place, every phase. */}
-        <button
-          type="button"
-          onClick={onBackToCards}
-          data-testid="map-back-cards"
-          className="pointer-events-auto absolute left-space-3 top-space-3 inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 font-body text-small font-medium text-text-on-dark-muted backdrop-blur-panel transition-colors hover:text-text-on-dark"
-        >
-          <Icon name="chevron-l" size={18} />
-          {cardsCopy.backToResults}
-        </button>
+        {/* Overview-only exit pill (top-left). At role/job zoom the rail header owns the back nav. */}
+        {phase === 'overview' && (
+          <button
+            type="button"
+            onClick={onBackToCards}
+            data-testid="map-back-cards"
+            className="pointer-events-auto absolute left-space-3 top-space-3 inline-flex h-control-lg items-center gap-space-1 rounded-full border border-glass-border bg-glass-fill-strong px-space-3 font-body text-small font-medium text-text-on-dark-muted backdrop-blur-panel transition-colors hover:text-text-on-dark"
+          >
+            <Icon name="chevron-l" size={18} />
+            {cardsCopy.backToResults}
+          </button>
+        )}
 
         <AnimatePresence mode="wait">
           {phase === 'overview' && introRevealed && introMode === 'expanded' && (
             <motion.div
               key="map-intro"
               {...introFade}
-              className="absolute inset-x-space-3 top-space-3 flex justify-center"
+              className="absolute inset-x-space-3 top-space-3 flex justify-center pt-space-6"
               data-testid="career-map-intro"
             >
               <div className="relative w-full max-w-map-card rounded-lg border border-glass-border bg-glass-fill-strong px-space-5 py-space-3 text-center shadow-dark-card backdrop-blur-panel">
@@ -225,7 +217,7 @@ export function CareerMap({
           )}
         </AnimatePresence>
 
-        {/* Floating context panel (CM-10): persists across role <-> job, exits at overview. */}
+        {/* Docked rail: role summary at role zoom, compact job at job zoom; exits at overview. */}
         <AnimatePresence>
           {phase !== 'overview' && panelOpen && (
             <motion.div
@@ -236,8 +228,7 @@ export function CareerMap({
                 mdUp
                   ? {
                       left: MAP_CONTEXT_PANEL.margin,
-                      // Start below the persistent back button so the two never overlap top-left.
-                      top: PANEL_TOP_BELOW_BACK,
+                      top: MAP_CONTEXT_PANEL.margin,
                       bottom: MAP_CONTEXT_PANEL.margin,
                       width: MAP_CONTEXT_PANEL.width,
                     }
@@ -250,23 +241,23 @@ export function CareerMap({
                     }
               }
             >
-              <MapContextPanel
-                phase={phase === 'job' ? 'job' : 'role'}
+              <JobSidePanel
+                view={phase === 'job' ? 'job' : 'selected'}
                 copy={cardsCopy}
+                explore={cardsCopy.explore}
                 detail={detail}
                 rank={roleIndex}
                 pct={matchPercentages[detail.categoryId]}
                 jobs={jobs}
-                job={job}
+                selectedJob={selectedJob}
                 ranking={ranking}
                 matchPercentages={matchPercentages}
                 reduce={reduce}
-                targetJobId={targetJobId}
                 onOpenJob={(jobIndex) => onSelectJob(roleIndex, jobIndex)}
-                onNavigateToJob={navigateToJob}
-                onBackToOverview={onBackToOverview}
-                onBackToRole={onBackToRole}
-                onSetTargetJob={onSetTargetJob}
+                onBackToMap={onBackToOverview}
+                onBackToConstellation={onBackToRole}
+                onRoleOverview={onRoleOverview}
+                onOpenJobOverview={onOpenJobOverview}
               />
             </motion.div>
           )}
